@@ -22,7 +22,7 @@ title: Ginnojo Tech Doc
 email: anonymous@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   Set up your own web server from scratch using Debian Linux.
-baseurl: '/ginnojo-tech-doc' # the subpath of your site, e.g. /blog
+baseurl: '/ginnojo-tech-notes' # the subpath of your site, e.g. /blog
 url: 'https://yaws-k.github.io' # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: yaws_k
 github_username:  yaws-k
@@ -51,7 +51,7 @@ footer:
   links:
     - label: 'GitHub'
       icon: 'fab fa-fw fa-github'
-      url: 'https://github.com/yaws-k/ginnojo-tech-doc'
+      url: 'https://github.com/yaws-k/ginnojo-tech-notes'
 
 plugins:
   - jekyll-feed
