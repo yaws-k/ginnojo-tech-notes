@@ -41,7 +41,7 @@ Install basic utilities. What you need will change according to the server usage
 
 ## Programming Languages
 
-Install major programming languages. This will be required (and automatically installed) as dependencies.
+Install major programming languages. (They will be required and automatically installed as dependencies.)
 
 ### Ruby 3.1
 
@@ -53,7 +53,7 @@ ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 
 ### Multiple Ruby versions with rbenv
 
-[rbenv](https://github.com/rbenv/rbenv) manages multiple versions including latest. Install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
+[rbenv](https://github.com/rbenv/rbenv) manages multiple versions, including the latest. Install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
 (libreadline6-dev is changed to libreadline-dev)
 
 ``` console
@@ -61,9 +61,9 @@ ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 # apt install autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
 ```
 
-Then use [https://github.com/rbenv/rbenv-installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
+Then, use [https://github.com/rbenv/rbenv-installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
 
-Login as a normal user that you want to install rbenv.
+Log in as a normal user that you want to install rbenv.
 
 ``` console
 $ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
@@ -103,7 +103,7 @@ The timezone has to be set to php.ini. Update both cli: `/etc/php/8.2/cli/php.in
 date.timezone = "Asia/Tokyo"
 ```
 
-Restart fpm to realod the config.
+Restart fpm to reload the config.
 
 ``` console
 # systemctl reload php8.2-fpm
@@ -131,24 +131,24 @@ openjdk-17-jre: This is JRE. Install JDK if you plan to develop with Java.
 
 ### Libraries for each language
 
-Each language offers external modules. Python pip, Ruby gems, PHP pecl, and so on. There are multiple way to use them, but if you need only a few major modules, they may be available as debian packages.  
-If packaged version work, you don't have to care about the version discrepancies between packaged languages and modules.
+Each language offers external modules. Python pip, Ruby gems, PHP pecl, and so on. There are multiple ways to install them, but if you need only a few major modules, they may be available as Debian packages.  
+If the packages work, you don't have to consider the version discrepancies between packaged languages and modules.
 
 For example, PHP cURL is available as php-curl package.
 
 ## Locales (Languages)
 
-If you need to display characters other than English, generate locales. In my case, I need ja_JP.
+Generate locales if you need to display characters other than English. In my case, I need ja_JP.
 
 ``` console
 # dpkg-reconfigure locales
 ```
 
-You can add any locales as you want. The default lacale can also be anything, but English is the most safe choice as explained at the installation.
+You can add any locales as you want. The default locale can also be anything, but English is the most safe choice, as explained at the installation.
 
 ## Vim
 
-"Vim" is Vi IMproved. If you decide to learn how to use Vi (installed by default), install Vim to enhanve simple Vi.
+"Vim" is Vi IMproved. If you struggle with Vi (installed by default), install Vim to enhance simple Vi.
 
 ``` console
 # apt install vim
@@ -241,7 +241,7 @@ iface ens3 inet6 static
         dns-nameservers aaaa:bbbb:1
 ```
 
-- `/23` in `address aaa.bbb.ccc.ddd/23` is a shorter version of ip address line and `netmask 255.255.254.0` line.
+- `/23` in `address aaa.bbb.ccc.ddd/23` is a shorter version of IP address line and `netmask 255.255.254.0` line.
 
 The nameserver information should be on `/etc/resolv.conf`. This file should have what you set during the installation.
 
