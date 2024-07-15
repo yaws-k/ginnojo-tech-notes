@@ -8,9 +8,9 @@ docs:
     - title: 'Debian 12 "bookworm" installation'
       url: /base-system/install
     - title: 'ssh and Security'
-      url: /base-system/ssh-and-security
+      url: /base-system/ssh_and_security
     - title: 'Basic configuration and utilities'
-      url: /base-system/basic-configuration-and-utilities
+      url: /base-system/basic_configuration_and_utilities
   - title: 'Database'
     children:
     - title: 'MariaDB'
@@ -36,18 +36,18 @@ docs:
   - title: 'Mail'
     children:
     - title: 'Postfix and Dovecot'
-      url: /mail/postfix-and-dovecot
+      url: /mail/postfix_and_dovecot
     - title: 'Dovecot IMAPd'
-      url: /mail/dovecot-imapd
+      url: /mail/dovecot_imapd
     - title: 'SMTP Auth'
-      url: /mail/smtp-auth
+      url: /mail/smtp_auth
     - title: 'SMTPd Restrictioins'
-      url: /mail/smtpd-restrictions
+      url: /mail/smtpd_restrictions
     - title: 'ClamAV'
       url: /mail/clamav
     - title: 'DNS records'
-      url: /mail/dns-records
+      url: /mail/dns_records
     - title: 'Dovecot Sieve'
-      url: /mail/dovecot-sieve
+      url: /mail/dovecot_sieve
     - title: 'Mail server migration'
-      url: /mail/mail-server-migration
+      url: /mail/mail_server_migration
