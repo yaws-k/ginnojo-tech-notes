@@ -2,7 +2,7 @@
 
 ## Install ssh server
 
-In most cases the server is located in the secure and isolated places. Accessing via ssh is the most common way.
+In most cases, the server is located in a secure and isolated location. The most common method of accessing it is via SSH (Secure SHell).
 
 Log in as root, and install ssh.
 
@@ -10,24 +10,24 @@ Log in as root, and install ssh.
 # apt install ssh
 ```
 
-The system will install ssh and many more packages that depends on.
+The system will install SSH and many more packages that depend on it.
 
 ## Set up connection
 
 ### Generate key pair
 
-On the local computer (the computer you mainly use), generate a key pair.
+Generate a key pair on the local computer (the computer you mainly use).
 
 ``` console
 $ ssh-keygen -t ed25519
 Generating public/private ed25519 key pair.
 ```
 
-This will generate `ed25519` private key and `ed25519.pub` public key pair. Copy the content of public key to the server.
+This will generate the `ed25519` private key and `ed25519.pub` public key pair. Copy the public key's content to the server.
 
 ### Set your public key to the server
 
-The ssh should accept user & password authentication. Log in as anormal user (NOT root), and copy&paste the public key to `~/.ssh/authorized_keys`.
+The SSH should accept user and password authentication for now (SSH default). Log in as a normal user (NOT root) and copy and paste the public key to `~/.ssh/authorized_keys`.
 
 ``` console
 $ mkdir ~/.ssh
@@ -39,11 +39,11 @@ $ chmod 600 ~/.ssh/authorized_keys
 
 ### Check if the key pair works
 
-After storing the public key, log out and try loggin in again with the public key authentication.
+After storing the public key, log out and try logging in again with the public key authentication.
 
 ## Configure ssh server
 
-To edit system configuration, get root priviledge.
+To edit system configuration, get root privilege.
 
 ``` console
 $ su -
@@ -55,10 +55,10 @@ Password: <root password>
 
 Configure `/etc/ssh/sshd_config` to prohibit password login.
 
-See sshd_config(5) or [the official document](https://man.openbsd.org/sshd_config) (the official document is the latest version, which is newer than Debian version.)
+See sshd_config(5) or [the official document](https://man.openbsd.org/sshd_config) (the official document is the latest version, which is newer than the Debian version.)
 
 The default configuration is restrictive. In short, `PasswordAuthentication yes` should be changed to `no` to reject password authentication.  
-There are some other configurations that should be taken into considerations.
+Some other configurations should be taken into consideration.
 
 - `#PermitRootLogin prohibit-password`  
   Set "no" or "forced-commands-only" according to the usage.
@@ -88,11 +88,11 @@ UFW looks easier, but it has issues with docker images. (See details for [docker
 # apt install firewalld
 ```
 
-ssh services are registered by default, so the ssh won't be disconnected after installing this.
+SSH services are registered by default, so the ssh won't be disconnected after installing this.
 
 ### Presets
 
-Only ssh (port 22) is open by default. To open more ports for web, mail, and so on, there are presets in `/usr/lib/firewalld/services/`.
+By default, only SSH (port 22) is open. Presets in `/usr/lib/firewalld/services/` allow you to open more ports for web, mail, and so on.
 
 For example, ssh.xml opens tcp:22.
 
@@ -120,7 +120,7 @@ Pick up the service you want to use and enable it. For example, HTTPS.
 # firewall-cmd --reload
 ```
 
-- The application name is "firewalld" (firewall + d), but command is "firewall-cmd" without "d" after the firewall.
+- The application name is "firewalld" (firewall + d), but the command is "firewall-cmd" without "d" after the firewall.
 - `--permanent` is required to set the rules preserved after the firewall reload. Without this parameter, you can test the temporary rules.
 - `--zone-public` can be omitted because "public" is the default zone.
 - Reload required to enable the new configurations.
@@ -136,11 +136,11 @@ Close the port by disabling the service.
 
 ### Complicated patterns
 
-If you need more complicated patterns or no presets available, you can manually configure allowed port and tcp/udp. For more details please refar [the official documents](https://firewalld.org/documentation/man-pages/firewall-cmd.html) and other materials.
+You can manually configure the allowed port and TCP/UDP if you need more complicated patterns or no presets. For more details, please refer to [the official documents](https://firewalld.org/documentation/man-pages/firewall-cmd.html) and other materials.
 
 ## CrowdSec
 
-"fail2ban" is one of the major security tool to reject malicious login attempts. CrowdSec is a kind of improved security service. They offer a community free version.
+"fail2ban" is a major security tool for rejecting malicious login attempts. CrowdSec is an improved security service. It offers a community (free of charge) version.
 
 ### Install Security Engine
 
@@ -168,11 +168,11 @@ Get started with CrowdSec:
 You can always run the configuration again interactively by using '/usr/share/crowdsec/wizard.sh -c'
 ```
 
-The Security Engine start working by default. Now it needs to add remediation component, to take actual measures to malicious attempts.
+The Security Engine starts working by default. Now, it needs remediation components to take actual measures against malicious attempts.
 
 ### Install remediation component
 
-Firewall bouncer will work like fail2ban. It adds a blocklist to nftables.
+The firewall bouncer will work like fail2ban. It adds a blocklist to nftables.
 
 ``` console
 # apt install crowdsec-firewall-bouncer-nftables
