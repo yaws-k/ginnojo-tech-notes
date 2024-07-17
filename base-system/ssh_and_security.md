@@ -177,3 +177,23 @@ The firewall bouncer will work like fail2ban. It adds a blocklist to nftables.
 ``` console
 # apt install crowdsec-firewall-bouncer-nftables
 ```
+
+It will add bunch of ip addresses to nftables. You can check these blocklist with nft command.
+
+``` console
+# nft list ruleset
+```
+
+## sudo
+
+Always using root account is not recommended. "sudo" should be used to delegate the privileges to the normal user.
+
+``` console
+# apt install sudo
+# adduser [username] sudo
+```
+
+Add specific users to sudo group to enable sudo command.
+
+- If you want to be more restrictive, you can limit the commands available to that user.
+- After adding a user to the sudo group, that user has to re-login to enable it.

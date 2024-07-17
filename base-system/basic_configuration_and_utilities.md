@@ -229,7 +229,8 @@ iface lo inet loopback
 # The primary network interface
 allow-hotplug ens3
 iface ens3 inet static
-        address aaa.bbb.ccc.ddd/23
+        address aaa.bbb.ccc.ddd
+        netmask 255.255.254.0
         gateway aaa.bbb.eee.1
         # dns-* options are implemented by the resolvconf package, if installed
         #dns-nameservers 8.8.8.8 8.8.4.4
@@ -238,12 +239,16 @@ iface ens3 inet6 static
         address aaaa:bbbb:cccc:dddd:eee:fff:ggg:hhh
         netmask 64
         gateway fe80::1
-        dns-nameservers aaaa:bbbb:1
 ```
 
-- `/23` in `address aaa.bbb.ccc.ddd/23` is a shorter version of IP address line and `netmask 255.255.254.0` line.
+The nameserver information should be on `/etc/resolv.conf`. This file should have what you set during the installation. Add IPv6 DNS server address if you like.
 
-The nameserver information should be on `/etc/resolv.conf`. This file should have what you set during the installation.
+``` console
+search example.com
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+nameserver aaaa:bbbb:1
+```
 
 After changing the configuration, restart networking and check it works.
 
