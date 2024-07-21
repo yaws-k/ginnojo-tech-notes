@@ -16,7 +16,7 @@ SQLite3 is a file-based database. Unlike large-scale DBMS, backup/restore is ver
 
 ## Interface for PHP/Ruby
 
-PHP and Ruby requires interfaces to use SQLite3. Python3 includes SQLite3 interface by default.
+PHP and Ruby require interfaces to use SQLite3. Python3 includes SQLite3 interface by default.
 
 ```console
 # apt install php-sqlite3 ruby-sqlite3
