@@ -1,12 +1,26 @@
 # ssh and security
 
+## sudo
+
+Always using root account is not recommended. "sudo" should be used to delegate the privileges to the normal user.
+
+```console
+# apt install sudo
+# adduser [username] sudo
+```
+
+Add specific users to sudo group to enable sudo command.
+
+- If you want to be more restrictive, you can limit the commands available to that user.
+- After adding a user to the sudo group, that user has to re-login to enable it.
+
 ## Install ssh server
 
 In most cases, the server is located in a secure and isolated location. The most common method of accessing it is via SSH (Secure SHell).
 
 Log in as root, and install ssh.
 
-``` console
+```console
 # apt install ssh
 ```
 
@@ -18,7 +32,7 @@ The system will install SSH and many more packages that depend on it.
 
 Generate a key pair on the local computer (the computer you mainly use).
 
-``` console
+```console
 $ ssh-keygen -t ed25519
 Generating public/private ed25519 key pair.
 ```
@@ -29,7 +43,7 @@ This will generate the `ed25519` private key and `ed25519.pub` public key pair. 
 
 The SSH should accept user and password authentication for now (SSH default). Log in as a normal user (NOT root) and copy and paste the public key to `~/.ssh/authorized_keys`.
 
-``` console
+```console
 $ mkdir ~/.ssh
 $ chmod 700 ~/.ssh
 $ nano ~/.ssh/authorized_keys
@@ -45,7 +59,7 @@ After storing the public key, log out and try logging in again with the public k
 
 To edit system configuration, get root privilege.
 
-``` console
+```console
 $ su -
 Password: <root password>
 #
@@ -73,7 +87,7 @@ Some other configurations should be taken into consideration.
 
 After changing sshd_config, restart sshd.
 
-``` console
+```console
 # systemctl restart ssh
 ```
 
@@ -84,7 +98,7 @@ UFW looks easier, but it has issues with docker images. (See details for [docker
 
 ### Install
 
-``` console
+```console
 # apt install firewalld
 ```
 
@@ -96,7 +110,7 @@ By default, only SSH (port 22) is open. Presets in `/usr/lib/firewalld/services/
 
 For example, ssh.xml opens tcp:22.
 
-``` xml
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <service>
   <short>SSH</short>
@@ -107,7 +121,7 @@ For example, ssh.xml opens tcp:22.
 
 There is a command to list all presets, but the list is too large and more difficult to read than `ls /usr/lib/firewalld/services/`.
 
-``` console
+```console
 # firewall-cmd --get-services
 ```
 
@@ -115,7 +129,7 @@ There is a command to list all presets, but the list is too large and more diffi
 
 Pick up the service you want to use and enable it. For example, HTTPS.
 
-``` console
+```console
 # firewall-cmd --add-service=https --zone=public --permanent
 # firewall-cmd --reload
 ```
@@ -129,7 +143,7 @@ Pick up the service you want to use and enable it. For example, HTTPS.
 
 Close the port by disabling the service.
 
-``` console
+```console
 # firewall-cmd --remove-service=https --zone=public --permanent
 # firewall-cmd --reload
 ```
@@ -146,13 +160,13 @@ You can manually configure the allowed port and TCP/UDP if you need more complic
 
 To install, curl is required.
 
-``` console
+```console
 # apt install curl
 ```
 
 Follow the instructions on their [official documents](https://doc.crowdsec.net/docs/getting_started/install_crowdsec/).
 
-``` console
+```console
 # curl -s https://install.crowdsec.net | sh
 Detected operating system as debian/12.
 (snip)
@@ -174,26 +188,12 @@ The Security Engine starts working by default. Now, it needs remediation compone
 
 The firewall bouncer will work like fail2ban. It adds a blocklist to nftables.
 
-``` console
+```console
 # apt install crowdsec-firewall-bouncer-nftables
 ```
 
 It will add bunch of ip addresses to nftables. You can check these blocklist with nft command.
 
-``` console
+```console
 # nft list ruleset
 ```
-
-## sudo
-
-Always using root account is not recommended. "sudo" should be used to delegate the privileges to the normal user.
-
-``` console
-# apt install sudo
-# adduser [username] sudo
-```
-
-Add specific users to sudo group to enable sudo command.
-
-- If you want to be more restrictive, you can limit the commands available to that user.
-- After adding a user to the sudo group, that user has to re-login to enable it.

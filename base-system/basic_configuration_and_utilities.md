@@ -4,7 +4,7 @@
 
 `apt` command will get only basic software by default. Add `contrib` and `non-free` to `/etc/apt/sources.list` for more applications.
 
-``` console
+```console
 deb http://ftp.jp.debian.org/debian/ bookworm main contrib non-free non-free-firmware
 
 deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
@@ -18,7 +18,7 @@ deb http://ftp.jp.debian.org/debian/ bookworm-updates main contrib non-free non-
 
 After updating apt-line, update&upgrade.
 
-``` console
+```console
 # apt update
 # apt upgrade
 ```
@@ -27,7 +27,7 @@ After updating apt-line, update&upgrade.
 
 Install basic utilities. What you need will change according to the server usage.
 
-``` console
+```console
 # apt install bind9-dnsutils man-db net-tools rsync tmux wget curl
 ```
 
@@ -47,7 +47,7 @@ Install major programming languages. (They will be required and automatically in
 
 ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 
-``` console
+```console
 # apt install ruby ruby-dev
 ```
 
@@ -56,7 +56,7 @@ ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 [rbenv](https://github.com/rbenv/rbenv) manages multiple versions, including the latest. Install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
 (libreadline6-dev is changed to libreadline-dev)
 
-``` console
+```console
 # apt install git
 # apt install autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
 ```
@@ -65,7 +65,7 @@ Then, use [https://github.com/rbenv/rbenv-installer](https://github.com/rbenv/rb
 
 Log in as a normal user that you want to install rbenv.
 
-``` console
+```console
 $ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
 Installing rbenv with git...
 (snip)
@@ -82,7 +82,7 @@ For the ruby installation process, see [rbenv GitHub README](https://github.com/
 
 python3: The package "python" was python2.x and not available anymore.
 
-``` console
+```console
 # apt install python3
 ```
 
@@ -90,13 +90,13 @@ python3: The package "python" was python2.x and not available anymore.
 
 php & php-fpm & php8.2-fpm: Installing only “php” will install apache2 according to the dependency. To use nginx, you have to explicitly choose fpm version.
 
-``` console
+```console
 # apt install php php-fpm php8.2-fpm
 ```
 
 The timezone has to be set to php.ini. Update both cli: `/etc/php/8.2/cli/php.ini` and fpm: `/etc/php/8.2/fpm/php.ini`.
 
-``` php
+```php
 [Date]
 ; Defines the default timezone used by the date functions
 ; http://php.net/date.timezone
@@ -105,7 +105,7 @@ date.timezone = "Asia/Tokyo"
 
 Restart fpm to reload the config.
 
-``` console
+```console
 # systemctl reload php8.2-fpm
 ```
 
@@ -113,19 +113,19 @@ Restart fpm to reload the config.
 
 openjdk-17-jre: This is JRE. Install JDK if you plan to develop with Java.
 
-``` console
+```console
 # apt install openjdk-17-jre
 ```
 
 ### Rust 1.63
 
-``` console
+```console
 # apt install rustc
 ```
 
 ### Perl 5.36
 
-``` console
+```console
 # apt install perl
 ```
 
@@ -140,7 +140,7 @@ For example, PHP cURL is available as php-curl package.
 
 Generate locales if you need to display characters other than English. In my case, I need ja_JP.
 
-``` console
+```console
 # dpkg-reconfigure locales
 ```
 
@@ -150,13 +150,13 @@ You can add any locales as you want. The default locale can also be anything, bu
 
 "Vim" is Vi IMproved. If you struggle with Vi (installed by default), install Vim to enhance simple Vi.
 
-``` console
+```console
 # apt install vim
 ```
 
 Configure `/etc/vin/vimrc` to enable options.
 
-``` vim
+```vim
 " Vim5 and later versions support syntax highlighting. Uncommenting the next
 " line enables syntax highlighting by default.
 syntax on
@@ -198,20 +198,20 @@ set ambiwidth=double
 
 systemd-timesyncd works like NTP client. Install this if `/etc/systemd/timesyncd.conf` doesn't exist.
 
-``` console
+```console
 # apt install systemd-timesyncd
 ```
 
 It works out of the box by using debian ntp pool servers. If you know better ntp servers (e.g. NTP servers in your network), update `/etc/systemd/timesyncd.conf` to refer them.
 
-``` console
+```console
 [Time]
 NTP=ntp.example.com
 ```
 
 Restart the service.
 
-``` console
+```console
 # systemctl restart systemd-timesyncd
 ```
 
@@ -219,7 +219,7 @@ Restart the service.
 
 During the install process, only IPv4 was set. Add IPv6 configurations.
 
-``` console
+```console
 source /etc/network/interfaces.d/*
 
 # The loopback network interface
@@ -243,7 +243,7 @@ iface ens3 inet6 static
 
 The nameserver information should be on `/etc/resolv.conf`. This file should have what you set during the installation. Add IPv6 DNS server address if you like.
 
-``` console
+```console
 search example.com
 nameserver 8.8.8.8
 nameserver 8.8.4.4
@@ -252,7 +252,7 @@ nameserver aaaa:bbbb:1
 
 After changing the configuration, restart networking and check it works.
 
-``` console
+```console
 # systemctl restart networking
 # ip address
 # ping google.com
