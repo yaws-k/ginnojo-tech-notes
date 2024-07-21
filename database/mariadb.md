@@ -1,6 +1,6 @@
 # MariaDB
 
-Install MariaDB (a RDB forked from MySQL).
+Install MariaDB (an RDB forked from MySQL).
 
 ## Install
 
@@ -10,7 +10,7 @@ Install, then the package will take care of everything.
 # apt install mariadb-server
 ```
 
-Now MariaDB starts workin out of the box.
+Now, MariaDB is working out of the box.
 
 ### MariaDB in Debian is secure by default
 
@@ -24,4 +24,4 @@ Interface modules to connect to MariaDB. For example, CMS (mainly by PHP) will r
 # apt install php-mysql ruby-mysql2 python3-mysqldb
 ```
 
-- These are Debian packaged versions for packaged programming languages. If you have multiple versions, then install interfaces to each of them.
+These are Debian-packaged versions aligned with packaged versions of programming languages. If you have multiple versions, then install interfaces for each of them.
