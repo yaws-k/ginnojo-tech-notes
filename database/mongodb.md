@@ -1,7 +1,7 @@
 # MongoDB
 
 MongoDB is a document DB. It has both commercial and free (community edition) licenses.  
-There is no official Debian package for MongoDB. [The official document](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-debian/) explains how to install current (as of 2024 July, 7.0) version of community edition.
+There is no official Debian package for MongoDB. [The official document](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-debian/) explains how to install the current (as of July 2024, 7.0) version of the community edition.
 
 ## Preparation
 
@@ -35,7 +35,7 @@ sudo apt install mongodb-org
 MongoDB engine (WiredTiger) strongly recommends the XFS filesystem.  
 In my case, XFS partition is made during the Debian installation and mounted on `/var/xfs`. So I'll change the data directory from default `/var/lib/mongodb` to `/var/xfs/mongodb`.
 
-Make new MongoDB data directory and change the ownership.
+Make a new MongoDB data directory and change the ownership.
 
 ```console
 cd /var/xfs
@@ -51,9 +51,9 @@ storage:
   dbPath: /var/xfs/mongodb
 ```
 
-- `storage.journal.enabled` option is not available from MongoDB 6.1, because it's enabled by default. See [Journaling](https://www.mongodb.com/docs/manual/core/journaling/) for more details.
+- The `storage.journal.enabled` option is not available from MongoDB 6.1 because it's enabled by default. See [Journaling](https://www.mongodb.com/docs/manual/core/journaling/) for more details.
 
-Reload daemons, enabel Mongod, and start.
+Reload daemons, enable Mongod and start.
 
 ```console
 sudo systemctl daemon-reload
@@ -63,7 +63,7 @@ sudo systemctl start mongod
 
 ## Security configuration
 
-By default, MongoDB accepts access only from localhost, but anbody with access can read all databases.  
+By default, MongoDB accepts access only from localhost, but anybody with access can read all databases.  
 It is strongly recommended to enable authentication.
 
 ### Add an admin user
