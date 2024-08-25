@@ -25,7 +25,7 @@ NOTE: Do not turn on this compression with SSL/TLS if you care about BREACH atta
 
 If you don't have to consider BREACH attacks, turn on gzip globally. Uncomment all the gzip configurations in `/etc/nginx/nginx.conf`.
 
-```conf
+```nginx
 ##
 # Gzip Settings
 ##
@@ -52,7 +52,7 @@ You can turn on Gzip within the "server" section. Snippets will help control per
 
 Make `/etc/nginx/snippets/gzip.conf` file with the same configurations as in the global config file.
 
-```conf
+```nginx
 gzip on;
 
 gzip_vary on;
@@ -65,7 +65,7 @@ gzip_types text/plain text/css application/json application/javascript text/xml 
 
 Include this snippet in the server section.
 
-```conf
+```nginx
 server {
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
@@ -91,7 +91,7 @@ The simplest example:
 - Listening both IPv4 and IPv6
 - Logs in `/var/log/nginx/exmaple-jp-*`
 
-```config
+```nginx
 server {
         listen 80;
         listen [::]:80;
@@ -128,7 +128,7 @@ Prerequisites
 - PHP and fpm have to be installed
 - The fpm automatically makes an unix socket to listen to
 
-```config
+```nginx
 server {
         listen 80;
         listen [::]:80;
@@ -162,7 +162,7 @@ server {
 
 - Use "snakeoil" testing certificate for SSL/TLS
 
-```config
+```nginx
 server {
         # Add "http2" and change the port from 80 to 443
         listen 443 ssl http2;
@@ -197,7 +197,7 @@ The next step is getting a proper certificate. This is explained in the "Let's E
 
 - Redirect all access to `http://example.jp/`(non-SSL/TLS) to `https://example.jp/`(SSL/TLS)
 
-```config
+```nginx
 # Redirect all HTTP (port 80) access to HTTPS (port 443)
 server {
         listen 80;

@@ -65,7 +65,7 @@ This configuration will be used in multiple sites, so make it a snippet.
 
 `/etc/nginx/snippets/certbot.conf`
 
-```config
+```nginx
 # Add root directory
 root /var/www/certbot;
 
@@ -82,7 +82,7 @@ location /.well-known/acme-challenge/ {
 
 `/etc/nginx/sites-available/exmaple.jp.conf`
 
-```config
+```nginx
 server {
         listen 80;
         listen [::]:80;
@@ -159,7 +159,7 @@ Refer: [options-ssl-nginx.conf](https://github.com/certbot/certbot/blob/master/c
 
 Add `/etc/letsencrypt/options-ssl-nginx.conf`
 
-```config
+```nginx
 ssl_session_cache shared:le_nginx_SSL:10m;
 ssl_session_timeout 1440m;
 ssl_session_tickets off;
@@ -181,7 +181,7 @@ See [OpenSSL official document](https://docs.openssl.org/3.0/man1/openssl-dhpara
 
 The file should look like this.
 
-```config
+```plaintext
 -----BEGIN DH PARAMETERS-----
 MIIBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 (snip)
@@ -193,7 +193,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxBAg==
 
 Swap the snakeoil certificate for testing to proper configurations in `/etc/nginx/sites-available/exmaple.jp.conf`
 
-```config
+```nginx
 server {
         listen 80;
         listen [::]:80;
