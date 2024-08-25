@@ -24,15 +24,15 @@ docs:
     - title: 'Nginx'
       url: /web/nginx
     - title: "Let's Enctypt"
-      url: /web/letsencrypt
+      url: /web/lets_encrypt
     - title: 'Concrete CMS'
-      url: /web/concretecms
+      url: /web/concrete_cms
     - title: 'SSO with Nginx and Vouch Proxy'
-      url: /web/sso-nginx-and-vouch-proxy
+      url: /web/sso_nginx_and_vouch_proxy
   - title: 'DNS'
     children:
     - title: 'Knot DNS'
-      url: /dns/knot-dns
+      url: /dns/knot_dns
   - title: 'Mail'
     children:
     - title: 'Postfix and Dovecot'
