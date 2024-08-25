@@ -18,12 +18,12 @@ sudo firewall-cmd --reload
 
 ## Gzip
 
-Gzip compression is turned on by default, but onlyu for the text/html. Enabling compression for all other text type contents will increase the performance.
-NOTE: If you care BREACH attacks, do not turn on this compression with SSL/TLS. See [gzip module explanation](https://nginx.org/en/docs/http/ngx_http_gzip_module.html) for more details.
+Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.
+NOTE: Do not turn on this compression with SSL/TLS if you care about BREACH attacks. For more details, see the [gzip module explanation](https://nginx.org/en/docs/http/ngx_http_gzip_module.html).
 
 ### Global configuration
 
-If you don't have to consider BREACH attacks, globally turn on gzip. Uncomment all the gzip configurations in `/etc/nginx/nginx.conf`.
+If you don't have to consider BREACH attacks, turn on gzip globally. Uncomment all the gzip configurations in `/etc/nginx/nginx.conf`.
 
 ```conf
 ##
@@ -48,9 +48,9 @@ sudo systemctl reload nginx
 
 ### Per-site configuration
 
-Gzip can be enabled within "server" section. Snippets are convinient for this kind of purposes.
+You can turn on Gzip within the "server" section. Snippets will help control per-server configurations.
 
-Make `/etc/nginx/snippets/gzip.conf` file with configs same as in global config file.
+Make `/etc/nginx/snippets/gzip.conf` file with the same configurations as in the global config file.
 
 ```conf
 gzip on;
@@ -77,9 +77,9 @@ server {
 
 ## Site configuration
 
-nginx stores website configuration files in `/etc/nginx/sites-available`. To enable a site, add a symlink to that config file in `/etc/nginx/sites-enabled`. (The same as Apache2.)
+nginx stores website configuration files in `/etc/nginx/sites-available`. Add a symlink to that config file in `/etc/nginx/sites-enabled` to enable a site. (The same as Apache2.)
 
-For more details about each lines in the configuration, please refer [official manuals](https://nginx.org/en/docs/http/ngx_http_core_module.html).
+For more details about each configuration line, please refer to [official manuals](https://nginx.org/en/docs/http/ngx_http_core_module.html).
 
 ### The simplest example
 
@@ -120,7 +120,13 @@ sudo systemctl reload nginx
 
 ### Enable PHP
 
-Redirect the contents in the specific location to PHP fpm to execute PHP scripts.
+- Add `index.php` as an index file
+- PHP fpm is listening unix socket at `/run/php/php-fpm.sock`
+
+Prerequisites
+
+- PHP and fpm have to be installed
+- The fpm automatically makes an unix socket to listen to
 
 ```config
 server {
@@ -131,8 +137,8 @@ server {
 
         root /var/www/html;
 
-        **# Add index.php if required**
-        index index.html;
+        # Add index.php if required
+        index index.html index.php;
 
         location / {
                 try_files $uri $uri/ =404;
@@ -143,9 +149,84 @@ server {
 
         # Pass PHP scripts to FastCGI server
         location ~ \.php$ {
+                # Include PHP snippet
                 include snippets/fastcgi-php.conf;
 
                 # With php-fpm (or other unix sockets)
+                fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
+}
+```
+
+### Enable HTTPS (with http2)
+
+- Use "snakeoil" testing certificate for SSL/TLS
+
+```config
+server {
+        # Add "http2" and change the port from 80 to 443
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+
+        # Include snakeoil certificate snippet
+        include snippets/snakeoil.conf;
+
+        server_name example.jp;
+
+        root /var/www/html;
+
+        index index.html index.php;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        access_log /var/log/nginx/example.jp-access.log;
+        error_log /var/log/nginx/example.jp-error.log;
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
+}
+```
+
+The next step is getting a proper certificate. This is explained in the "Let's Encrypt part.
+
+### Redirect HTTP to HTTPS
+
+- Redirect all access to `http://example.jp/`(non-SSL/TLS) to `https://example.jp/`(SSL/TLS)
+
+```config
+# Redirect all HTTP (port 80) access to HTTPS (port 443)
+server {
+        listen 80;
+        listen [::]:80;
+        server_name example.jp;
+        return 301 https://$host$request_uri;
+}
+
+server {
+        listen 443 ssl http2;
+        listen [::]:443 ssl http2;
+
+        include snippets/snakeoil.conf;
+
+        server_name example.jp;
+
+        root /var/www/html;
+
+        index index.html index.php;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        access_log /var/log/nginx/example.jp-access.log;
+        error_log /var/log/nginx/example.jp-error.log;
+
+        location ~ \.php$ {
+                include snippets/fastcgi-php.conf;
                 fastcgi_pass unix:/run/php/php-fpm.sock;
         }
 }
