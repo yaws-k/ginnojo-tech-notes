@@ -63,7 +63,7 @@ The Postfix document has an example of the [Non-Postfix mailbox store: separate 
 
 Modify `/etc/postfix/main.cf` to send all mails to the virtual mailbox.
 
-```postfix
+```conf
 myhostname = mail.example.jp
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
