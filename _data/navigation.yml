@@ -47,6 +47,8 @@ docs:
       url: /mail/clamav
     - title: 'DNS records'
       url: /mail/dns_records
+    - title: 'Rspamd'
+      url: /mail/rspamd
     - title: 'Dovecot Sieve'
       url: /mail/dovecot_sieve
     - title: 'Mail server migration'

@@ -4,7 +4,7 @@
 
 `apt` command will get only basic software by default. Add `contrib` and `non-free` to `/etc/apt/sources.list` for more applications.
 
-```console
+```config
 deb http://ftp.jp.debian.org/debian/ bookworm main contrib non-free non-free-firmware
 
 deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
