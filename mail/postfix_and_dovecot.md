@@ -5,7 +5,7 @@ Dovecot is IMAP server, and it handles local emails efficiently and securely.
 
 ## Postfix
 
-### Install
+### Install Postfix
 
 ```console
 sudo apt install postfix
@@ -106,3 +106,122 @@ sudo systemctl reload postfix
 ```
 
 ## Dovecot-LMTP
+
+### Install Dovecot-LMTPd
+
+Dovecot-LMTP will take over emails from Postfix and deliver them to the final destination directories in `/home/vmail/`. Dovecot enables Sieve filtering and incoming mail indexing for Dovecot IMAP server.
+
+```console
+sudo apt install dovecot-lmtpd
+```
+
+### Configure
+
+As explained in the [Dovecot document](https://doc.dovecot.org/2.3/configuration_manual/howto/postfix_dovecot_lmtp/), dovecot-lmtpd is integrated with Postfix via the unix scket. (INET is also available.)  
+Configure the lmtp section in `/etc/dovecot/conf.d/10-master.conf` to open the socket where Postfix can access.
+
+- The socket must be in /var/spool/postfix because Postfix is chrooted.
+
+```conf
+service lmtp {
+ unix_listener /var/spool/postfix/private/dovecot-lmtp {
+   mode = 0600
+   user = postfix
+   group = postfix
+  }
+}
+```
+
+Configure `/etc/dovecot/conf.d/10-auth.conf` to choose how to control the user list.
+
+- Comment out auth-system (because mail accounts are isolated from user accounts)
+- Uncomment auth-passwdfile (because there are a small number of users that a simple text file is enough to handle)
+
+```conf
+#!include auth-system.conf.ext
+#!include auth-sql.conf.ext
+#!include auth-ldap.conf.ext
+!include auth-passwdfile.conf.ext
+#!include auth-checkpassword.conf.ext
+#!include auth-static.conf.ext
+```
+
+Configure passdb and userdb, and set defaults for the userdb information in `/etc/dovecot/conf.d/auth-passwdfile.conf.ext`.
+
+```conf
+passdb {
+  driver = passwd-file
+  args = scheme=CRYPT username_format=%u /etc/dovecot/users
+}
+
+userdb {
+  driver = passwd-file
+  args = username_format=%u /etc/dovecot/users
+
+  # Default fields that can be overridden by passwd-file
+  default_fields = uid=vmail gid=vmail home=/home/vmail/%d/%n mail=sdbox:~/dbox
+
+  # Override fields from passwd-file
+  #override_fields = home=/home/virtual/%u
+}
+```
+
+- passdb and userdb can be the same file
+- Password scheme is CRYPT (default)
+- Username will be full mail address. e.g. `info@example.jp`
+- userdb has to have uid, gid, home directory, and email location.
+  - Both uid and gid are "vmail" because this server uses virtual users
+  - Virtual users home directory is `/home/vmail/domain/username`
+  - All users will use Dovecot single-dbox
+
+For more details, see official documents.
+
+- [User Database](https://doc.dovecot.org/2.3/configuration_manual/authentication/user_databases_userdb)
+- [Passed-file](https://doc.dovecot.org/2.3/configuration_manual/authentication/passwd_file)
+
+Reload Dovecot to apply new configurations.
+
+```console
+sudo systemctl reload dovecot
+```
+
+## Userdb
+
+The userdb `/etc/dovecot/users` will keep the list of usernames (email addresses) and their encrypted passwords. The command `doveadm` will generate the encrypted password.
+
+```console
+# doveadm pw
+Enter new password: 
+Retype new password: 
+{CRYPT}$2y$0...(snip)...Iiy0.
+```
+
+Copy and paste the above encrypted password to Userdb as a part of the `info@example.jp` information.
+
+```conf
+info@example.jp:{CRYPT}$2y$0...(snip)...Iiy0.::::::
+```
+
+The trailing six colons `::::::` are for uid/gid/home/mail_location. Their default values are specified in `/etc/dovecot/conf.d/auth-passwdfile.conf.ext`.  
+If everything is written explicitly, the above line should look like this.
+
+```conf
+info@example.jp:{CRYPT}$2y$0...(snip)...Iiy0.:vmail:vmail::/home/vmail/%d/%n::userdb_mail=sdbox:~/dbox
+```
+
+If you need to change one of these parameters, override the default values by explicitly writing it on the userdb.
+
+Dovecot checks this every time it gets an email. After updating this userdb, no reload or db compile is required.
+
+## Test
+
+Send a test mail to the valid user on this server. The successful logs should be written in `/var/log/mail.log`.
+
+If you need detailed logs, turn on debug switches in `/etc/dovecot/conf.d/10-logging.conf`.
+
+```console
+auth_verbose = yes
+auth_debug = yes
+auth_debug_passwords = yes
+mail_debug = yes
+```
