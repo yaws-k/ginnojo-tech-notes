@@ -67,6 +67,9 @@ Log in as a normal user that you want to install rbenv.
 
 ```console
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
+```
+
+```console
 Installing rbenv with git...
 (snip)
 Setting up your shell with `rbenv init bash' ...
@@ -217,7 +220,7 @@ sudo systemctl restart systemd-timesyncd
 
 ## IPv6
 
-During the install process, only IPv4 was set. Add IPv6 configurations.
+During the install process, only IPv4 was set. Add IPv6 configurations to `/etc/network/interfaces`.
 
 ```console
 source /etc/network/interfaces.d/*

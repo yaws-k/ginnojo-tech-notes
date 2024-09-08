@@ -7,7 +7,7 @@ Install MariaDB (an RDB forked from MySQL).
 Install, then the package will take care of everything.
 
 ```console
-# apt install mariadb-server
+sudo apt install mariadb-server
 ```
 
 Now, MariaDB is working out of the box.
@@ -21,7 +21,7 @@ There is no need to run `mysql_secure_installation`. Check `/usr/share/doc/maria
 Interface modules to connect to MariaDB. For example, CMS (mainly by PHP) will require php-mysql interface.
 
 ```console
-# apt install php-mysql ruby-mysql2 python3-mysqldb
+sudo apt install php-mysql ruby-mysql2 python3-mysqldb
 ```
 
 These are Debian-packaged versions aligned with packaged versions of programming languages. If you have multiple versions, then install interfaces for each of them.
