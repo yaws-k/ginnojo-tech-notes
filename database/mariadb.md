@@ -25,3 +25,11 @@ sudo apt install php-mysql ruby-mysql2 python3-mysqldb
 ```
 
 These are Debian-packaged versions aligned with packaged versions of programming languages. If you have multiple versions, then install interfaces for each of them.
+
+## Development files
+
+For mysql2 gem package, you may need the following development package.
+
+```console
+sudo apt install libmariadb-dev
+```
