@@ -18,11 +18,11 @@ Add the following line to `/etc/sysctl.conf`
 vm.overcommit_memory = 1
 ```
 
-Restart the server.
+Then restart the server.
 
 ## Multiple instances
 
-Setting up a dedicated Redis instance for each service or application is often recommended.  
+Setting up a dedicated Redis instance for each service or application is often recommended.  
 By default, there is one `redis-server.service` daemon listening port 6379, so copy configuration files to start another.
 
 ### Config file
@@ -33,7 +33,7 @@ Create a config template to include.
 sudo cp /etc/redis/redis.conf /etc/redis/redis-template.conf
 ```
 
-Set `port 0` to stop listening TCP socket.
+Set `port 0` to stop listening TCP socket as default.
 
 ```conf
 # Accept connections on the specified port, default is 6379 (IANA #815344).
@@ -41,7 +41,7 @@ Set `port 0` to stop listening TCP socket.
 port 0
 ```
 
-Create a new config `/etc/redis/redis-new.conf` for the new instance. (Use a better name in the actual situation.)
+Create a new config `/etc/redis/redis-6378-new.conf` for the new instance. (Use a better name in the actual situation.)
 
 ```conf
 # Incluede template file as default
@@ -50,9 +50,8 @@ include /etc/redis/redis-template.conf
 pidfile /run/redis/redis-server-new.pid
 logfile /var/log/redis/redis-server-new.log
 
-# Specify UNIX socket location (or TCP port)
-unixsocket /run/redis/redis-server-new.sock
-unixsocketperm 700
+# Specify TCP port
+port 6378
 
 dbfilename dump-new.rdb
 ```
@@ -78,8 +77,8 @@ Update the lines as below.
 ```conf
 Description=Advanced key-value store on port 6378
 ExecStart=/usr/bin/redis-server /etc/redis/redis-new.conf
-PIDFile=/var/run/redis/redis-server-6378.pid
-Alias=redis-6378.service
+PIDFile=/var/run/redis/redis-server-new.pid
+Alias=redis-new.service
 ```
 
 Enable and start the service.
