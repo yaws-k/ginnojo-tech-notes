@@ -17,6 +17,8 @@ docs:
       url: /database/mariadb
     - title: 'SQLite3'
       url: /database/sqlite3
+    - title: 'Redis'
+      url: /database/redis
     - title: 'MongoDB'
       url: /database/mongodb
   - title: 'Web'
