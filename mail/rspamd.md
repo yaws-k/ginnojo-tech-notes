@@ -162,9 +162,15 @@ echo "EICAR test virus" | mutt -a eicar.com -s "Virus scanner test mail `date`" 
 
 ## DKIM signing
 
-Rspamd checks DKIM for incoming emails by default. In addition, it can also sign outgoing emails.
+Rspamd checks DKIM for incoming emails by default. In addition, it can also sign outgoing emails.  
+See [DKIM signing module](https://rspamd.com/doc/modules/dkim_signing.html) for details.
 
-This setting is integrated to configwizard.
+This setting is integrated to configwizard. In this case, generate DKIM resources with the following conditions.
+
+- Key for `mail.example.com`
+- Different keys for `mail.example.com` and `mail2.example.com`  
+  (Not using `example.com` key for multiple subdomains)
+- Choose the domain to sign from MIME header "from" address
 
 ```console
 sudo rspamadm configwizard
@@ -197,11 +203,11 @@ How would you like to set up DKIM signing?
 Enter your choice (1, 2, 3, 4) [default: 1]: 1
 Do you want to sign mail from authenticated users? [Y/n]: y
 Allow data mismatch, e.g. if mime from domain is not equal to authenticated user domain? [Y/n]: y
-Do you want to use effective domain (e.g. example.com instead of foo.example.com)? [Y/n]: y
+Do you want to use effective domain (e.g. example.com instead of foo.example.com)? [Y/n]: n
 Enter output directory for the keys [default: /var/lib/rspamd/dkim/]:
-Enter domain to sign: example.jp
+Enter domain to sign: mail.example.jp
 Enter selector [default: dkim]: s20240923
-Do you want to create privkey /var/lib/rspamd/dkim/example.jp.s20240923.key[Y/n]: y
+Do you want to create privkey /var/lib/rspamd/dkim/mail.example.jp.s20240923.key[Y/n]: y
 You need to chown private key file to rspamd user!!
 To make dkim signing working, to place the following record in your DNS zone:
 v=DKIM1; k=rsa; p=MIIBIjA(snip)
@@ -212,7 +218,7 @@ allow_hdrfrom_mismatch_sign_networks => true
 allow_username_mismatch => true
 sign_authenticated => true
 use_esld => true
-domain => {[example.jp] = {[selector] = s20240923, [path] = /var/lib/rspamd/dkim/example.jp.s20240923.key}}
+domain => {[mail.example.jp] = {[selector] = s20240923, [path] = /var/lib/rspamd/dkim/mail.example.jp.s20240923.key}}
 use_domain => header
 allow_hdrfrom_mismatch => true
 
@@ -235,27 +241,63 @@ Now Rspamd will add DKIM keys to outgoing emails.
 FYI: The wizard created `/etc/rspamd/local.d/dkim_signing.conf`
 
 ```conf
-allow_username_mismatch = true;
-domain {
-    example.jp {
-        path = "/var/lib/rspamd/dkim/example.jp.s20240923.key";
-        selector = "s20240923";
-    }
-}
-sign_authenticated = true;
-use_esld = true;
 use_domain = "header";
 allow_hdrfrom_mismatch = true;
 allow_hdrfrom_mismatch_sign_networks = true;
+allow_username_mismatch = true;
+domain {
+    mail.example.jp {
+        selector = "s20240923";
+        path = "/var/lib/rspamd/dkim/mail.example.jp.s20240923.key";
+    }
+}
+sign_authenticated = true;
+use_esld = false;
 ```
 
 ### DNS record
 
-Add DKIM related records to your DNS records.
+Add DKIM related records to your DNS records. The key is shown in the wizard above.
 
 ```text
-s20240923._domainkey  IN  TXT  v=DKIM1; k=rsa; p=MIIBIjA(snip)
+s20240923._domainkey.mail  IN  TXT  v=DKIM1; k=rsa; p=MIIBIjA(snip)
 ```
 
 If you want to test DKIM signatures, add the "t=y" parameter to the DNS record. It means the key is still testing.  
 Remember to delete this parameter after you confirm that DKIM is working as expected.
+
+### Add another domain to sign
+
+Generate key pairs for the new domain `mail2.example.jp`
+
+```console
+sudo rspamadm dkim_keygen -s 's20240923' -d mail2.example.jp -k /var/lib/rspamd/dkim/mail2.example.jp.s20240923.key
+sudo chown -R _rspamd:_rspamd /var/lib/rspamd/dkim
+```
+
+Then it will save the private key to Rspam DKIM storage and shows the text for DNS record. Add DNS record and add a config for new domain in `/etc/rspamd/local.d/dkim_signing.conf`
+
+```conf
+use_domain = "header";
+allow_hdrfrom_mismatch = true;
+allow_hdrfrom_mismatch_sign_networks = true;
+allow_username_mismatch = true;
+domain {
+    mail.example.jp {
+        selector = "s20240923";
+        path = "/var/lib/rspamd/dkim/mail.example.jp.s20240923.key";
+    },
+    mail2.example.jp {
+        selector = "s20240923";
+        path = "/var/lib/rspamd/dkim/mail2.example.jp.s20240923.key";
+    }
+}
+sign_authenticated = true;
+use_esld = false;
+```
+
+Reload Rspamd and it should start signing for new domains.
+
+```console
+sudo systemctl reload rspamd
+```
