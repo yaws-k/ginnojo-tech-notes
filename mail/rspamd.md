@@ -1,6 +1,6 @@
 # Rspamd
 
-Rspamd is a spam filter that adds 'spam score' to each email.
+Rspamd is a spam filter that adds 'spam score' to each email. In addition, it can integrate ClamAV (antivirus) and DKIM signing.
 
 ## Install
 
@@ -125,19 +125,137 @@ sudo systemctl reload rspamd
 
 ## Integrate with ClamAV
 
-Integrate ClamAV(clamdscan) with Rspamd to check virus.  
+Integrate ClamAV(clamdscan) with Rspamd to reject virus.  
 Create `/etc/rspamd/local.d/antivirus.conf`
 
 ```conf
 clamav {
+  action = "reject";
+  message = '${SCANNER}: virus found: "${VIRUS}"';
   symbol = "CLAM_VIRUS";
   type = "clamav";
   servers = "/var/run/clamav/clamd.ctl";
 }
 ```
 
+- It automatically rejects virus detected emails
+- Rspamd log shows the message if any virus are found
+- No headers will be added if the mail is clean
+
 Reload Rspamd.
 
 ```console
 sudo systemctl reload rspamd
 ```
+
+### Test ClamAV integration
+
+EICAR test virus can be used for this test, but sending a virus mail is very difficult (that's what mail systems should be, though).  
+
+Install mutt (a text-based MUA) and send a virus mail from another server.  
+EICAR test virus is available at [the official download site](https://www.eicar.org/download-anti-malware-testfile/).
+
+```console
+wget -O eicar.com "https://www.eicar.org/download/eicar-com/(the latest url)"
+echo "EICAR test virus" | mutt -a eicar.com -s "Virus scanner test mail `date`" -- info@example.jp
+```
+
+## DKIM signing
+
+Rspamd checks DKIM for incoming emails by default. In addition, it can also sign outgoing emails.
+
+This setting is integrated to configwizard.
+
+```console
+sudo rspamadm configwizard
+```
+
+```console
+ ____                                     _
+ |  _ \  ___  _ __    __ _  _ __ ___    __| |
+ | |_) |/ __|| '_ \  / _` || '_ ` _ \  / _` |
+ |  _ < \__ \| |_) || (_| || | | | | || (_| |
+ |_| \_\|___/| .__/  \__,_||_| |_| |_| \__,_|
+             |_|
+
+Welcome to the configuration tool
+We use /etc/rspamd/rspamd.conf configuration file, writing results to /etc/rspamd
+Modules enabled: chartable, whitelist, once_received, force_actions, dkim, hfilter, rbl, phishing, greylist, trie, ratelimit, maillist, asn, history_redis, mid, bayes_expiry, multimap, antivirus, settings, metadata_exporter, milter_headers, emails, neural, mime_types, dkim_signing, arc, fuzzy_check, spf, regexp, replies, dmarc, forged_recipients
+Modules disabled (explicitly): rspamd_update, external_relay, mx_check, known_senders, bimi, spamtrap, p0f, gpt, aws_s3, http_headers, dcc  Modules disabled (unconfigured): external_services, spamassassin, ip_score, dynamic_conf, clickhouse, reputation, url_redirector, fuzzy_collect, maps_stats, metric_exporter, clustering, elastic
+Modules disabled (no Redis):
+Modules disabled (experimental):
+Modules disabled (failed):
+Do you wish to continue?[Y/n]: y
+Setup WebUI and controller worker:
+Do you want to setup dkim signing feature?[y/N]: y
+How would you like to set up DKIM signing?
+1. Use domain from mime from header for sign
+2. Use domain from SMTP envelope from for sign
+3. Use domain from authenticated user for sign
+4. Sign all mail from specific networks
+
+Enter your choice (1, 2, 3, 4) [default: 1]: 1
+Do you want to sign mail from authenticated users? [Y/n]: y
+Allow data mismatch, e.g. if mime from domain is not equal to authenticated user domain? [Y/n]: y
+Do you want to use effective domain (e.g. example.com instead of foo.example.com)? [Y/n]: y
+Enter output directory for the keys [default: /var/lib/rspamd/dkim/]:
+Enter domain to sign: example.jp
+Enter selector [default: dkim]: s20240923
+Do you want to create privkey /var/lib/rspamd/dkim/example.jp.s20240923.key[Y/n]: y
+You need to chown private key file to rspamd user!!
+To make dkim signing working, to place the following record in your DNS zone:
+v=DKIM1; k=rsa; p=MIIBIjA(snip)
+
+Do you wish to add another DKIM domain?[y/N]: N
+File: /etc/rspamd/local.d/dkim_signing.conf, changes list:
+allow_hdrfrom_mismatch_sign_networks => true
+allow_username_mismatch => true
+sign_authenticated => true
+use_esld => true
+domain => {[example.jp] = {[selector] = s20240923, [path] = /var/lib/rspamd/dkim/example.jp.s20240923.key}}
+use_domain => header
+allow_hdrfrom_mismatch => true
+
+Apply changes?[Y/n]: Y
+Create file /etc/rspamd/local.d/dkim_signing.conf
+1 changes applied, the wizard is finished now
+*** Please reload the Rspamd configuration ***
+```
+
+As the wizard said, change the owner of the key directory (it is currently owned by root).  
+And reload Rspamd.
+
+```console
+sudo chown -R _rspamd:_rspamd /var/lib/rspamd/dkim
+sudo systemctl reload rspamd
+```
+
+Now Rspamd will add DKIM keys to outgoing emails.
+
+FYI: The wizard created `/etc/rspamd/local.d/dkim_signing.conf`
+
+```conf
+allow_username_mismatch = true;
+domain {
+    example.jp {
+        path = "/var/lib/rspamd/dkim/example.jp.s20240923.key";
+        selector = "s20240923";
+    }
+}
+sign_authenticated = true;
+use_esld = true;
+use_domain = "header";
+allow_hdrfrom_mismatch = true;
+allow_hdrfrom_mismatch_sign_networks = true;
+```
+
+### DNS record
+
+Add DKIM related records to your DNS records.
+
+```text
+s20240923._domainkey  IN  TXT  v=DKIM1; k=rsa; p=MIIBIjA(snip)
+```
+
+If you want to test DKIM signatures, add the "t=y" parameter to the DNS record. It means the key is still testing.  
+Remember to delete this parameter after you confirm that DKIM is working as expected.
