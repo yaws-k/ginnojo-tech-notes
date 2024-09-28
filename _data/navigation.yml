@@ -47,10 +47,10 @@ docs:
       url: /mail/smtpd_restrictions
     - title: 'ClamAV'
       url: /mail/clamav
-    - title: 'DNS records'
-      url: /mail/dns_records
     - title: 'Rspamd'
       url: /mail/rspamd
+    - title: 'DNS records'
+      url: /mail/dns_records
     - title: 'Dovecot Sieve'
       url: /mail/dovecot_sieve
     - title: 'Mail server migration'
