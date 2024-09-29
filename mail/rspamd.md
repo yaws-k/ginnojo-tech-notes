@@ -17,6 +17,18 @@ sudo apt update
 sudo apt --no-install-recommends install rspamd
 ```
 
+## DNS Resolver configuration
+
+Knot-Resolver should be already installed on this server, so let Rspmad use that as a primary DNS resolver. Create `/etc/rspamd/local.d/options.inc` and add DNS lines.
+
+```conf
+dns {
+  nameserver = "master-slave:127.0.0.1,8.8.8.8";
+}
+```
+
+- `master-slace` always choose the first DNS server (127.0.0.1) for querying. The second one will be used only when the primary is down. Put a public DNS or your provider's DNS resolver as a backup.
+
 ## Postfix integration
 
 Rspamd can communicate Postfix as a milter. Let Postfix send emails to Rspamd by adding milter lines to `/etc/postfix/main.cf`.

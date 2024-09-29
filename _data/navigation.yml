@@ -33,8 +33,8 @@ docs:
       url: /web/sso_nginx_and_vouch_proxy
   - title: 'DNS'
     children:
-    - title: 'Knot DNS'
-      url: /dns/knot_dns
+    - title: 'Knot Resolver'
+      url: /dns/knot_resolver
   - title: 'Mail'
     children:
     - title: 'Postfix and Dovecot'
