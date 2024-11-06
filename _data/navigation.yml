@@ -27,8 +27,6 @@ docs:
       url: /web/nginx
     - title: "Let's Enctypt"
       url: /web/lets_encrypt
-    - title: 'Concrete CMS'
-      url: /web/concrete_cms
     - title: 'SSO with Nginx and Vouch Proxy'
       url: /web/sso_nginx_and_vouch_proxy
   - title: 'DNS'
