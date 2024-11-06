@@ -1,14 +1,14 @@
 # SSO with Nginx and Vouch Proxy
 
 [Vouch Proxy](https://github.com/vouch/vouch-proxy) works as an authentication gateway for Nginx.  
-An easy but reliable way to add the authentication mechanism to any web applications.
+This provides an easy and reliable way to add the authentication mechanism to any web application.
 
 ## System requirement
 
 - Nginx with "auth_request" module  
   Any Nginx flavor of Debian package should have this module.
 - Quay.io  
-  Vouch Proxy is not available as a Debian package, but it provides the docker image through Quay.io.
+  Vouch Proxy is unavailable as a Debian package, but it provides the docker image through Quay.io.
 
 ## The case
 
@@ -22,7 +22,7 @@ An easy but reliable way to add the authentication mechanism to any web applicat
 
 ### Nginx as a reverse proxy for Vouch Proxy
 
-Make a site configuration in `/etc/nginx/sites-available/` and enable it. This will work as a reverse proxy to pass the connection to Vouch Proxy.
+Make a site configuration in `/etc/nginx/sites-available/` and enable it. Nginx works as a reverse proxy to pass the connection to Vouch Proxy.
 
 ```conf
 server {
@@ -77,22 +77,26 @@ oauth:
   # endpoints are set from https://godoc.org/golang.org/x/oauth2/google
 ```
 
-### Start Vouch Proxy
+### Download latest Vouch Proxy image
 
 Pull the docker image from Quay.io and run it with the config file.
 
 ```bash
-docker run -d -p 9090:9090 --name vouch-proxy -v /etc/vouch/config:/config quay.io/vouch/vouch-proxy
+docker run -d \
+-p 9090:9090 \
+--name vouch-proxy \
+-v /etc/vouch/config:/config \
+quay.io/vouch/vouch-proxy
 ```
 
 - `-d` to use detached mode (run in the background)
-- `-p 9090:9090` to connnect port 9090 on the server to the docker image port 9090. If you want to use port 1090 on the server, the option will be `-p 1090:9090`
+- `-p 9090:9090` to connect port 9090 on the server to the docker image port 9090. If you want to use port 1090 on the server, the option will be `-p 1090:9090`
 - `--name vouch-proxy` to use a short name for this image
 - `-v /etc/vouch/config:/config` to let the image use `/etc/vouch/config` host directory as `/config` directory
 
 ### Stop and Start the image
 
-Once the image is started with the command above, the image can be handled with the name `vouch-proxy`
+The short name `vouch-proxy` should work now.
 
 ```bash
 docker stop vouch-proxy
@@ -103,7 +107,7 @@ You need to restart the image to reload config.yml file.
 
 ### Remove image
 
-When upgrading, remove the image to get the latest image.
+When upgrading, remove the image to get the latest one.
 
 ```bash
 docker rm vouch-proxy
@@ -193,7 +197,7 @@ server {
 }
 ```
 
-- User information is available as http header. Use the following codes to get them from the web app.
+- User information is available as an HTTP header. Use the following codes to get them from the web app.
   - PHP: `$_SERVER['REMOTE_USER']`
   - Ruby on Rails: `request.env["HTTP_REMOTE_USER"]`
 
@@ -209,9 +213,9 @@ sudo systemctl reload nginx
 
 ### Logs for troubleshooting
 
-Nginx access logs are available at `/var/log/nginx`
+Nginx access log is available at `/var/log/nginx`
 
-Vouch Proxy logs are in the image.
+Vouch Proxy log is in the image.
 
 ```bash
 docker logs vouch-proxy
@@ -245,10 +249,10 @@ vouch:
 ```
 
 If the users' mail addresses have a variety of domains, you have to list all of them to permit access.  
-This can be used to restrict the users with the specific mail domains.
+This style works when you need to restrict users based on mail domains.
 
-Instead of listing the domains, `allowAllUsers: true` to accept anybody who is allowrd on the IdP side.  
-Even with this style, you still need to specify which domain to be used for the cookies. This will be the domain to be protected, i.e., callback and application domain.
+Instead of listing the domains, `allowAllUsers: true` is an option to accept anybody who is authenticated on the IdP side.  
+Even with this style, you still need to specify which domain to use for the cookies. This will be the domain to be protected, i.e., callback and application domain.
 
 ```yaml
 vouch:
@@ -260,7 +264,7 @@ vouch:
 ### Less frequent authentication
 
 If you feel there are too frequent redirections to the OIDC provider, you can extend the expiration of jwt.  
-Extend `vouch.jwt.maxAge` as well as `vouch.cookie.maxAge`.  
+Extend `vouch.jwt.maxAge` and `vouch.cookie.maxAge`.  
 In my case, it's 900 minutes (15 hours) to aim for the "once a day on the business hours".
 
 ```yaml
@@ -273,7 +277,7 @@ vouch:
 
 ### AzureAD config sample
 
-To use AzureAD, you need to ask AAD admins to register the web application and receive client_id and client_secret.
+To use AzureAD, ask AAD admins to register the web application and receive client_id and client_secret.
 
 ```yaml
 # Vouch Proxy configuration
