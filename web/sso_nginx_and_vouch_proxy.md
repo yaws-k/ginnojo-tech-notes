@@ -237,7 +237,7 @@ For example,
 
 - Application: app.example.com
 - Vouch Proxy: vouch.example.com
-- Users' mail addresses: name@mail.example.jp
+- Users' mail addresses domain: `@mail.example.jp`
 
 `config.yml` should be
 
