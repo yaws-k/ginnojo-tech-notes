@@ -1,6 +1,6 @@
 main:
   - title: 'Home'
-    url: https://ginnojo.tech/
+    url: https://server.ginnojo.tech/
 
 docs:
   - title: 'Base system'
