@@ -29,7 +29,7 @@ github_username:  yaws-k
 
 # Build settings
 #theme: minima
-theme: 'mmistakes/minimal-mistakes'
+theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: 'air'
 enable_copy_code_button: true
 breadcrumbs: true
