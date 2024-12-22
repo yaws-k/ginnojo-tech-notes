@@ -1,6 +1,6 @@
 # Redis
 
-Redis is a key-value database. Some applications, such as Rspamd, require Redis for data storage (this is explained in the main section of this site).
+Redis is a key-value database. Some applications, such as Rspamd, require Redis for data storage.
 
 ## Install
 
@@ -33,6 +33,8 @@ Create a config template to include.
 sudo cp /etc/redis/redis.conf /etc/redis/redis-template.conf
 ```
 
+Then update the template.
+
 Set `port 0` to stop listening TCP socket as default.
 
 ```conf
@@ -41,7 +43,7 @@ Set `port 0` to stop listening TCP socket as default.
 port 0
 ```
 
-Create a new config `/etc/redis/redis-6378-new.conf` for the new instance. (Use a better name in the actual situation.)
+Create a new config `/etc/redis/redis-new.conf` for the new instance. (Use a better name in the actual situation.)
 
 ```conf
 # Incluede template file as default
@@ -76,7 +78,7 @@ Update the lines as below.
 
 ```conf
 Description=Advanced key-value store on port 6378
-ExecStart=/usr/bin/redis-server /etc/redis/redis-new.conf
+ExecStart=/usr/bin/redis-server /etc/redis/redis-new.conf --supervised systemd --daemonize no
 PIDFile=/var/run/redis/redis-server-new.pid
 Alias=redis-new.service
 ```
@@ -85,5 +87,6 @@ Enable and start the service.
 
 ```console
 sudo systemctl enable redis-server-new
+sudo systemctl daemon-reload
 sudo systemctl start redis-server-new
 ```

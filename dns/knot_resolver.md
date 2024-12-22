@@ -28,7 +28,7 @@ Remember to enable it, or it won't start automatically after the next system sta
 
 ```console
 sudo systemctl start kresd@1
-sudo systemctl enable kred@1
+sudo systemctl enable kresd@1
 ```
 
 Check if Knot-Resolver returns the same answer as the default (your service provider's) DNS.

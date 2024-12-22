@@ -94,10 +94,6 @@ Do you have any username set for your Redis (ACL SETUSER and Redis 6.0+)[y/N]: N
 Do you have any password set for your Redis?[y/N]: N
 Do you have any specific database for your Redis?[y/N]: N
 Do you want to setup dkim signing feature?[y/N]: N
-cannot connect to redis /run/redis/redis-server-rspamd.sock (port 0): No such file or directory
-cannot connect to redis (OS error): No such file or directory
-cannot create redis connection: bad arguments for redis request
-Cannot connect to Redis server
 File: /etc/rspamd/local.d/redis.conf, changes list:
 read_servers => localhost:6378
 write_servers => localhost:6378

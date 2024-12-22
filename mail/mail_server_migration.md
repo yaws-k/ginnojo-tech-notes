@@ -8,7 +8,7 @@ Prerequisites (in this article's case)
 2. SSH access as root is allowed in the new server
 3. Email users are defined as virtual users on /etc/dovecot/users
 
-This article explains only about doveadm commands. Many steps to consider the mail server migration are too much to document here, so please find some other sites...
+This article explains only about doveadm commands. Many steps to consider for the mail server migration are too much to document here, so please find some other sites...
 
 ## Preparation
 
@@ -42,7 +42,7 @@ Steps
 
 ### Initial migrate (copy)
 
-The main process of data migration. `doveadm` command will copy all emails in all directories (including empty directories0) and Sieve scripts.  
+The main process of data migration. `doveadm` command will copy all emails in all directories (including empty directories) and Sieve scripts.  
 Be aware that any existing data on the new server will be deleted during this process.
 
 ```console

@@ -157,7 +157,7 @@ You can add any locales as you want. The default locale can also be anything, bu
 sudo apt install vim
 ```
 
-Configure `/etc/vin/vimrc` to enable options.
+Configure `/etc/vim/vimrc` to enable options.
 
 ```vim
 " Vim5 and later versions support syntax highlighting. Uncommenting the next
