@@ -27,8 +27,8 @@ docs:
       url: /web/nginx
     - title: "Let's Enctypt"
       url: /web/lets_encrypt
-    - title: 'Roundcube'
-      url: /web/roundcube
+    - title: 'Concrete CMS'
+      url: /web/concrete_cms
     - title: 'SSO with Nginx and Vouch Proxy'
       url: /web/sso_nginx_and_vouch_proxy
   - title: 'DNS'
@@ -53,5 +53,7 @@ docs:
       url: /mail/dns_records
     - title: 'Dovecot Sieve'
       url: /mail/dovecot_sieve
+    - title: 'Roundcube'
+      url: /mail/roundcube
     - title: 'Mail server migration'
       url: /mail/mail_server_migration
