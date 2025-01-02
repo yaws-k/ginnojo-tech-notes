@@ -44,7 +44,7 @@ sudo mariadb
 
 Execute SQL.
 
-```console
+```SQL
 CREATE DATABASE roundcubemail CHARACTER SET utf8 COLLATE utf8_general_ci;
 GRANT ALL PRIVILEGES ON roundcubemail.* TO username@localhost IDENTIFIED BY 'password';
 FLUSH PRIVILEGES;
