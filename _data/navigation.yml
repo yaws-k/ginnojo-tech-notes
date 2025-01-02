@@ -27,6 +27,8 @@ docs:
       url: /web/nginx
     - title: "Let's Enctypt"
       url: /web/lets_encrypt
+    - title: 'Roundcube'
+      url: /web/roundcube
     - title: 'SSO with Nginx and Vouch Proxy'
       url: /web/sso_nginx_and_vouch_proxy
   - title: 'DNS'
