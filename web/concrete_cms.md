@@ -37,6 +37,7 @@ sudo mariadb
 ```sql
 CREATE DATABASE concrete_cms;
 GRANT ALL PRIVILEGES ON concrete_cms.* TO 'concrete'@'localhost' IDENTIFIED BY 'password';
+FLUSH PRIVILEGES;
 ```
 
 ## Nginx configuration
