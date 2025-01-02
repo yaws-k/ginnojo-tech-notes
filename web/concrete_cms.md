@@ -34,7 +34,7 @@ sudo chown -R www-data:www-data /var/www/concrete
 sudo mariadb
 ```
 
-```SQL
+```sql
 CREATE DATABASE concrete_cms;
 GRANT ALL PRIVILEGES ON concrete_cms.* TO 'concrete'@'localhost' IDENTIFIED BY 'password';
 ```
