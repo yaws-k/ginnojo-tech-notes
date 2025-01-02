@@ -38,7 +38,7 @@ sudo chown -R www-data:www-data /var/www/roundcubemail
 
 As the install guide explains, set up a database and a user on MariaDB.
 
-```bash
+```console
 sudo mariadb
 ```
 
