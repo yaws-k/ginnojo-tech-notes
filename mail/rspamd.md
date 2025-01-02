@@ -309,3 +309,19 @@ Reload Rspamd and it should start signing for new domains.
 ```console
 sudo systemctl reload rspamd
 ```
+
+## Web UI
+
+Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:11334 to access from the internet.
+
+According to the [FAQ](https://rspamd.com/doc/faq.html#how-to-use-the-webui-behind-a-proxy-server), add following lines to nginx configuration.
+
+```nginx
+location /rspamd/ {
+        proxy_pass http://localhost:11334/;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For "";
+}
+```

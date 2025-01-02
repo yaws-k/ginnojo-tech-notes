@@ -197,3 +197,24 @@ It will add bunch of ip addresses to nftables. You can check these blocklist wit
 ```console
 # nft list ruleset
 ```
+
+### Create account to access Console
+
+To use the Web UI, create a CrowdSec account.  
+[https://app.crowdsec.net/signup](https://app.crowdsec.net/signup?)
+
+After logging into the console, you can get your key to Enroll the server.
+
+```console
+sudo cscli console enroll -e context [enrollment key]
+```
+
+Then follow the [official manual](https://doc.crowdsec.net/u/getting_started/post_installation/console) to accept enrollment.  
+After restarting the CroudSec service, it will sync with console.
+
+```console
+sudo systemctl restart crowdsec
+```
+
+Now the console will show statistics of security alerts.  
+Turn on notifications as you wish.
