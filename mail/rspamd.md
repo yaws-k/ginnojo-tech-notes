@@ -310,6 +310,67 @@ Reload Rspamd and it should start signing for new domains.
 sudo systemctl reload rspamd
 ```
 
+## Enable Statistics (Bayesian filter)
+
+Statistics is enabled by default, but it needs to learn before working.  
+Create `/etc/rspamd/local.d/classifier-bayes.conf`
+
+```conf
+# Configure Bayes classifier to use Redis
+servers = "127.0.0.1:6378";
+backend = "redis"; # Same as statistic.conf
+
+# Auto-learning
+autolearn = true;
+
+# Token expiration
+new_schema = true; # Same as statistic.conf
+expire = 8640000;
+```
+
+- Explicitly configuring some lines the same as defaults to be sure about the requirements
+
+At first the result of statistics may affect too much to the result. Reduce the score to see if it works as expected.  
+Create `/etc/rspamd/local.d/groups.conf`
+
+```conf
+group  "statistics" {
+    symbols = {
+        BAYES_SPAM {
+            weight = 3.4;
+        }
+        BAYES_HAM {
+            weight = -2;
+        }
+    }
+}
+```
+
+After reloading, it should start learning and eventually you'll find BAYES_SPAM and BAYES_HAM headers.
+
+```console
+sudo systemctl reload rspamd
+```
+
+If you're in a hurry, you can learn spam/ham from local eml files.
+
+```console
+sudo rspamc learn_spam spam/*
+sudo rspamc learn_ham ham/*
+```
+
+You can check the current learning status with rspamc command.
+
+```console
+$ rspamc stat
+
+Results for command: stat (0.288 seconds)
+(snip)
+Statfile: BAYES_SPAM type: redis; length: 0; free blocks: 0; total blocks: 0; free: 0.00%; learned: 376; users: 1; languages: 0
+Statfile: BAYES_HAM type: redis; length: 0; free blocks: 0; total blocks: 0; free: 0.00%; learned: 227; users: 1; languages: 0
+Total learns: 603
+```
+
 ## Web UI
 
 Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:11334 to access from the internet.
