@@ -2,14 +2,12 @@
 ---
 # SQLite3
 
-{% include version_warning.html %}
-
 SQLite3 is a small database for light usage.
 
 ## Install
 
 ```console
-sudo apt install sqlite3 libsqlite3-dev
+sudo apt install sqlite3
 ```
 
 No configuration is required.
