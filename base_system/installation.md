@@ -99,8 +99,7 @@ Choose the country nearest to the server location.
 2. Debian archive mirror country  
    You must consider where the physical server is located because it should access the nearest Debian mirrors.
 3. Debian archive mirror  
-   There will be a list of Debian mirrors in the country you choose. Choose the one that is suitable to your network environment.  
-   (In Japan, `ftp.jp.debian.org` is the recommended CDN mirror unless you're in the same network as one of the listed mirrors.)
+   There will be a list of Debian mirrors in the country you choose. Choose the one that is suitable to your network environment.
 4. HTTP proxy  
    This will be required only if you're in the restricted network.
 
@@ -127,3 +126,12 @@ The "server" should have only one OS (Debian), so GRUB boot loader should be ins
 ## Finish the installation
 
 Installation complete. Continue to finish the installation and remove the install media before rebooting.
+
+## Modernize apt-line
+
+A new format (deb822) apt-line is recommended since Debian 13, but not installed by default.  
+Login as `root` and migrate with the following command.
+
+```console
+sudo apt modernize-sources
+```
