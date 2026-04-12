@@ -1,6 +1,11 @@
-# Ginnojo Tech Doc
+---
+---
+# Ginnojo Tech Notes
 
-Here are how-to documents to build up a multi-purpose server from scratch. Please find the article from the menu at the top right.
+A collection of technical notes and guides on setting up a multi-purpose server (web, database, mail, and various software applications) using Debian GNU/Linux.
 
-Everything is set up on a server because this is not for heavy-duty, and one of the purposes is to learn how systems actually work.
-This kind of knowledge will help you choose and make use of cloud services to realize what you want.
+Everything is set up on the same server for simplicity and ease of management. For heavy-duty production environments, consider using separate servers for each service.
+
+## Debian versions
+
+The guides are based on Debian 13 (Trixie), released in August 2025.
