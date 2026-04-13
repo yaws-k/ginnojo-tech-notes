@@ -12,24 +12,28 @@ The package 'redis' will install required dependencies.
 sudo apt install redis
 ```
 
-The Redis log `/var/log/redis/redis-server.log` will show the following warning if the OS overcommit config is not changed.
+Now a Redis instans is running and listening on port 6379.
+
+### Memory overcommit
+
+The Redis log `/var/log/redis/redis-server.log` will show the following warning.
 
 > \# WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see <https://github.com/jemalloc/jemalloc/issues/1328>. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
 
 If the server is mainly for Redis, change the setting accordingly.
 
-- In my case, I ignored the warning because the Redis workload is very low and the server provides multiple services.
+- In my case, I ignored the warning because the Redis workload is very low and the server provides multiple services (Other DB, Web, Mail...).
 - For more details, check [the official Redis documentation](https://redis.io/docs/latest/operate/oss_and_stack/management/admin/).
 
 In case you want to change the setting, follow the instructions below.
 
-`/etc/sysctl.conf` does not exist by default, so create a config file `/etc/sysctl.d/redis.conf` and add the following line.
+`/etc/sysctl.conf` does not exist on Debian 13, so create a config file `/etc/sysctl.d/redis.conf` and add the following line.
 
 ```conf
 vm.overcommit_memory = 1
 ```
 
-Then change the setting immediately.
+Activate the setting immediately.
 
 ```console
 sudo sysctl -p /etc/sysctl.d/redis.conf
@@ -37,20 +41,21 @@ sudo sysctl -p /etc/sysctl.d/redis.conf
 
 ## Multiple instances
 
-Setting up a dedicated Redis instance for each service or application is recommended.  
-By default, there is one `redis-server.service` daemon listening port 6379, so copy configuration files to start another when needed.
+Instead of creating the database with RDB, run a dedicated Redis instance for each service or application.  
+To run multiple instances, stop the default `redis-server.service` and run dedicated ones based on the default configuration.
 
-### Config file
+### Stop and disable the default instance
 
-Create a config template to include.
+Stop the default instance and use the default configuration as a template.
 
 ```console
-sudo cp /etc/redis/redis.conf /etc/redis/redis-template.conf
+sudo systemctl stop redis-server
+sudo systemctl disable redis-server
 ```
 
-Then update the template.
+### Update configuration to use is as a template
 
-Set `port 0` to stop listening TCP socket as default.
+Update `/etc/redis/redis.conf` to stop listening on TCP socket as default.
 
 ```conf
 # Accept connections on the specified port, default is 6379 (IANA #815344).
@@ -58,11 +63,13 @@ Set `port 0` to stop listening TCP socket as default.
 port 0
 ```
 
+### Create a new configuration for each instance
+
 Create a new config, e.g. for RSpamd, `/etc/redis/redis-rspamd.conf` for the new instance.
 
 ```conf
 # Include template file as default
-include /etc/redis/redis-template.conf
+include /etc/redis/redis.conf
 
 pidfile /run/redis/redis-server-rspamd.pid
 logfile /var/log/redis/redis-server-rspamd.log
@@ -73,10 +80,10 @@ port 6380
 dbfilename dump-rspamd.rdb
 ```
 
-Change ownership of newly created config files to `redis:redis`.
+Change ownership of newly created config file to `redis:redis`.
 
 ```console
-sudo chown redis:redis /etc/redis/*
+sudo chown redis:redis /etc/redis/redis-rspamd.conf
 ```
 
 ### systemd config
