@@ -135,3 +135,26 @@ Login as `root` and migrate with the following command.
 ```console
 sudo apt modernize-sources
 ```
+
+## Update fstab
+
+Update `/etc/fstab`.
+
+- Add `noatime` to XFS mount options for performance (because this partition is dedicated to MongoDB)
+- Remove `/dev/sr0` cdrom mount point (used only for the installation)
+
+```config
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/vda1 during installation
+UUID=(snip)     /               ext4    errors=remount-ro 0       1
+# /var/xfs was on /dev/vda2 during installation
+UUID=(snip)     /var/xfs        xfs     defaults,noatime  0       0
+# swap was on /dev/vda3 during installation
+UUID=(snip)     none            swap    sw                0       0
+```
+
+Restart the server to apply the changes.
+
+```console
+sudo reboot
+```
