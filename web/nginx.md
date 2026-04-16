@@ -2,8 +2,6 @@
 ---
 # nginx
 
-{% include version_warning.html %}
-
 ## Install
 
 "nginx" package has some variations according to the bundled modules. Choose either one from nginx-light, nginx-core, nginx-full, nginx-extras. In my case, the lightest nginx-light is enough.
@@ -12,17 +10,16 @@
 sudo apt install nginx-light ssl-cert
 ```
 
-Open HTTP(S) ports
+Open HTTP port for Nginx.
 
 ```console
 sudo firewall-cmd --add-service=http --permanent
-sudo firewall-cmd --add-service=https --permanent
 sudo firewall-cmd --reload
 ```
 
 ## Gzip
 
-Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.
+Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.  
 NOTE: Do not turn on this compression with SSL/TLS if you care about BREACH attacks. For more details, see the [gzip module explanation](https://nginx.org/en/docs/http/ngx_http_gzip_module.html).
 
 ### Global configuration
@@ -71,8 +68,7 @@ Include this snippet in the server section.
 
 ```nginx
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen ...(snip)
 
         include snippets/gzip.conf;
         (snip)
@@ -81,9 +77,9 @@ server {
 
 ## Site configuration
 
-nginx stores website configuration files in `/etc/nginx/sites-available`. Add a symlink to that config file in `/etc/nginx/sites-enabled` to enable a site. (The same as Apache2.)
+nginx stores website configuration files in `/etc/nginx/sites-available`. Add a symlink to those config files in `/etc/nginx/sites-enabled` to enable a site. (The same as Apache2.)
 
-For more details about each configuration line, please refer to [official manuals](https://nginx.org/en/docs/http/ngx_http_core_module.html).
+For more details about each configuration line, please refer to the [official manual for ngx_http_core_module](https://nginx.org/en/docs/http/ngx_http_core_module.html).
 
 ### The simplest example
 
@@ -93,7 +89,7 @@ The simplest example:
 - An HTTP site (non-SSL/TLS)
 - Providing static files in `/var/www/html`
 - Listening both IPv4 and IPv6
-- Logs in `/var/log/nginx/exmaple-jp-*`
+- Logs in `/var/log/nginx/example-jp-*`
 
 ```nginx
 server {
@@ -125,12 +121,12 @@ sudo systemctl reload nginx
 ### Enable PHP
 
 - Add `index.php` as an index file
-- PHP fpm is listening unix socket at `/run/php/php-fpm.sock`
+- PHP fpm is listening unix socket at `/run/php/php-fpm.sock`  
+  (It should be set up when installing php-fpm package.)
 
 Prerequisites
 
 - PHP and fpm have to be installed
-- The fpm automatically makes an unix socket to listen to
 
 ```nginx
 server {
@@ -156,24 +152,37 @@ server {
                 # Include PHP snippet
                 include snippets/fastcgi-php.conf;
 
-                # With php-fpm (or other unix sockets)
+                # Specify php-fpm socket
                 fastcgi_pass unix:/run/php/php-fpm.sock;
         }
 }
 ```
 
-### Enable HTTPS (with http2)
+### HTTPS server (with HTTP/2)
 
-- Use "snakeoil" testing certificate for SSL/TLS
+Open HTTPS port for Nginx.
+
+```console
+sudo firewall-cmd --add-service=https --permanent
+sudo firewall-cmd --reload
+```
+
+Use "snakeoil" testing certificate for SSL/TLS
 
 ```nginx
 server {
-        # Add "http2" and change the port from 80 to 443
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        # Change the port from 80 to 443
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        # Enable http2
+        http2 on;
 
         # Include snakeoil certificate snippet
         include snippets/snakeoil.conf;
+
+        # Add TLSv1.2 if you need to support old browsers.
+        ssl_protocols TLSv1.3;
 
         server_name example.jp;
 
@@ -195,11 +204,63 @@ server {
 }
 ```
 
-The next step is getting a proper certificate. This is explained in the "Let's Encrypt part.
+Using the proper certificate is explained in the "Let's Encrypt part. The "snakeoil" certificate is only for testing and will cause browser warnings.
+
+### Enable HTTP/3 (QUIC)
+
+Open HTTP/3 port for Nginx.
+
+```console
+sudo firewall-cmd --add-service=http3 --permanent
+sudo firewall-cmd --reload
+```
+
+Enable and tell browsers to use HTTP/3 (QUIC) if supported.
+
+```nginx
+server {
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        # Add HTTP/3 (QUIC) listener
+        listen 443 quic reuseport;
+        listen [::]:443 quic reuseport;
+
+        http2 on;
+        # Enable http3
+        http3 on;
+
+        # Tell browsers to use HTTP/3 (QUIC) if supported
+        add_header Alt-Svc 'h3=":443"; ma=86400';
+
+        # Include snakeoil certificate snippet
+        include snippets/snakeoil.conf;
+
+        ssl_protocols TLSv1.3;
+
+        server_name example.jp;
+
+        root /var/www/html;
+
+        index index.html index.php;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        access_log /var/log/nginx/example.jp-access.log;
+        error_log /var/log/nginx/example.jp-error.log;
+
+        location ~ \.php($|/) {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
+}
+```
 
 ### Redirect HTTP to HTTPS
 
-- Redirect all access to `http://example.jp/`(non-SSL/TLS) to `https://example.jp/`(SSL/TLS)
+- Redirect all access to `http://example.jp/` to `https://example.jp/`
 
 ```nginx
 # Redirect all HTTP (port 80) access to HTTPS (port 443)
@@ -207,14 +268,25 @@ server {
         listen 80;
         listen [::]:80;
         server_name example.jp;
+        # 301 = Moved Permanently
         return 301 https://$host$request_uri;
 }
 
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        listen 443 quic reuseport;
+        listen [::]:443 quic reuseport;
+
+        http2 on;
+        http3 on;
+
+        add_header Alt-Svc 'h3=":443"; ma=86400';
 
         include snippets/snakeoil.conf;
+
+        ssl_protocols TLSv1.3;
 
         server_name example.jp;
 

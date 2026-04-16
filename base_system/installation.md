@@ -99,7 +99,8 @@ Choose the country nearest to the server location.
 2. Debian archive mirror country  
    You must consider where the physical server is located because it should access the nearest Debian mirrors.
 3. Debian archive mirror  
-   There will be a list of Debian mirrors in the country you choose. Choose the one that is suitable to your network environment.
+   There will be a list of Debian mirrors in the country you choose. Choose the one that is suitable to your network environment.  
+   If you don't know which one to choose, select the first `deb.debian.org` mirror.
 4. HTTP proxy  
    This will be required only if you're in the restricted network.
 
