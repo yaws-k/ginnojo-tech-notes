@@ -77,7 +77,14 @@ logfile /var/log/redis/redis-server-rspamd.log
 # Specify TCP port
 port 6380
 
+# Specify database dump file name
 dbfilename dump-rspamd.rdb
+
+# Limit memory usage
+# - Max memory depends on the data and server memory size
+# - Policy depends on the application (check the official documentation)
+maxmemory 500MB
+maxmemory-policy volatile-ttl
 ```
 
 Change ownership of newly created config file to `redis:redis`.

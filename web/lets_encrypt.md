@@ -2,41 +2,11 @@
 ---
 # Let's Encrypt
 
-{% include version_warning.html %}
+[Let's Encrypt](https://letsencrypt.org/) privides free TLS certificates. It also provides the official client [Certbot](https://certbot.eff.org/) to create, renew, and revoke certificates.
 
-[Let's Encrypt](https://letsencrypt.org/) privides free SSL/TLS certificates. It also provides the official client "Certbot" to create, renew, and revoke certificates.
+This article explains the simplest and recommended way, [Certbot snap app](https://eff-certbot.readthedocs.io/en/stable/install.html#snap-recommended) and [webroot](https://eff-certbot.readthedocs.io/en/stable/using.html#webroot) to mange certificates.
 
-There are several ways to set up Certbot and plugins.
-
-(1) Certbot only (snap)
-If you don't need any plugins, installing Certbot with snap is the easiest way.  
-In most cases "[webroot](https://eff-certbot.readthedocs.io/en/stable/using.html#webroot)" should work.
-
-(2) Certbot and plugins that are available as snap apps (snap)
-If you need DNS challenges and are using major DNS services (for example, Route53), you can use Certbot and plugins, both provided as snap apps.
-Or, the required plugins are available as snap apps; you can install everything through the snap.
-DNS challenges are required when you need a wildcard certificate or the web server is in an intranet behind the firewall.
-
-(3) Certbot and third-party plugins that aren't available as snap app
-If any required plugins are unavailable as snap apps, you need to install Certbot and plugins through Python pip. How to is explained in the [official explanation](https://certbot.eff.org/).
-
-I used to use a wildcard certificate with Gandi LiveDNS (which requires the most complicated method), but with some tweaks with Nginx, I could manage certificates with Certbot only.
-
-## Install snapd
-
-See [snap official site Debian page](https://snapcraft.io/docs/installing-snap-on-debian) for more details.
-
-Install snapd to install snap apps.
-
-```console
-sudo apt install snapd
-```
-
-Log out and log in again, and install the latest snapd.
-
-```console
-sudo snap install snapd
-```
+- There are options like [DNS plugins](https://eff-certbot.readthedocs.io/en/stable/using.html#dns-plugins) or [Certbot through Python pip](https://eff-certbot.readthedocs.io/en/stable/install.html#alternative-2-pip) for third-party plugins, but they are not recommended.
 
 ## Install Certbot
 
@@ -46,10 +16,10 @@ Don't forget to add `--classic` option.
 sudo snap install --classic certbot
 ```
 
-Add certbot command to `/usr/bin/certbot`
+Add certbot symlink to enable `sudo certbot` command.
 
 ```console
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo ln -s /snap/bin/certbot /usr/local/bin/certbot
 ```
 
 "webroot" doesn't require any plugins. Certbot itself is enough.
@@ -64,8 +34,7 @@ For Let's Encrypt validator, make a dedicated directory.
 sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 ```
 
-Add an exception to the current HTTP access redirect.  
-This configuration will be used in multiple sites, so make it a snippet.
+Make a snippet for certbot configuration. This will be included in the server block for HTTP access from Let's Encrypt server.
 
 `/etc/nginx/snippets/certbot.conf`
 
@@ -97,8 +66,9 @@ server {
 }
 
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
 
         (snip)
 }
@@ -111,7 +81,9 @@ With this,
 
 ## Issue a certificate
 
-Request a certificate. Certbot will ask for your email address and agreement confirmation to generate the account information.
+Request a certificate.
+
+- Certbot will ask for your email address and agreement confirmation to generate the account information.
 
 ```console
 $ sudo certbot certonly --webroot -w /var/www/certbot/ -d example.jp

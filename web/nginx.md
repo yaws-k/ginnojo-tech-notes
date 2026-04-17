@@ -221,12 +221,12 @@ Enable and tell browsers to use HTTP/3 (QUIC) if supported.
 server {
         listen 443 ssl;
         listen [::]:443 ssl;
+        http2 on;
 
         # Add HTTP/3 (QUIC) listener
         listen 443 quic reuseport;
         listen [::]:443 quic reuseport;
 
-        http2 on;
         # Enable http3
         http3 on;
 
@@ -275,11 +275,10 @@ server {
 server {
         listen 443 ssl;
         listen [::]:443 ssl;
+        http2 on;
 
         listen 443 quic reuseport;
         listen [::]:443 quic reuseport;
-
-        http2 on;
         http3 on;
 
         add_header Alt-Svc 'h3=":443"; ma=86400';

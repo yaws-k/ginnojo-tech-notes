@@ -32,6 +32,21 @@ sudo apt update
 sudo apt upgrade
 ```
 
+## Snap
+
+Snap is a package management system other than apt. Some applications, such as Certbot, are available through snap. Install and update snapd according to the [official howto for Debian](https://snapcraft.io/docs/tutorials/install-the-daemon/debian/).
+
+```console
+sudo apt install snapd
+```
+
+Log out and Log in again tp activate the new path, and install the latest snapd with core snap.
+
+```console
+sudo snap install snapd
+sudo snap install core
+```
+
 ## Basic utilities
 
 Install basic utilities for server management.
