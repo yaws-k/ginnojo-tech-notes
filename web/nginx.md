@@ -19,8 +19,10 @@ sudo firewall-cmd --reload
 
 ## Gzip
 
-Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.  
-NOTE: Do not turn on this compression with SSL/TLS if you care about BREACH attacks. For more details, see the [gzip module explanation](https://nginx.org/en/docs/http/ngx_http_gzip_module.html).
+Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.
+
+- If your server provides HTML files with user input data and sensitive information, enabling gzip compression may expose your server to BREACH attacks. For more details, see the [gzip module explanation](https://nginx.org/en/docs/http/ngx_http_gzip_module.html).  
+  (In most cases, this shouldn't happen with the modern web applications.)
 
 ### Global configuration
 
@@ -181,9 +183,6 @@ server {
         # Include snakeoil certificate snippet
         include snippets/snakeoil.conf;
 
-        # Add TLSv1.2 if you need to support old browsers.
-        ssl_protocols TLSv1.3;
-
         server_name example.jp;
 
         root /var/www/html;
@@ -236,8 +235,6 @@ server {
         # Include snakeoil certificate snippet
         include snippets/snakeoil.conf;
 
-        ssl_protocols TLSv1.3;
-
         server_name example.jp;
 
         root /var/www/html;
@@ -284,8 +281,6 @@ server {
         add_header Alt-Svc 'h3=":443"; ma=86400';
 
         include snippets/snakeoil.conf;
-
-        ssl_protocols TLSv1.3;
 
         server_name example.jp;
 
