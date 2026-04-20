@@ -44,7 +44,7 @@ root /var/www/certbot;
 
 # Redirect all by default
 location / {
-        return 301 https://$host$request_uri;
+        return 308 https://$host$request_uri;
 }
 
 # Add the exception
