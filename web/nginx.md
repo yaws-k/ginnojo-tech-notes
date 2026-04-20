@@ -169,6 +169,9 @@ sudo firewall-cmd --add-service=https --permanent
 sudo firewall-cmd --reload
 ```
 
+Mozilla provides a ["SSL Configuration Generator"](https://ssl-config.mozilla.org/) to generate recommended server configurations for SSL/TLS.  
+This site provides the complete configuration, but let's start from the simplest. (You need a proper certificate to complete.)
+
 Use "snakeoil" testing certificate for SSL/TLS
 
 ```nginx
@@ -180,10 +183,10 @@ server {
         # Enable http2
         http2 on;
 
+        server_name example.jp;
+
         # Include snakeoil certificate snippet
         include snippets/snakeoil.conf;
-
-        server_name example.jp;
 
         root /var/www/html;
 
@@ -232,10 +235,10 @@ server {
         # Tell browsers to use HTTP/3 (QUIC) if supported
         add_header Alt-Svc 'h3=":443"; ma=86400';
 
+        server_name example.jp;
+
         # Include snakeoil certificate snippet
         include snippets/snakeoil.conf;
-
-        server_name example.jp;
 
         root /var/www/html;
 
@@ -265,8 +268,9 @@ server {
         listen 80;
         listen [::]:80;
         server_name example.jp;
-        # 301 = Moved Permanently
-        return 301 https://$host$request_uri;
+
+        # 308 = Permanent Redirect
+        return 308 https://$host$request_uri;
 }
 
 server {
@@ -280,9 +284,9 @@ server {
 
         add_header Alt-Svc 'h3=":443"; ma=86400';
 
-        include snippets/snakeoil.conf;
-
         server_name example.jp;
+
+        include snippets/snakeoil.conf;
 
         root /var/www/html;
 
