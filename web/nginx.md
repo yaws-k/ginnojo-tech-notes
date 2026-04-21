@@ -258,6 +258,8 @@ server {
 }
 ```
 
+Check if the server provides HTTP/3 as expected with [HTTP/3 Check](https://http3check.net/).
+
 ### Redirect HTTP to HTTPS
 
 - Redirect all access to `http://example.jp/` to `https://example.jp/`

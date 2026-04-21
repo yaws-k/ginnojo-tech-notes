@@ -93,9 +93,9 @@ Enter email address (used for urgent renewal and security notices)
  (Enter 'c' to cancel): email@example.jp
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Please read the Terms of Service at
-https://letsencrypt.org/documents/LE-SA-v1.4-April-3-2024.pdf. You must agree in
-order to register with the ACME server. Do you agree?
+Please read the Terms of Service at:
+https://letsencrypt.org/documents/LE-SA-v1.6-August-18-2025.pdf
+You must agree in order to register with the ACME server. Do you agree?
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (Y)es/(N)o: Y
 
@@ -113,7 +113,7 @@ Requesting a certificate for example.jp
 Successfully received certificate.
 Certificate is saved at: /etc/letsencrypt/live/example.jp/fullchain.pem
 Key is saved at:         /etc/letsencrypt/live/example.jp/privkey.pem
-This certificate expires on 2024-11-23.
+This certificate expires on YYYY-MM-DD.
 These files will be updated when the certificate renews.
 Certbot has set up a scheduled task to automatically renew this certificate in the background.
 
@@ -162,12 +162,21 @@ server {
         listen [::]:80;
         server_name example.jp;
 
-        return 308 https://$host$request_uri;
+        include snippets/certbot.conf;
 }
 
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
+
+        listen 443 quic reuseport;
+        listen [::]:443 quic reuseport;
+        http3 on;
+
+        add_header Alt-Svc 'h3=":443"; ma=86400';
+
+        server_name example.jp;
 
         # Include SSL/TLS configurations
         ssl_certificate /etc/letsencrypt/live/example.jp/fullchain.pem;
@@ -176,10 +185,15 @@ server {
         # HSTS (HTTP Strict Transport Security) for 2 years
         add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 
-        server_name example.jp;
+        root /var/www/html;
+
         (snip)
 }
 ```
+
+Check the server security configuration with [Qualis SSL Labs](https://www.ssllabs.com/ssltest/index.html).
+
+- If you want more strict access than HSTS, check [HSTS Preload List](https://hstspreload.org/).
 
 ## Revoking certificate
 
