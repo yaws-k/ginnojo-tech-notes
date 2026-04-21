@@ -195,6 +195,25 @@ Check the server security configuration with [Qualis SSL Labs](https://www.sslla
 
 - If you want more strict access than HSTS, check [HSTS Preload List](https://hstspreload.org/).
 
+## Renewal hook
+
+Certbot will automatically renew the certificate before it expires, and it can reload other applications after the renewal.
+
+Add script files `/etc/letsencrypt/renewal-hooks/deploy/reload-services.sh`.
+
+```bash
+#!/bin/bash
+systemctl reload nginx
+```
+
+- Add `postfix` and `dovecot` after installing them.
+
+Add execute permission to the script.
+
+```console
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
+```
+
 ## Revoking certificate
 
 Certbot renews certificates automatically. If you want to stop using the certificate, [revoke it](https://eff-certbot.readthedocs.io/en/latest/using.html#revoking-certificates).
