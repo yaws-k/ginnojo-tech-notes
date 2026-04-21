@@ -2,22 +2,20 @@
 ---
 # Postfix and Dovecot LMTP
 
-{% include version_warning.html %}
+- Postfix is an MTA (Mail Transfer Agent) that sends and receives emails.
+- Dovecot is an IMAP server, and it handles local emails handed over from Postfix.
 
-Postfix is a major MTA (Mail Transfer Agent) that sends and receives emails. It can save received emails to user directories, but in this case, Postfix hands over all emails to Dovecot via LMTP.  
-Dovecot is IMAP server, and it handles local emails efficiently and securely.
-
-## Postfix
-
-### Install Postfix
+## Install Postfix
 
 ```console
-sudo apt install postfix
+sudo apt install postfix postfix-lmdb
 ```
+
+- postfix-lmdb is a Postfix module to handle LMDB (Lightning Memory-Mapped Database) files, which is [recommended to migrate from Berkeley DB](https://www.postfix.org/NON_BERKELEYDB_README.html).
 
 The installer will ask two questions.
 
-- General mail configuration type: Internet Site
+- General mail configuration type: `Internet Site`
 - System mail name: `mail.example.jp`
   (The installer will pick up the server FQDN as default)
 
@@ -29,64 +27,68 @@ sudo firewall-cmd --add-service=smtp-submission --permanent
 sudo firewall-cmd --reload
 ```
 
-### Virtual Mailbox
+### LMDB
 
-To isolate the email account and Unix user account, set up vmail.
+Update `/etc/postfix/main.cf` to use LMDB instead of Berkeley DB (hash, or btree).
 
-#### Virtual mailbox account
+```conf
+# Update has: to lmdb:
+alias_maps = lmdb:/etc/aliases
+alias_database = lmdb:/etc/aliases
 
-Make a new user "vmail" and store all mails under its home directory `/home/vmail`.  
-This account is only for mail storage, so disable shell login for additional security.
+# Update btree: to lmdb:
+smtp_tls_session_cache_database = lmdb:${data_directory}/smtp_scache
+
+# Set default DB to LMDB
+default_database_type = lmdb
+```
+
+- `default_cache_db_type` cannot be added because it's available from Postfix 3.11 (Debian 13 Postfix is 3.10)
+
+## Virtual Mailbox
+
+To isolate the email accounts and Unix user accounts, set up the virtual mailbox.
+
+### Create Mail Storage User
+
+Make a new user `vmail` and store all mails under its home directory `/home/vmail`.  
 
 ```console
 $ sudo adduser vmail
-Adding user `vmail' ...
-Adding new group `vmail' (1001) ...
-Adding new user `vmail' (1001) with group `vmail (1001)' ...
-Creating home directory `/home/vmail' ...
-Copying files from `/etc/skel' ...
-New password: 
-Retype new password: 
+New password: <password>
+Retype new password: <password>
 passwd: password updated successfully
 Changing the user information for vmail
 Enter the new value, or press ENTER for the default
-        Full Name []: 
-        Room Number []: 
-        Work Phone []: 
-        Home Phone []: 
-        Other []: 
+        Full Name []:
+        Room Number []:
+        Work Phone []:
+        Home Phone []:
+        Other []:
 Is the information correct? [Y/n] y
-Adding new user `vmail' to supplemental / extra groups `users' ...
-Adding user `vmail' to group `users' ...
-$ sudo usermod -s /usr/sbin/nologin vmail
 ```
 
-#### Configure Virtual Users
+Disable shell login because this account is only for the mail storage.
+
+```console
+sudo usermod -s /usr/sbin/nologin vmail
+```
+
+### Configure Virtual Users
 
 The Postfix document has an example of the [Non-Postfix mailbox store: separate domains, non-UNIX accounts](https://www.postfix.org/VIRTUAL_README.html#in_virtual_other), which means using virtual accounts with non-Postfix delivery (in the example; maildrop, in my case; Dovecot) for the virtual domains.
 
-Modify `/etc/postfix/main.cf` to send all mails to the virtual mailbox.
+Modify `/etc/postfix/main.cf` to send all emails to the virtual mailbox.
 
 ```conf
-myhostname = mail.example.jp
-alias_maps = hash:/etc/aliases
-alias_database = hash:/etc/aliases
-myorigin = /etc/mailname
+# Delete domains for the virtual mailbox
 mydestination = localhost
-relayhost = 
-mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
-mailbox_size_limit = 0
-recipient_delimiter = +
-inet_interfaces = all
-inet_protocols = all
 
-# Virtual Mailbox
+# Add virtual mailbox configurations
 virtual_mailbox_domains = mail.example.jp, example.jp
-virtual_transport = lmtp:unix:private/dovecot-lmtp 
+virtual_transport = lmtp:unix:private/dovecot-lmtp
 virtual_alias_maps = hash:/etc/postfix/virtual
 ```
-
-- Remember deleting domains for the virtual mailbox from `mydestination` line
 
 To catch local system mails (e.g. cron job), edit `/etc/postfix/virtual`.
 
