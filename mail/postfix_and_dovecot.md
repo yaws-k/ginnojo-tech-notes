@@ -22,11 +22,11 @@ The installer will ask two questions.
 - System mail name: `mail.example.jp`
   (The installer will pick up the server FQDN as default)
 
-Open ports for SMTP (25) and SMTP Submission (587).
+Open ports for SMTP (25) and Submissions (formerly SMTPS, 465).
 
 ```console
 sudo firewall-cmd --add-service=smtp --permanent
-sudo firewall-cmd --add-service=smtp-submission --permanent
+sudo firewall-cmd --add-service=smtps --permanent
 sudo firewall-cmd --reload
 ```
 
