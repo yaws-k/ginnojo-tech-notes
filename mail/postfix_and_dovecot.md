@@ -5,6 +5,9 @@
 - Postfix is an MTA (Mail Transfer Agent) that sends and receives emails.
 - Dovecot is an IMAP server, and it handles local emails handed over from Postfix.
 
+WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
+{: .notice--warning}
+
 ## Install Postfix
 
 ```console
@@ -165,7 +168,7 @@ mail_uid = vmail
 mail_gid = vmail
 ```
 
-Update Debian defaults in `/etc/dovecot/conf.d/20-lmtp.conf` to modify `auth_username_format` default.
+Comment out `auth_username_format` default in `/etc/dovecot/conf.d/20-lmtp.conf`.
 
 ```conf
 protocol lmtp {
@@ -179,16 +182,14 @@ protocol lmtp {
   # that does include domain names, you may wish to remove this.  See
   # https://doc.dovecot.org/2.4.1/howto/lmtp/exim.html and
   # https://doc.dovecot.org/2.4.1/core/summaries/settings.html#auth_username_format
-
-  # Use full email address as username
-  auth_username_format = %{user}
+  #auth_username_format = %{user | username | lower}
 }
 ```
 
 Configure `/etc/dovecot/conf.d/10-auth.conf` to choose how to control the user list.
 
-- Comment out auth-system (because mail accounts are isolated from user accounts)
-- Uncomment auth-passwdfile (because there are a small number of users that a simple text file is enough to handle)
+- Comment out auth-system (mail accounts are isolated to the virtual mailbox)
+- Uncomment auth-passwdfile (a simple text file is enough to handle users)
 
 ```conf
 #!include auth-system.conf.ext
@@ -203,15 +204,18 @@ Configure passdb and userdb locations in `/etc/dovecot/conf.d/auth-passwdfile.co
 
 ```conf
 passdb passwd-file {
+  auth_username_format = %{user | lower}
   passwd_file_path = /etc/dovecot/users
 }
 
 userdb passwd-file {
+  auth_username_format = %{user | lower}
   passwd_file_path = /etc/dovecot/users
 }
 ```
 
 - passdb and userdb can be the same file
+- Dovecot will look up the user list with the full email address, with lower case
 - Other configurations are left as default or set in the other conf files
 
 For more details, see official documents.
