@@ -20,6 +20,15 @@ smtpd_tls_cert_file = /etc/letsencrypt/live/example.jp/privkey.pem
 smtpd_tls_security_level=may
 ```
 
+### Certificate rotation
+
+As explained in [Let's Encrypt certificate rotation](../web/lets_encrypt.md), Let's Encrypt can reload applications after the certificate is renewed.  
+Add the following line to `/etc/letsencrypt/renewal-hooks/deploy/reload_services.sh`.
+
+```bash
+systemctl reload postfix
+```
+
 ## SMTP Auth configuration
 
 ### Dovecot side

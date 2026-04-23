@@ -36,3 +36,12 @@ sudo systemctl reload dovecot
 ```
 
 Now you should be able to connect to the mailbox from your local mailer (MUA), but probably it's better to set up SMTP before testing. (The mailer may require the valid SMTP server to send emails.)
+
+### Certificate rotation
+
+As explained in [Let's Encrypt certificate rotation](../web/lets_encrypt.md), Let's Encrypt can reload applications after the certificate is renewed.  
+Add the following line to `/etc/letsencrypt/renewal-hooks/deploy/reload_services.sh`.
+
+```bash
+systemctl reload dovecot
+```
