@@ -34,3 +34,5 @@ Then reload Dovecot.
 ```console
 sudo systemctl reload dovecot
 ```
+
+Now you should be able to connect to the mailbox from your local mailer (MUA), but probably it's better to set up SMTP before testing. (The mailer may require the valid SMTP server to send emails.)
