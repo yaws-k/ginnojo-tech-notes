@@ -31,6 +31,8 @@ After the virus database is ready and config files are updated, start clamav-dae
 sudo systemctl start clamav-daemon
 ```
 
+## Concurrent Database Reload
+
 If OOM killer aborts the database refresh process due to the memory usage, disable "Concurrent Database Reload".  
 Clamav temporarily uses double the memory during the refresh process by default. This config will stop that process, but there will be a little downtime for scanning to replace the virus database.
 
