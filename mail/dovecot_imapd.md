@@ -2,16 +2,17 @@
 ---
 # Dovecot IMAPd
 
-{% include version_warning.html %}
+- Dovecot IMAPd manages the mails on the server and responds to MUA.
+- Dovecot IMAPd shares the userdb with Dovecot-LMTP.
 
-Dovecot IMAPd manages the mails on the server and responds to MUA.  
-Dovecot IMAPd can share the same userdb and other configurations with Dovecot-LMTP.
+WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
+{: .notice--warning}
 
 ## Install
 
 Install dovecot-imapd packages and open IMAPS (993) port.
 
-- Open IMAP (143) port if you need
+- Open IMAP (143) port if you need STARTTLS
 
 ```console
 sudo apt install dovecot-imapd
@@ -28,8 +29,8 @@ ssl_cert = </etc/letsencrypt/live/example.jp/fullchain.pem
 ssl_key = </etc/letsencrypt/live/example.jp/privkey.pem
 ```
 
-Then restart Dovecot.
+Then reload Dovecot.
 
 ```console
-sudo systemctl restart dovecot
+sudo systemctl reload dovecot
 ```
