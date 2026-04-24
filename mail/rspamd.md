@@ -2,123 +2,100 @@
 ---
 # Rspamd
 
-{% include version_warning.html %}
-
 Rspamd is a spam filter that adds 'spam score' to each email. In addition, it can integrate ClamAV (antivirus) and DKIM signing.
 
 ## Install
 
-Rspamd provides Debian/Ubuntu repository for latest releases. Follow [the official instructions](https://rspamd.com/downloads.html).
+Rspamd provides Debian/Ubuntu repository for latest releases. Follow [the official installation Guide for Ubuntu/Debian](https://docs.rspamd.com/getting-started/installation#ubuntudebian).
+
+Add repository:
 
 ```console
-sudo apt install -y lsb-release gpg
-CODENAME=`lsb_release -c -s`
+sudo apt install gpg
 sudo mkdir -p /etc/apt/keyrings
-wget -O- https://rspamd.com/apt-stable/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/rspamd.gpg > /dev/null
-echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main" | sudo tee /etc/apt/sources.list.d/rspamd.list
-echo "deb-src [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ $CODENAME main"  | sudo tee -a /etc/apt/sources.list.d/rspamd.list
+curl -fsSL https://rspamd.com/apt-stable/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/rspamd.gpg
+echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ trixie main" | sudo tee /etc/apt/sources.list.d/rspamd.list
+```
+
+Install Rspamd:
+
+```console
 sudo apt update
 sudo apt --no-install-recommends install rspamd
 ```
 
-## DNS Resolver configuration
+## First Setup
 
-Knot-Resolver should be already installed on this server, so let Rspmad use that as a primary DNS resolver. Create `/etc/rspamd/local.d/options.inc` and add DNS lines.
+Start configuration by following [the official first setup guide](https://docs.rspamd.com/getting-started/first-setup). (Some steps can be skipped because defaults are set out of the box.)
+
+Create `/etc/rspamd/local.d/redis.conf` to connect to Redis for Rspamd prepared in the [Redis article](../database/redis.md).
+
+```conf
+# Port 6380 is an instance dedicated for Rspamd
+servers = "127.0.0.1:6380";
+timeout = 1s;
+```
+
+Get the encrypted password for Rspamd web UI.
+
+```console
+$ rspamadm pw
+Enter passphrase: [password]
+$2$j...yfeb
+```
+
+Create `/etc/rspamd/local.d/worker-controller.inc` and add the password line.
+
+```conf
+password = "$2$j...yfeb";
+bind_socket = "localhost:11134";
+```
+
+Create `/etc/rspamd/local.d/options.inc` to use Knot-Resolver as a primary DNS resolver.
 
 ```conf
 dns {
-  nameserver = "master-slave:127.0.0.1,8.8.8.8";
+  nameserver = ["127.0.0.1"];
 }
 ```
 
-- `master-slace` always choose the first DNS server (127.0.0.1) for querying. The second one will be used only when the primary is down. Put a public DNS or your provider's DNS resolver as a backup.
+### Check if Rspamd is working
+
+Check if configutest returns `syntax OK`.
+
+```console
+sudo rspamadm configtest
+```
+
+Restart Rspamd and check the status.
+
+```console
+sudo systemctl restart rspamd
+sudo systemctl status rspamd
+```
+
+Scan test messages.
+
+```console
+echo -e "Subject: Test\n\nThis is a test message" | rspamc -h [::1]:11333
+```
 
 ## Postfix integration
 
 Rspamd can communicate Postfix as a milter. Let Postfix send emails to Rspamd by adding milter lines to `/etc/postfix/main.cf`.
 
 ```conf
-# milter
-milter_default_action = accept
+# Rspamd milter
 smtpd_milters = inet:localhost:11332
+non_smtpd_milters = inet:localhost:11332
+milter_default_action = accept
 ```
 
-Restart postfix.
+Reload postfix.
 
 ```console
-sudo systemctl restart postfix
+sudo systemctl reload postfix
 ```
-
-## Dedicated Redis instance
-
-As described in the Redis article, create a dedicated instance for Rspamd.  
-In this case, assume the port is 6378
-
-## Configure Rspamd
-
-There are config wizard `rspamadm configwizard`.
-
-```console
-sudo rspamadm configwizard
-```
-
-```console
-  ____                                     _
- |  _ \  ___  _ __    __ _  _ __ ___    __| |
- | |_) |/ __|| '_ \  / _` || '_ ` _ \  / _` |
- |  _ < \__ \| |_) || (_| || | | | | || (_| |
- |_| \_\|___/| .__/  \__,_||_| |_| |_| \__,_|
-             |_|
-
-Welcome to the configuration tool
-We use /etc/rspamd/rspamd.conf configuration file, writing results to /etc/rspamd
-Modules enabled: once_received, force_actions, forged_recipients, chartable, multimap, whitelist, emails, regexp, arc, hfilter, settings, metadata_exporter, dmarc, mid, elastic, asn, rbl, maillist, milter_headers, trie, dkim_signing, dkim, mime_types, bayes_expiry, spf, fuzzy_check, phishing
-Modules disabled (explicitly): rspamd_update, spamtrap, gpt, mx_check, aws_s3, http_headers, dcc, p0f, bimi, external_relay, known_senders
-Modules disabled (unconfigured): metric_exporter, spamassassin, ip_score, clustering, reputation, antivirus, external_services, dynamic_conf, fuzzy_collect, maps_stats, clickhouse
-Modules disabled (no Redis): greylist, url_redirector, ratelimit, neural, replies, history_redis
-Modules disabled (experimental):
-Modules disabled (failed):
-Do you wish to continue?[Y/n]: Y
-Setup WebUI and controller worker:
-Controller password is not set, do you want to set one?[Y/n]: Y
-Enter passphrase: [password]
-Set encrypted password to: $2...ksfy
-Redis servers are not set:
-The following modules will be enabled if you add Redis servers:
-        * greylist
-        * url_redirector
-        * ratelimit
-        * neural
-        * replies
-        * history_redis
-Do you wish to set Redis servers?[Y/n]: Y
-Input read only servers separated by `,` [default: localhost]: localhost:6378
-Input write only servers separated by `,` [default: localhost:6378]: (Enter)
-Do you have any username set for your Redis (ACL SETUSER and Redis 6.0+)[y/N]: N
-Do you have any password set for your Redis?[y/N]: N
-Do you have any specific database for your Redis?[y/N]: N
-Do you want to setup dkim signing feature?[y/N]: N
-File: /etc/rspamd/local.d/redis.conf, changes list:
-read_servers => localhost:6378
-write_servers => localhost:6378
-
-File: /etc/rspamd/local.d/worker-controller.inc, changes list:
-password => $2...ksfy
-
-Apply changes?[Y/n]: Y
-Create file /etc/rspamd/local.d/redis.conf
-Create file /etc/rspamd/local.d/worker-controller.inc
-2 changes applied, the wizard is finished now
-*** Please reload the Rspamd configuration ***
-```
-
-Reload Rspamd
-
-```console
-sudo systemctl reload rspamd
-```
-
-Now Rspamd start using several information to determine if it should accept, soft reject, or reject incoming emails.
 
 ## Add mail headers
 
@@ -140,12 +117,18 @@ sudo systemctl reload rspamd
 Integrate ClamAV(clamdscan) with Rspamd to reject virus.  
 Create `/etc/rspamd/local.d/antivirus.conf`
 
+- cf. [Antivirus module](https://docs.rspamd.com/modules/antivirus)
+
 ```conf
 clamav {
   action = "reject";
   message = '${SCANNER}: virus found: "${VIRUS}"';
+
+  scan_mime_parts = true;
+
   symbol = "CLAM_VIRUS";
   type = "clamav";
+
   servers = "/var/run/clamav/clamd.ctl";
 }
 ```
@@ -160,16 +143,22 @@ Reload Rspamd.
 sudo systemctl reload rspamd
 ```
 
-### Test ClamAV integration
+## Test scanning
 
-EICAR test virus can be used for this test, but sending a virus mail is very difficult (that's what mail systems should be, though).  
+Simply send a legitimate email from outside and check if that reaches the inbox. That email should have Rspamd related headers.
 
-Install mutt (a text-based MUA) and send a virus mail from another server.  
-EICAR test virus is available at [the official download site](https://www.eicar.org/download-anti-malware-testfile/).
+For ClamAV integration testing, [download EICAR test virus](https://www.eicar.org/download-anti-malware-testfile/) and send it from localhost using mutt.
 
 ```console
-wget -O eicar.com "https://www.eicar.org/download/eicar-com/(the latest url)"
+sudo apt install mutt
+wget "https://secure.eicar.org/eicar.com"
 echo "EICAR test virus" | mutt -a eicar.com -s "Virus scanner test mail `date`" -- info@example.jp
+```
+
+You should find the virus detection log;
+
+```text
+milter-reject: END-OF-MESSAGE from localhost[127.0.0.1]: 5.7.1 clamav: virus found: "Eicar-Signature"; from=<xxx@example.jp> to=<info@example.jp>
 ```
 
 ## DKIM signing
@@ -183,6 +172,26 @@ This setting is integrated to configwizard. In this case, generate DKIM resource
 - Different keys for `mail.example.com` and `mail2.example.com`  
   (Not using `example.com` key for multiple subdomains)
 - Choose the domain to sign from MIME header "from" address
+
+```conf
+sign_authenticated = true;
+use_esld = false;
+use_domain = "header";
+allow_hdrfrom_mismatch = true;
+domain {
+    mail.example.com {
+        path = "/var/lib/rspamd/dkim/mail.example.com.s20241222.key";
+        selector = "s20241222";
+    }
+    mail2.example.com {
+        path = "/var/lib/rspamd/dkim/mail2.example.com.s20241222.key";
+        selector = "s20241222";
+    }
+}
+allow_username_mismatch = true;
+allow_hdrfrom_mismatch_sign_networks = true;
+```
+
 
 ```console
 sudo rspamadm configwizard
