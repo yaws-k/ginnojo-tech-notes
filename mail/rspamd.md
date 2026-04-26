@@ -48,7 +48,6 @@ Create `/etc/rspamd/local.d/worker-controller.inc` and add the password line.
 
 ```conf
 password = "$2$j...yfeb";
-bind_socket = "localhost:11134";
 ```
 
 Create `/etc/rspamd/local.d/options.inc` to use Knot-Resolver as a primary DNS resolver.
@@ -166,229 +165,121 @@ milter-reject: END-OF-MESSAGE from localhost[127.0.0.1]: 5.7.1 clamav: virus fou
 Rspamd checks DKIM for incoming emails by default. In addition, it can also sign outgoing emails.  
 See [DKIM signing module](https://rspamd.com/doc/modules/dkim_signing.html) for details.
 
-This setting is integrated to configwizard. In this case, generate DKIM resources with the following conditions.
+### Configuration
 
-- Key for `mail.example.com`
-- Different keys for `mail.example.com` and `mail2.example.com`  
-  (Not using `example.com` key for multiple subdomains)
+Create `/etc/rspamd/local.d/dkim_signing.conf` to enable DKIM signing with the following conditions.
+
+- Different keys for `mail.example.jp` and `mail2.example.jp`  
+  (Not using `example.jp` key for multiple subdomains)
 - Choose the domain to sign from MIME header "from" address
 
 ```conf
-sign_authenticated = true;
+# If true, envelope/header domain mismatch is ignored
+allow_hdrfrom_mismatch = true;
+
+# If true, domain mismatch is ignored for sign_networks
+allow_hdrfrom_mismatch_sign_networks = true;
+
+# If true, username does not need to contain matching domain
+allow_username_mismatch = true;
+
+# Whether to normalise domains to eSLD (e.g. example.jp instead of foo.example.jp).
 use_esld = false;
-use_domain = "header";
-allow_hdrfrom_mismatch = true;
-domain {
-    mail.example.com {
-        path = "/var/lib/rspamd/dkim/mail.example.com.s20241222.key";
-        selector = "s20241222";
-    }
-    mail2.example.com {
-        path = "/var/lib/rspamd/dkim/mail2.example.com.s20241222.key";
-        selector = "s20241222";
-    }
-}
-allow_username_mismatch = true;
-allow_hdrfrom_mismatch_sign_networks = true;
-```
 
+# Default path to key, can include '$domain' and '$selector' variables
+path = "/var/lib/rspamd/dkim/$domain.$selector.key";
 
-```console
-sudo rspamadm configwizard
-```
-
-```console
- ____                                     _
- |  _ \  ___  _ __    __ _  _ __ ___    __| |
- | |_) |/ __|| '_ \  / _` || '_ ` _ \  / _` |
- |  _ < \__ \| |_) || (_| || | | | | || (_| |
- |_| \_\|___/| .__/  \__,_||_| |_| |_| \__,_|
-             |_|
-
-Welcome to the configuration tool
-We use /etc/rspamd/rspamd.conf configuration file, writing results to /etc/rspamd
-Modules enabled: chartable, whitelist, once_received, force_actions, dkim, hfilter, rbl, phishing, greylist, trie, ratelimit, maillist, asn, history_redis, mid, bayes_expiry, multimap, antivirus, settings, metadata_exporter, milter_headers, emails, neural, mime_types, dkim_signing, arc, fuzzy_check, spf, regexp, replies, dmarc, forged_recipients
-Modules disabled (explicitly): rspamd_update, external_relay, mx_check, known_senders, bimi, spamtrap, p0f, gpt, aws_s3, http_headers, dcc  Modules disabled (unconfigured): external_services, spamassassin, ip_score, dynamic_conf, clickhouse, reputation, url_redirector, fuzzy_collect, maps_stats, metric_exporter, clustering, elastic
-Modules disabled (no Redis):
-Modules disabled (experimental):
-Modules disabled (failed):
-Do you wish to continue?[Y/n]: y
-Setup WebUI and controller worker:
-Do you want to setup dkim signing feature?[y/N]: y
-How would you like to set up DKIM signing?
-1. Use domain from mime from header for sign
-2. Use domain from SMTP envelope from for sign
-3. Use domain from authenticated user for sign
-4. Sign all mail from specific networks
-
-Enter your choice (1, 2, 3, 4) [default: 1]: 1
-Do you want to sign mail from authenticated users? [Y/n]: y
-Allow data mismatch, e.g. if mime from domain is not equal to authenticated user domain? [Y/n]: y
-Do you want to use effective domain (e.g. example.com instead of foo.example.com)? [Y/n]: n
-Enter output directory for the keys [default: /var/lib/rspamd/dkim/]:
-Enter domain to sign: mail.example.jp
-Enter selector [default: dkim]: s20240923
-Do you want to create privkey /var/lib/rspamd/dkim/mail.example.jp.s20240923.key[Y/n]: y
-You need to chown private key file to rspamd user!!
-To make dkim signing working, to place the following record in your DNS zone:
-v=DKIM1; k=rsa; p=MIIBIjA(snip)
-
-Do you wish to add another DKIM domain?[y/N]: N
-File: /etc/rspamd/local.d/dkim_signing.conf, changes list:
-allow_hdrfrom_mismatch_sign_networks => true
-allow_username_mismatch => true
-sign_authenticated => true
-use_esld => true
-domain => {[mail.example.jp] = {[selector] = s20240923, [path] = /var/lib/rspamd/dkim/mail.example.jp.s20240923.key}}
-use_domain => header
-allow_hdrfrom_mismatch => true
-
-Apply changes?[Y/n]: Y
-Create file /etc/rspamd/local.d/dkim_signing.conf
-1 changes applied, the wizard is finished now
-*** Please reload the Rspamd configuration ***
-```
-
-As the wizard said, change the owner of the key directory (it is currently owned by root).  
-And reload Rspamd.
-
-```console
-sudo chown -R _rspamd:_rspamd /var/lib/rspamd/dkim
-sudo systemctl reload rspamd
-```
-
-Now Rspamd will add DKIM keys to outgoing emails.
-
-FYI: The wizard created `/etc/rspamd/local.d/dkim_signing.conf`
-
-```conf
-use_domain = "header";
-allow_hdrfrom_mismatch = true;
-allow_hdrfrom_mismatch_sign_networks = true;
-allow_username_mismatch = true;
 domain {
     mail.example.jp {
-        selector = "s20240923";
-        path = "/var/lib/rspamd/dkim/mail.example.jp.s20240923.key";
+        selector = "s20260401";
+    }
+    mail2.example.jp {
+        selector = "s20260401";
     }
 }
-sign_authenticated = true;
-use_esld = false;
+```
+
+### DKIM keys
+
+Generate DKIM keys.  
+ed255519 is recommended as a modern way, but it may not be supported be all mail servers. If you consider compatibility, RSA is a safer choice.
+
+ed25519 key generation
+
+```console
+rspamadm dkim_keygen -s 's20260401' -t ed25519 -k mail.example.jp.s20260401.key > dns-mail.example.jp.txt
+```
+
+RSA  key generation
+
+```console
+rspamadm dkim_keygen -s 's20260401' -b 2048 -k mail.example.jp.s20260401.key > dns-mail.example.jp.txt
+```
+
+`rspamadmin dkim_keygen` command generates a private key `mail.example.jp.s20260401.key` and DNS record text `dns0mail.example.jp.txt`.  
+Move the private key to Rspam DKIM key path and change the owner to `_rspamd` user.
+
+```console
+sudo mv mail.example.jp.s20260401.key /var/lib/rspamd/dkim/
+sudo chmod 600 /var/lib/rspamd/dkim/mail.example.jp.s20260401.key
+sudo chown _rspamd:_rspamd /var/lib/rspamd/dkim/mail.example.jp.s20260401.key
 ```
 
 ### DNS record
 
-Add DKIM related records to your DNS records. The key is shown in the wizard above.
+Add DKIM key records to your DNS records.
 
 ```text
-s20240923._domainkey.mail  IN  TXT  v=DKIM1; k=rsa; p=MIIBIjA(snip)
+s20260401._domainkey.mail  IN  TXT  v=DKIM1; k=ed25519; p=dW...SU="
 ```
 
-If you want to test DKIM signatures, add the "t=y" parameter to the DNS record. It means the key is still testing.  
-Remember to delete this parameter after you confirm that DKIM is working as expected.
+- ed25519 key is very short and everything can be written in one DNS record.
+- If you want to test DKIM signatures, add the "t=y" parameter to the DNS record. It means the key is still testing.  
+  Remember to delete this parameter after you confirm that DKIM is working as expected.
 
-### Add another domain to sign
-
-Generate key pairs for the new domain `mail2.example.jp`
-
-```console
-sudo rspamadm dkim_keygen -s 's20240923' -d mail2.example.jp -k /var/lib/rspamd/dkim/mail2.example.jp.s20240923.key
-sudo chown -R _rspamd:_rspamd /var/lib/rspamd/dkim
-```
-
-Then it will save the private key to Rspam DKIM storage and shows the text for DNS record. Add DNS record and add a config for new domain in `/etc/rspamd/local.d/dkim_signing.conf`
-
-```conf
-use_domain = "header";
-allow_hdrfrom_mismatch = true;
-allow_hdrfrom_mismatch_sign_networks = true;
-allow_username_mismatch = true;
-domain {
-    mail.example.jp {
-        selector = "s20240923";
-        path = "/var/lib/rspamd/dkim/mail.example.jp.s20240923.key";
-    },
-    mail2.example.jp {
-        selector = "s20240923";
-        path = "/var/lib/rspamd/dkim/mail2.example.jp.s20240923.key";
-    }
-}
-sign_authenticated = true;
-use_esld = false;
-```
-
-Reload Rspamd and it should start signing for new domains.
+Reload Rspamd and it should start signing emails.
 
 ```console
 sudo systemctl reload rspamd
 ```
 
-## Enable Statistics (Bayesian filter)
+## Statistics (Bayesian filter)
 
 Statistics is enabled by default, but it needs to learn before working.  
-Create `/etc/rspamd/local.d/classifier-bayes.conf`
+Without enouch learning, Rspamd skips the Bayesian filter.
 
-```conf
-# Configure Bayes classifier to use Redis
-servers = "127.0.0.1:6378";
-backend = "redis"; # Same as statistic.conf
-
-# Auto-learning
-autolearn = true;
-
-# Token expiration
-new_schema = true; # Same as statistic.conf
-expire = 8640000;
+```text
+bayes_classify: not classified as ham. The ham class needs more training samples. Currently: 0; minimum 200 required
 ```
 
-- Explicitly configuring some lines the same as defaults to be sure about the requirements
-
-At first the result of statistics may affect too much to the result. Reduce the score to see if it works as expected.  
-Create `/etc/rspamd/local.d/groups.conf`
+According to [Rspamd statistic setting](https://docs.rspamd.com/configuration/statistic/), create `/etc/rspamd/local.d/classifier-bayes.conf` to specify what to learn.
 
 ```conf
-group  "statistics" {
-    symbols = {
-        BAYES_SPAM {
-            weight = 3.4;
-        }
-        BAYES_HAM {
-            weight = -2;
-        }
-    }
+autolearn {
+  spam_threshold = 6.0;
+  junk_threshold = 4.0;
+  ham_threshold = -0.5;
+  check_balance = true;
 }
 ```
 
-After reloading, it should start learning and eventually you'll find BAYES_SPAM and BAYES_HAM headers.
+Reload Rspamd.
 
 ```console
 sudo systemctl reload rspamd
 ```
 
-If you're in a hurry, you can learn spam/ham from local eml files.
+Rspamd log should show the learning process.
 
-```console
-sudo rspamc learn_spam spam/*
-sudo rspamc learn_ham ham/*
-```
-
-You can check the current learning status with rspamc command.
-
-```console
-$ rspamc stat
-
-Results for command: stat (0.288 seconds)
-(snip)
-Statfile: BAYES_SPAM type: redis; length: 0; free blocks: 0; total blocks: 0; free: 0.00%; learned: 376; users: 1; languages: 0
-Statfile: BAYES_HAM type: redis; length: 0; free blocks: 0; total blocks: 0; free: 0.00%; learned: 227; users: 1; languages: 0
-Total learns: 603
+```text
+rspamd_stat_check_autolearn: <mail id>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
 ```
 
 ## Web UI
 
 Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:11334 to access from the internet.
 
-According to the [FAQ](https://rspamd.com/doc/faq.html#how-to-use-the-webui-behind-a-proxy-server), add following lines to nginx configuration.
+According to the [FAQ: How do I run the WebUI behind a proxy](https://docs.rspamd.com/faq/#how-do-i-run-the-webui-behind-a-proxy), add following lines to nginx configuration.
 
 ```nginx
 location /rspamd/ {
@@ -399,3 +290,5 @@ location /rspamd/ {
         proxy_set_header X-Forwarded-For "";
 }
 ```
+
+`https://sever-name/rspamd/` will show the Rspamd Web UI and ask for the password. If you need more secured access, set up any authentication method in Nginx.
