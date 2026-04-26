@@ -43,10 +43,12 @@ docs:
       url: /mail/smtp_auth
     - title: "SMTPd Restrictioins"
       url: /mail/smtpd_restrictions
-    - title: "ClamAV"
-      url: /mail/clamav
     - title: "Rspamd"
       url: /mail/rspamd
+    - title: "ClamAV"
+      url: /mail/clamav
+    - title: "DKIM signing"
+      url: /mail/dkim_signing
     - title: "DNS records"
       url: /mail/dns_records
     - title: "Dovecot Sieve"
