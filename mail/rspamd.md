@@ -96,7 +96,7 @@ Reload postfix.
 sudo systemctl reload postfix
 ```
 
-## Add mail headers
+### Add mail headers
 
 Add extra mail headers to check if Rspamd is working as expected.  
 Create `/etc/rspamd/local.d/milter_headers.conf`
@@ -111,54 +111,9 @@ Reload Rspamd.
 sudo systemctl reload rspamd
 ```
 
-## Integrate with ClamAV
-
-Integrate ClamAV(clamdscan) with Rspamd to reject virus.  
-Create `/etc/rspamd/local.d/antivirus.conf`
-
-- cf. [Antivirus module](https://docs.rspamd.com/modules/antivirus)
-
-```conf
-clamav {
-  action = "reject";
-  message = '${SCANNER}: virus found: "${VIRUS}"';
-
-  scan_mime_parts = true;
-
-  symbol = "CLAM_VIRUS";
-  type = "clamav";
-
-  servers = "/var/run/clamav/clamd.ctl";
-}
-```
-
-- It automatically rejects virus detected emails
-- Rspamd log shows the message if any virus are found
-- No headers will be added if the mail is clean
-
-Reload Rspamd.
-
-```console
-sudo systemctl reload rspamd
-```
-
-## Test scanning
+### Test scanning
 
 Simply send a legitimate email from outside and check if that reaches the inbox. That email should have Rspamd related headers.
-
-For ClamAV integration testing, [download EICAR test virus](https://www.eicar.org/download-anti-malware-testfile/) and send it from localhost using mutt.
-
-```console
-sudo apt install mutt
-wget "https://secure.eicar.org/eicar.com"
-echo "EICAR test virus" | mutt -a eicar.com -s "Virus scanner test mail `date`" -- info@example.jp
-```
-
-You should find the virus detection log;
-
-```text
-milter-reject: END-OF-MESSAGE from localhost[127.0.0.1]: 5.7.1 clamav: virus found: "Eicar-Signature"; from=<xxx@example.jp> to=<info@example.jp>
-```
 
 ## Statistics (Bayesian filter)
 
