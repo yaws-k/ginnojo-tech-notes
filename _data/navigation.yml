@@ -49,8 +49,8 @@ docs:
       url: /mail/clamav
     - title: "DKIM signing"
       url: /mail/dkim_signing
-    - title: "DNS records"
-      url: /mail/dns_records
+    - title: "DNS for emails"
+      url: /mail/dns_for_emails
     - title: "Dovecot Sieve"
       url: /mail/dovecot_sieve
     - title: "Mail server migration"
