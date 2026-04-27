@@ -2,14 +2,10 @@
 ---
 # Dovecot Sieve
 
-{% include version_warning.html %}
-
-Sieve is a script that manages delivery within the mailbox.
+Sieve is a script to manages email delivery within the mailbox.  
+e.g. An email with `X-Spam: Yes` header will be delivered to `Junk` folder.
 
 ## Install
-
-Sieve is a server-side script, but this should be set on a per-user basis.  
-dovecot-managesieved enables users to manage their scripts.
 
 ```console
 sudo apt install dovecot-sieve dovecot-managesieved
@@ -31,8 +27,9 @@ Edit `/etc/dovecot/conf.d/20-lmtp.conf` mail_plugins line to enable Sieve plugin
 
 ```config
 protocol lmtp {
-  # Space separated list of plugins to load (default is global mail_plugins).
-  mail_plugins = $mail_plugins sieve
+  mail_plugins {
+    sieve = yes
+  }
 }
 ```
 
@@ -58,12 +55,12 @@ Sieve script examples
 
 - Make a script and "activate" it to apply the rule
 
-### Dovecot sdbox notice
+### Dovecot dbox notice
 
-The directory separator differs between Maildir and sdbox (Dovecot original style).
+The directory separator differs between Maildir and dbox (Dovecot sdbox/mdbox).
 
 - Maildir: ".(period)"
-- sdbox: "/"
+- dbox: "/"
 
 For example, `folder01` under `INBOX` location is
 
@@ -76,7 +73,7 @@ if header :contains ["from"] "folder01@example.com" {
 }
 ```
 
-sdbox style:
+dbox style:
 
 ```conf
 require "fileinto";
