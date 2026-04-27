@@ -5,6 +5,9 @@
 Sieve is a script to manages email delivery within the mailbox.  
 e.g. An email with `X-Spam: Yes` header will be delivered to `Junk` folder.
 
+WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
+{: .notice--warning}
+
 ## Install
 
 ```console
@@ -64,20 +67,20 @@ The directory separator differs between Maildir and dbox (Dovecot sdbox/mdbox).
 
 For example, `folder01` under `INBOX` location is
 
-Maildir tyle:
+Maildir style:
 
 ```conf
-require "fileinto";
-if header :contains ["from"] "folder01@example.com" {
-  fileinto "INBOX.folder01";
+require ["fileinto", "mailbox"];
+if header :contains "from" "folder01@example.com" {
+  fileinto :create "INBOX.folder01";
 }
 ```
 
 dbox style:
 
 ```conf
-require "fileinto";
-if header :contains ["from"] "folder@example.com" {
-  fileinto "INBOX/folder01";
+require ["fileinto", "mailbox"];
+if header :contains "from" "folder@example.com" {
+  fileinto :create "INBOX/folder01";
 }
 ```
