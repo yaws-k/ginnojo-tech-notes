@@ -2,8 +2,6 @@
 ---
 # SSO with Nginx and Vouch Proxy
 
-{% include version_warning.html %}
-
 [Vouch Proxy](https://github.com/vouch/vouch-proxy) works as an authentication gateway for Nginx.  
 This provides an easy and reliable way to add the authentication mechanism to any web application.
 
