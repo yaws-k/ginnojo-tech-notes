@@ -70,17 +70,17 @@ For example, `folder01` under `INBOX` location is
 Maildir style:
 
 ```conf
-require ["fileinto", "mailbox"];
+require "fileinto";
 if header :contains "from" "folder01@example.com" {
-  fileinto :create "INBOX.folder01";
+  fileinto "INBOX.folder01";
 }
 ```
 
 dbox style:
 
 ```conf
-require ["fileinto", "mailbox"];
+require "fileinto";
 if header :contains "from" "folder@example.com" {
-  fileinto :create "INBOX/folder01";
+  fileinto "INBOX/folder01";
 }
 ```

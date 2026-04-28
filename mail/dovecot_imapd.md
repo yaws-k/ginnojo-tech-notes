@@ -45,3 +45,39 @@ Add the following line to `/etc/letsencrypt/renewal-hooks/deploy/reload_services
 ```bash
 systemctl reload dovecot
 ```
+
+## Default folders
+
+Special folders other than INBOX (Sent, Drafts, Junk, Trash) should be created by default.  
+Modify `/etc/dovecot/conf.d/15-mailboxes.conf` to create the folders.
+
+- Add `auto = subscribe` to automatically create and subscribe the folder.
+
+```conf
+namespace inbox {
+  # These mailboxes are widely used and could perhaps be created automatically:
+  mailbox Drafts {
+    special_use = \Drafts
+    auto = subscribe
+  }
+  mailbox Junk {
+    special_use = \Junk
+    auto = subscribe
+  }
+  mailbox Trash {
+    special_use = \Trash
+    auto = subscribe
+  }
+
+  # For \Sent mailboxes there are two widely used names. We'll mark both of
+  # them as \Sent. User typically deletes one of them if duplicates are created.
+  mailbox Sent {
+    special_use = \Sent
+    auto = subscribe
+  }
+  mailbox "Sent Messages" {
+    special_use = \Sent
+  }
+  (snip)
+}
+```
