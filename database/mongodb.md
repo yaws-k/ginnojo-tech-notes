@@ -1,21 +1,28 @@
+---
+---
 # MongoDB
 
 MongoDB is a document DB. It has both commercial and free (community edition) licenses.  
-There is no official Debian package for MongoDB. [The official document](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-debian/) explains how to install the current (as of July 2024, 7.0) version of the community edition.
+There is no official Debian package for MongoDB. [The official document](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-debian/) explains how to install the current version of the community edition.
 
-## Preparation
+As of April 2026, Debian 13 "Trixie" is not yet officially supported by the latest 8.2.
+
+- In this article, packages for Debian 12 "Bookworm" are used (and they look working)
+- Wait for the official support if you are not in a hurry
+
+## Add apt line
 
 Import the gpg key.
 
 ```console
-curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | \
-sudo gpg -o /usr/share/keyrings/mongodb-server-7.0.gpg --dearmor
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
+sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
 ```
 
 Add MongoDB apt-line.
 
 ```console
-echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] http://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.2 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.2.list
 ```
 
 Update apt sources.
@@ -26,14 +33,14 @@ sudo apt update
 
 ## Install
 
-Now apt-line is ready.
+Install `mongdb-org`, the community version.
 
 ```console
 sudo apt install mongodb-org
 ```
 
-MongoDB engine (WiredTiger) strongly recommends the XFS filesystem.  
-In my case, XFS partition is made during the Debian installation and mounted on `/var/xfs`. So I'll change the data directory from default `/var/lib/mongodb` to `/var/xfs/mongodb`.
+MongoDB engine (WiredTiger) [strongly recommends the XFS filesystem](https://www.mongodb.com/docs/manual/administration/production-notes/#std-label-prod-notes-linux-file-system).  
+In my case, XFS partition is made during the Debian installation and mounted on `/var/xfs`. So change the data directory from default `/var/lib/mongodb` to `/var/xfs/mongodb`.
 
 Make a new MongoDB data directory and change the ownership.
 
@@ -61,6 +68,8 @@ sudo systemctl enable mongod
 sudo systemctl start mongod
 ```
 
+Check the status of `mongod` service and if data is stored in `/var/xfs/mongodb`.
+
 ## Security configuration
 
 By default, MongoDB accepts access only from localhost, but anybody with access can read all databases.  
@@ -76,7 +85,9 @@ $ mongosh
 (snip)
 ------
    The server generated these startup warnings when booting
-   (snip) Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+   (snip) Access control is not enabled for the database.
+   Read and write access to data and configuration is unrestricted
+  (snip)
 ------
 test> use admin
 switched to db admin
@@ -90,7 +101,8 @@ admin> exit
 Enable user authentication. Change security settings in `/etc/mongod.conf`.
 
 ```config
-security
+security:
+  authorization: enabled
 ```
 
 If you need to connect from servers other than localhost, add IP addresses separated by commas.

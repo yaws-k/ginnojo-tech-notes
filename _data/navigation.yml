@@ -1,59 +1,57 @@
 main:
-  - title: 'Home'
-    url: https://docs.ginnojo.tech/
+  - title: "Home"
+    url: https://notes.ginnojo.jp/
 
 docs:
-  - title: 'Base system'
+  - title: "Base system"
     children:
-    - title: 'Debian 12 "bookworm" installation'
-      url: /base-system/install
-    - title: 'ssh and Security'
-      url: /base-system/ssh_and_security
-    - title: 'Basic configuration and utilities'
-      url: /base-system/basic_configuration_and_utilities
-  - title: 'Database'
+    - title: "Installation"
+      url: /base_system/installation
+    - title: "ssh and Security"
+      url: /base_system/ssh_and_security
+    - title: "Basic configuration and utilities"
+      url: /base_system/basic_configuration_and_utilities
+  - title: "Database"
     children:
-    - title: 'MariaDB'
+    - title: "MariaDB"
       url: /database/mariadb
-    - title: 'SQLite3'
+    - title: "PostgreSQL"
+      url: /database/postgresql
+    - title: "SQLite3"
       url: /database/sqlite3
-    - title: 'Redis'
+    - title: "Redis"
       url: /database/redis
-    - title: 'MongoDB'
+    - title: "MongoDB"
       url: /database/mongodb
-  - title: 'Web'
+  - title: "Web"
     children:
-    - title: 'Nginx'
+    - title: "Nginx"
       url: /web/nginx
-    - title: "Let's Enctypt"
+    - title: "Let's Encrypt"
       url: /web/lets_encrypt
-    - title: 'Concrete CMS'
-      url: /web/concrete_cms
-    - title: 'SSO with Nginx and Vouch Proxy'
-      url: /web/sso_nginx_and_vouch_proxy
-  - title: 'DNS'
+  - title: "DNS"
     children:
-    - title: 'Knot Resolver'
+    - title: "Knot Resolver"
       url: /dns/knot_resolver
-  - title: 'Mail'
+  - title: "Mail"
     children:
-    - title: 'Postfix and Dovecot'
+    - title: "Postfix and Dovecot"
       url: /mail/postfix_and_dovecot
-    - title: 'Dovecot IMAPd'
+    - title: "Dovecot IMAPd"
       url: /mail/dovecot_imapd
-    - title: 'SMTP Auth'
+    - title: "SMTP Auth"
       url: /mail/smtp_auth
-    - title: 'SMTPd Restrictioins'
+    - title: "SMTPd Restrictioins"
       url: /mail/smtpd_restrictions
-    - title: 'ClamAV'
-      url: /mail/clamav
-    - title: 'Rspamd'
+    - title: "Rspamd"
       url: /mail/rspamd
-    - title: 'DNS records'
-      url: /mail/dns_records
-    - title: 'Dovecot Sieve'
+    - title: "ClamAV"
+      url: /mail/clamav
+    - title: "DKIM signing"
+      url: /mail/dkim_signing
+    - title: "DNS for emails"
+      url: /mail/dns_for_emails
+    - title: "Dovecot Sieve"
       url: /mail/dovecot_sieve
-    - title: 'Roundcube'
-      url: /mail/roundcube
-    - title: 'Mail server migration'
+    - title: "Mail server migration"
       url: /mail/mail_server_migration

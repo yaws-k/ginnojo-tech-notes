@@ -1,38 +1,12 @@
+---
+---
 # Let's Encrypt
 
-[Let's Encrypt](https://letsencrypt.org/) privides free SSL/TLS certificates. It also provides the official client "Certbot" to create, renew, and revoke certificates.
+[Let's Encrypt](https://letsencrypt.org/) privides free TLS certificates. It also provides the official client [Certbot](https://certbot.eff.org/) to create, renew, and revoke certificates.
 
-There are several ways to set up Certbot and plugins.
+This article explains the simplest and recommended way, [Certbot snap app](https://eff-certbot.readthedocs.io/en/stable/install.html#snap-recommended) and [webroot](https://eff-certbot.readthedocs.io/en/stable/using.html#webroot) to mange certificates.
 
-(1) Certbot only (snap)
-If you don't need any plugins, installing Certbot with snap is the easiest way.  
-In most cases "[webroot](https://eff-certbot.readthedocs.io/en/stable/using.html#webroot)" should work.
-
-(2) Certbot and plugins that are available as snap apps (snap)
-If you need DNS challenges and are using major DNS services (for example, Route53), you can use Certbot and plugins, both provided as snap apps.
-Or, the required plugins are available as snap apps; you can install everything through the snap.
-DNS challenges are required when you need a wildcard certificate or the web server is in an intranet behind the firewall.
-
-(3) Certbot and third-party plugins that aren't available as snap app
-If any required plugins are unavailable as snap apps, you need to install Certbot and plugins through Python pip. How to is explained in the [official explanation](https://certbot.eff.org/).
-
-I used to use a wildcard certificate with Gandi LiveDNS (which requires the most complicated method), but with some tweaks with Nginx, I could manage certificates with Certbot only.
-
-## Install snapd
-
-See [snap official site Debian page](https://snapcraft.io/docs/installing-snap-on-debian) for more details.
-
-Install snapd to install snap apps.
-
-```console
-sudo apt install snapd
-```
-
-Log out and log in again, and install the latest snapd.
-
-```console
-sudo snap install snapd
-```
+- There are options like [DNS plugins](https://eff-certbot.readthedocs.io/en/stable/using.html#dns-plugins) or [Certbot through Python pip](https://eff-certbot.readthedocs.io/en/stable/install.html#alternative-2-pip) for third-party plugins, but they are not recommended.
 
 ## Install Certbot
 
@@ -42,10 +16,10 @@ Don't forget to add `--classic` option.
 sudo snap install --classic certbot
 ```
 
-Add certbot command to `/usr/bin/certbot`
+Add certbot symlink to enable `sudo certbot` command.
 
 ```console
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo ln -s /snap/bin/certbot /usr/local/bin/certbot
 ```
 
 "webroot" doesn't require any plugins. Certbot itself is enough.
@@ -60,8 +34,7 @@ For Let's Encrypt validator, make a dedicated directory.
 sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 ```
 
-Add an exception to the current HTTP access redirect.  
-This configuration will be used in multiple sites, so make it a snippet.
+Make a snippet for certbot configuration. This will be included in the server block for HTTP access from Let's Encrypt server.
 
 `/etc/nginx/snippets/certbot.conf`
 
@@ -71,7 +44,7 @@ root /var/www/certbot;
 
 # Redirect all by default
 location / {
-        return 301 https://$host$request_uri;
+        return 308 https://$host$request_uri;
 }
 
 # Add the exception
@@ -93,8 +66,9 @@ server {
 }
 
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
 
         (snip)
 }
@@ -107,7 +81,9 @@ With this,
 
 ## Issue a certificate
 
-Request a certificate. Certbot will ask for your email address and agreement confirmation to generate the account information.
+Request a certificate.
+
+- Certbot will ask for your email address and agreement confirmation to generate the account information.
 
 ```console
 $ sudo certbot certonly --webroot -w /var/www/certbot/ -d example.jp
@@ -117,9 +93,9 @@ Enter email address (used for urgent renewal and security notices)
  (Enter 'c' to cancel): email@example.jp
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Please read the Terms of Service at
-https://letsencrypt.org/documents/LE-SA-v1.4-April-3-2024.pdf. You must agree in
-order to register with the ACME server. Do you agree?
+Please read the Terms of Service at:
+https://letsencrypt.org/documents/LE-SA-v1.6-August-18-2025.pdf
+You must agree in order to register with the ACME server. Do you agree?
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (Y)es/(N)o: Y
 
@@ -137,7 +113,7 @@ Requesting a certificate for example.jp
 Successfully received certificate.
 Certificate is saved at: /etc/letsencrypt/live/example.jp/fullchain.pem
 Key is saved at:         /etc/letsencrypt/live/example.jp/privkey.pem
-This certificate expires on 2024-11-23.
+This certificate expires on YYYY-MM-DD.
 These files will be updated when the certificate renews.
 Certbot has set up a scheduled task to automatically renew this certificate in the background.
 
@@ -150,48 +126,35 @@ If you like Certbot, please consider supporting our work by:
 
 ## nginx configuration
 
-For more details, read [the official guide to configure HTTPS servers](https://nginx.org/en/docs/http/configuring_https_servers.html).
+Configure nginx based on Mozilla's [SSL Configuration Generator](https://ssl-config.mozilla.org/).
 
-### Security enhancement
+- [The official guide to configure HTTPS servers](https://nginx.org/en/docs/http/configuring_https_servers.html) explains the basic configurations.
 
-When using Certbot with the installer option (e.g. --nginx), it automatically takes care of this enhancement. With webroot method, this file has to be made manually.  
-Refer: [options-ssl-nginx.conf](https://github.com/certbot/certbot/blob/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf)
+### Default configuration
 
-Add `/etc/letsencrypt/options-ssl-nginx.conf`
+According to the Mozilla's [SSL Configuration Generator (nginx 1.26.3, OpenSSL 3.5.5)](https://ssl-config.mozilla.org/#server=nginx&version=1.26.3&config=intermediate&openssl=3.5.5&hsts).
+
+Update `/etc/nginx/nginx.conf` to set the default SSL/TLS configurations.
 
 ```nginx
-ssl_session_cache shared:le_nginx_SSL:10m;
-ssl_session_timeout 1440m;
-ssl_session_tickets off;
+        ##
+        # SSL Settings
+        ##
 
-ssl_protocols TLSv1.2 TLSv1.3;
-ssl_prefer_server_ciphers off;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ecdh_curve X25519MLKEM768:X25519:prime256v1:secp384r1;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305;
+        ssl_prefer_server_ciphers off;
 
-ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
+        ssl_session_timeout 1d;
+        ssl_session_cache shared:MozSSL:10m;
 ```
 
-Generate `/etc/letsencrypt/ssl-dhparams.pem`
+- `ssl-dhparams.pem` file used to be generated with `openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048` command for DHE-\* ciphers. However, DHE-* cyphers are not listed that dhparam file is not required.
 
-```console
-sudo openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
-```
+### Per-server configurations
 
-- You may find the command with 2048 just after the 'dhparam', but that will not save the file as you expect. The numbits (number) MUST BE the last option.
-See [OpenSSL official document](https://docs.openssl.org/3.0/man1/openssl-dhparam/) for more details.
-
-The file should look like this.
-
-```plaintext
------BEGIN DH PARAMETERS-----
-MIIBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-(snip)
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxBAg==
------END DH PARAMETERS-----
-```
-
-### Add SSL/TLS configurations
-
-Swap the snakeoil certificate for testing to proper configurations in `/etc/nginx/sites-available/exmaple.jp.conf`
+Swap the snakeoil certificate to Let's Encrypt certificate in `/etc/nginx/sites-available/example.jp.conf`
 
 ```nginx
 server {
@@ -199,23 +162,56 @@ server {
         listen [::]:80;
         server_name example.jp;
 
-        # Include certbot configuration
         include snippets/certbot.conf;
 }
 
 server {
-        listen 443 ssl http2;
-        listen [::]:443 ssl http2;
+        listen 443 ssl;
+        listen [::]:443 ssl;
+        http2 on;
+
+        listen 443 quic reuseport;
+        listen [::]:443 quic reuseport;
+        http3 on;
+
+        add_header Alt-Svc 'h3=":443"; ma=86400';
+
+        server_name example.jp;
 
         # Include SSL/TLS configurations
         ssl_certificate /etc/letsencrypt/live/example.jp/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/example.jp/privkey.pem;
-        include /etc/letsencrypt/options-ssl-nginx.conf;
-        ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-        server_name example.jp;
+        # HSTS (HTTP Strict Transport Security) for 2 years
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+
+        root /var/www/html;
+
         (snip)
 }
+```
+
+Check the server security configuration with [Qualis SSL Labs](https://www.ssllabs.com/ssltest/index.html).
+
+- If you want more strict access than HSTS, check [HSTS Preload List](https://hstspreload.org/).
+
+## Renewal hook
+
+Certbot will automatically renew the certificate before it expires, and it can reload other applications after the renewal.
+
+Add script files `/etc/letsencrypt/renewal-hooks/deploy/reload-services.sh`.
+
+```bash
+#!/bin/bash
+systemctl reload nginx
+```
+
+- Add `postfix` and `dovecot` after installing them.
+
+Add execute permission to the script.
+
+```console
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
 ```
 
 ## Revoking certificate

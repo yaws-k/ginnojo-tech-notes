@@ -1,3 +1,5 @@
+---
+---
 # MariaDB
 
 Install MariaDB (an RDB forked from MySQL).
@@ -10,11 +12,15 @@ Install, then the package will take care of everything.
 sudo apt install mariadb-server
 ```
 
-Now, MariaDB is working out of the box.
+Now, it's ready to use.
 
 ### MariaDB in Debian is secure by default
 
-There is no need to run `mysql_secure_installation`. Check `/usr/share/doc/mariadb-server.README.Debian.gz` for more details.
+You may find articles recommending `mysql_secure_installation`, but there is no need to run it.  
+Check `/usr/share/doc/mariadb-server/README.Debian.gz` for more details.
+
+> There is absolutely no need to run the script `mariadb-secure-installation` or (`mysql_secure_installation`) after installing MariaDB with `apt install mariadb-server`. The script is useless, and very misleading with reporting
+> "Success!" after every step even if it did nothing.
 
 ## Interface for PHP/Ruby/Python
 
@@ -22,14 +28,4 @@ Interface modules to connect to MariaDB. For example, CMS (mainly by PHP) will r
 
 ```console
 sudo apt install php-mysql ruby-mysql2 python3-mysqldb
-```
-
-These are Debian-packaged versions aligned with packaged versions of programming languages. If you have multiple versions, then install interfaces for each of them.
-
-## Development files
-
-For mysql2 gem package, you may need the following development package.
-
-```console
-sudo apt install libmariadb-dev
 ```

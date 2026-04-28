@@ -19,32 +19,20 @@
 # in the templates via {{ site.myvariable }}.
 
 title: Ginnojo Tech Notes
-email: anonymous@example.com
+#email: anonymous@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   Set up your own web server from scratch using Debian Linux.
-baseurl: '' # the subpath of your site, e.g. /blog
-url: 'https://docs.ginnojo.tech' # the base hostname & protocol for your site, e.g. http://example.com
-#twitter_username: yaws_k
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://notes.ginnojo.tech" # the base hostname & protocol for your site, e.g. http://example.com
+#twitter_username: jekyllrb
 github_username:  yaws-k
 
 # Build settings
 #theme: minima
-remote_theme: 'mmistakes/minimal-mistakes'
+theme: minimal-mistakes-jekyll
 minimal_mistakes_skin: 'air'
 enable_copy_code_button: true
 breadcrumbs: true
-
-defaults:
-  # _pages
-  - scope:
-      path: ''
-      type: pages
-    values:
-      layout: single
-      toc: true
-      toc_sticky: true
-      sidebar:
-        nav: 'docs'
 
 # Site Footer
 footer:
@@ -85,9 +73,13 @@ titles_from_headings:
 exclude:
   - README.md
 
-include:
-  - base-system
-  - database
-  - dns
-  - mail
-  - web
+defaults:
+  - scope:
+      path: ''
+      type: pages
+    values:
+      layout: single
+      toc: true
+      toc_sticky: true
+      sidebar:
+        nav: docs

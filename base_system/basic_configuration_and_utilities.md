@@ -1,20 +1,29 @@
+---
+---
 # Basic configuration and utilities
 
 ## Configure apt-line
 
-`apt` command will get only basic software by default. Add `contrib` and `non-free` to `/etc/apt/sources.list` for more applications.
+`apt` command will get only basic software by default. Add `contrib` and `non-free` to `/etc/apt/debian.sources` for more applications.
+
+- As migrated to the new deb822 format at the end of installation, the file looks very different from the old apt-line format.  
+  <https://wiki.debian.org/SourcesList#APT_sources_format>
 
 ```config
-deb http://ftp.jp.debian.org/debian/ bookworm main contrib non-free non-free-firmware
+Types: deb
+URIs: http://ftp.jp.debian.org/debian/
+Suites: trixie
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
-deb http://security.debian.org/debian-security bookworm-security main contrib non-free non-free-firmware
-
-# bookworm-updates, to get updates before a point release is made;
-# see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
-deb http://ftp.jp.debian.org/debian/ bookworm-updates main contrib non-free non-free-firmware
+Types: deb
+URIs: http://security.debian.org/debian-security/
+Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
 
-- `deb-src` is required only when you want to get sources
+- `deb-src` is required only if you want to get sources
 
 After updating apt-line, update&upgrade.
 
@@ -23,27 +32,43 @@ sudo apt update
 sudo apt upgrade
 ```
 
-## Basic utilities
+## Snap
 
-Install basic utilities. What you need will change according to the server usage.
+Snap is a package management system other than apt. Some applications, such as Certbot, are available through snap. Install and update snapd according to the [official howto for Debian](https://snapcraft.io/docs/tutorials/install-the-daemon/debian/).
 
 ```console
-sudo apt install bind9-dnsutils man-db net-tools rsync tmux wget curl
+sudo apt install snapd
 ```
 
-- bind9-dnsutils: DNS-related commands (e.g. dig).
+Log out and Log in again tp activate the new path, and install the latest snapd with core snap.
+
+```console
+sudo snap install snapd
+sudo snap install core
+```
+
+## Basic utilities
+
+Install basic utilities for server management.
+
+```console
+sudo apt install dnsutils man-db net-tools rsync tmux wget curl
+```
+
+- dnsutils: DNS-related commands (e.g. dig).
 - man-db: Provides “man” command
 - net-tools: Network-related commands (e.g. netstat).
 - rsync: Synchronize files/directories.
 - tmux: Terminal multiplexer.
 - wget: Downloader
-- curl: Data transfer mainly with HTTP(S)
+- curl: Data transfer mainly with HTTP(S)  
+  (Should be already installed for CrowdSec)
 
 ## Programming Languages
 
 Install major programming languages. (They will be required and automatically installed as dependencies.)
 
-### Ruby 3.1
+### Ruby 3.3
 
 ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 
@@ -51,17 +76,20 @@ ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 sudo apt install ruby ruby-dev
 ```
 
-### Multiple Ruby versions with rbenv
+#### Multiple Ruby versions with rbenv
 
-[rbenv](https://github.com/rbenv/rbenv) manages multiple versions, including the latest. Install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
+System-wide Ruby is usually old and suitable for running applications, but not for development. For development, [rbenv](https://github.com/rbenv/rbenv) will help installing multiple versions (including the latest) into the isolated environment.
+
+As prerequisites, install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
 (libreadline6-dev is changed to libreadline-dev)
 
 ```console
 sudo apt install git
+sudo apt install autoconf build-essential libffi-dev libgmp-dev libssl-dev libyaml-dev rustc zlib1g-dev
 sudo apt install autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
 ```
 
-Then, use [https://github.com/rbenv/rbenv-installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
+Then, use [rbenv installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
 
 Log in as a normal user that you want to install rbenv.
 
@@ -69,35 +97,62 @@ Log in as a normal user that you want to install rbenv.
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
 ```
 
+The script will install rbenv and configure the shell.
+
 ```console
 Installing rbenv with git...
 (snip)
 Setting up your shell with `rbenv init bash' ...
 writing ~/.bashrc: now configured for rbenv.
 
-All done! After reloading your terminal window, rbenv should be good to go.
+All done! After reloading your terminal window,
+rbenv should be good to go.
 ```
 
-All set. Re-login to enable rbenv.  
-For the ruby installation process, see [rbenv GitHub README](https://github.com/rbenv/rbenv?tab=readme-ov-file#installing-ruby-versions).
+All set. Re-login to enable rbenv, and, for example, install Ruby 3.4.9.
 
-### Python 3.11
+```console
+rbenv install 3.4.9
+```
+
+It will download the source code, compile, and install it. This may take a while.
+
+See [rbenv GitHub README](https://github.com/rbenv/rbenv?tab=readme-ov-file#installing-ruby-versions) for more details.
+
+### Python 3.13
 
 python3: The package "python" was python2.x and not available anymore.
 
 ```console
-sudo apt install python3
+sudo apt install python3 python3-venv
 ```
 
-### PHP 8.2
+- Python3 should be already installed as a dependency of CrowdSec
 
-php & php-fpm & php8.2-fpm: Installing only “php” will install apache2 according to the dependency. To use nginx, you have to explicitly choose fpm version.
+For development, venv is useful to create isolated environments.
 
 ```console
-sudo apt install php php-fpm php8.2-fpm
+python3 -m venv directory_name
+source directory_name/bin/activate
 ```
 
-The timezone has to be set to php.ini. Update both cli: `/etc/php/8.2/cli/php.ini` and fpm: `/etc/php/8.2/fpm/php.ini`.
+To exit from the venv, just run `deactivate`.
+
+```console
+deactivate
+```
+
+If you need multiple versions of Python, [pyenv](https://github.com/pyenv/pyenv) will help.
+
+### PHP 8.4
+
+Installing only `php` will install apache2 according to the dependency. To use nginx, you have to explicitly choose fpm version.
+
+```console
+sudo apt install php php-fpm php8.4-fpm
+```
+
+The timezone has to be set to php.ini. Update both cli: `/etc/php/8.4/cli/php.ini` and fpm: `/etc/php/8.4/fpm/php.ini`.
 
 ```php
 [Date]
@@ -109,28 +164,33 @@ date.timezone = "Asia/Tokyo"
 Restart fpm to reload the config.
 
 ```console
-sudo systemctl reload php8.2-fpm
+sudo systemctl reload php8.4-fpm
 ```
 
-### Java 17
+### Java 21
 
-openjdk-17-jre: This is JRE. Install JDK if you plan to develop with Java.
+Headless JRE should be enough for running Java applications.  
+Install JDK if you plan to develop with Java.
 
 ```console
-sudo apt install openjdk-17-jre
+sudo apt install default-jre-headless
 ```
 
-### Rust 1.63
+### Rust 1.85
 
 ```console
 sudo apt install rustc
 ```
 
-### Perl 5.36
+- This should be already installed as a dependency of rbenv
+
+### Perl 5.40
 
 ```console
 sudo apt install perl
 ```
+
+- This should be already installed
 
 ### Libraries for each language
 
@@ -151,7 +211,7 @@ You can add any locales as you want. The default locale can also be anything, bu
 
 ## Vim
 
-"Vim" is Vi IMproved. If you struggle with Vi (installed by default), install Vim to enhance simple Vi.
+`vim` stands for Vi IMproved. If you decide to use Vi (installed by default), install Vim to enhance simple Vi.
 
 ```console
 sudo apt install vim
@@ -192,7 +252,7 @@ if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif
 
-" Additional configuration for me
+" Additional configuration
 set number
 set ambiwidth=double
 ```
@@ -232,31 +292,42 @@ iface lo inet loopback
 # The primary network interface
 allow-hotplug ens3
 iface ens3 inet static
-        address aaa.bbb.ccc.ddd
-        netmask 255.255.254.0
+        address aaa.bbb.ccc.ddd/23
         gateway aaa.bbb.eee.1
         # dns-* options are implemented by the resolvconf package, if installed
-        #dns-nameservers 8.8.8.8 8.8.4.4
+        dns-nameservers a.b.c.d a.b.c.e
+        dns-search example.com
 
 iface ens3 inet6 static
-        address aaaa:bbbb:cccc:dddd:eee:fff:ggg:hhh
-        netmask 64
+        address aaaa:bbbb:cccc:dddd:eee:fff:ggg:hhh/64
         gateway fe80::1
+        dns-nameservers aaaa:bbbb:1
 ```
 
-The nameserver information should be on `/etc/resolv.conf`. This file should have what you set during the installation. Add IPv6 DNS server address if you like.
+To update `/etc/resolv.conf`, install `resolvconf`.
 
 ```console
-search example.com
-nameserver 8.8.8.8
-nameserver 8.8.4.4
-nameserver aaaa:bbbb:1
+sudo apt install resolvconf
 ```
 
-After changing the configuration, restart networking and check it works.
+Restart network and check if it works.
 
 ```console
-sudo systemctl restart networking
+sudo ifdown ens3 && sudo ifup ens3
+```
+
+It will return ipv6 error, because IPv6 config is newly added.  
+(It's expected.)
+
+```console
+RTNETLINK answers: No such process
+Error: ipv6: address not found.
+Waiting for DAD... Done
+```
+
+Check the IP addresses and try pinging via IPv6.
+
+```console
 ip address
-ping google.com
+ping6 google.com
 ```

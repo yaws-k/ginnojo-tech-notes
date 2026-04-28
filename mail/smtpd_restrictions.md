@@ -1,6 +1,8 @@
+---
+---
 # SMTPd restrictions
 
-There are too many connection attempts to find loose servers for malicios purposes. Postfix has built-in restrictions to reject those connections.
+Enable restriction rules to reject malicious connections.
 
 ## smtpd_*_restrictions
 
@@ -43,9 +45,7 @@ mua_client_restrictions =
 
 mua_helo_restrictions =
     permit_mynetworks,
-    reject_invalid_helo_hostname,
-    reject_non_fqdn_helo_hostname,
-    reject_unknown_helo_hostname
+    reject_invalid_helo_hostname
 
 mua_sender_restrictions =
     reject_non_fqdn_sender,
@@ -75,8 +75,11 @@ smtpd_data_restrictions = $mua_data_restrictions
 
 - message_size_limit: 20MB should be enough (default 10MB)
 - disable_vrfy_command: Prevent this command to be used for user scanning.
-- *_reject_code: 450 (try later) is the default. Spam servers may repeat retry forever.
+- *_reject_code: 450 (try later) is the default. Spam servers may repeat retrying forever.
 - smtpd_helo_required: Yes to make the most use of helo_restrictions.
+- `mua_helo_restrictions` can have two more restrictions, but sometimes legitimate servers do this and cause false-positive.
+  - `reject_non_fqdn_helo_hostname` rejects servers that don't send fully qualified domain names in the HELO command.
+  - `reject_unknown_helo_hostname` rejects servers with FQDNs that cannot be resolved.
 - strict_rfc821_envelopes: For the later installation of content filter
 
 Reload Postfix to aplly new restrictions.
