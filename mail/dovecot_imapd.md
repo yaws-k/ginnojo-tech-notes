@@ -81,3 +81,22 @@ namespace inbox {
   (snip)
 }
 ```
+
+Define filder separator as `/` in `/etc/dovecot/conf.d/10-mail.conf`.  
+(If you plan to use multi-byte character for folder name, set `mailbox_list_utf8 = yes`.)
+
+```conf
+namespace inbox {
+  # Add this to use UTF-8 for folder names on the server side
+  mailbox_list_utf8 = yes
+
+  (snip)
+
+  # Hierarchy separator to use. You should use the same separator for all
+  # namespaces or some clients get confused. '/' is usually a good one.
+  # The default however depends on the underlying mail storage format.
+  separator = /
+
+  (snip)
+}
+```
