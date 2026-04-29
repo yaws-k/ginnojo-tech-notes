@@ -170,8 +170,8 @@ server {
         listen [::]:443 ssl;
         http2 on;
 
-        listen 443 quic reuseport;
-        listen [::]:443 quic reuseport;
+        listen 443 quic;
+        listen [::]:443 quic;
         http3 on;
 
         add_header Alt-Svc 'h3=":443"; ma=86400';
