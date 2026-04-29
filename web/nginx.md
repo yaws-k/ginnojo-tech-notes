@@ -307,3 +307,45 @@ server {
         }
 }
 ```
+
+## Default site
+
+The `default` sever configuration is used when no other server configuration matches the request. (Mainly the direct IP access from malicious bots.)  
+Reject this kind of access by returning 444 (No Response). 444 is a non-standard status code used by nginx, and nginx immediately closes the connection without sending any response to the client.
+
+Create `/etc/nginx/sites-available/catch-all` with the following content.
+
+```nginx
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
+        http2 on;
+
+        include snippets/snakeoil.conf;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        server_name _;
+
+        # Turn off useless logs
+        access_log off;
+        log_not_found off;
+
+        return 444;
+}
+```
+
+- `default_server` indicates this server block is the default for the specified port.  
+  Without this, nginx will use "the first server block" as the default.
+- `server_name _;` means access anything that doesn't match other server names. (In short, catch-all.)
+
+Disable `default` site and enable `catch-all` site.
+
+```console
+sudo rm /etc/nginx/sites-enabled/default
+sudo ln -s /etc/nginx/sites-available/catch-all /etc/nginx/sites-enabled/catch-all
+sudo systemctl reload nginx
+```
