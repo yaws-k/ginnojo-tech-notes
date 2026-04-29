@@ -1,6 +1,6 @@
 ---
 ---
-# SSO with Nginx and Vouch Proxy
+# SSO for nginx
 
 [Vouch Proxy](https://github.com/vouch/vouch-proxy) works as an authentication gateway for Nginx.  
 This provides an easy and reliable way to add the authentication mechanism to any web application.
@@ -15,7 +15,7 @@ This provides an easy and reliable way to add the authentication mechanism to an
 ## The case
 
 - The application is running on `app.example.com`
-- Vouch Proxy server is on `vouch.example.com`
+- Vouch Proxy server is on `vouch.example.com` (the same server as `app.example.com`)
   - Vouch Proxy runs as a docker image listening port 9090
 - The application accepts HTTPS
 - Use Google Account as the IdP

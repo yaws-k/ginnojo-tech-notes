@@ -25,10 +25,12 @@ docs:
       url: /database/mongodb
   - title: "Web"
     children:
-    - title: "Nginx"
+    - title: "nginx"
       url: /web/nginx
     - title: "Let's Encrypt"
       url: /web/lets_encrypt
+    - title: "SSO for nginx"
+      url: /web/sso_nginx
   - title: "DNS"
     children:
     - title: "Knot Resolver"
