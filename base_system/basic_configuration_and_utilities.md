@@ -52,7 +52,7 @@ sudo snap install core
 Install basic utilities for server management.
 
 ```console
-sudo apt install dnsutils man-db net-tools rsync tmux wget curl
+sudo apt install dnsutils man-db net-tools rsync tmux wget curl ca-certificates
 ```
 
 - dnsutils: DNS-related commands (e.g. dig).
@@ -63,6 +63,7 @@ sudo apt install dnsutils man-db net-tools rsync tmux wget curl
 - wget: Downloader
 - curl: Data transfer mainly with HTTP(S)  
   (Should be already installed for CrowdSec)
+- ca-certificates: SSL certificates for HTTPS connections
 
 ## Programming Languages
 
@@ -198,6 +199,36 @@ Each language offers external modules. Python pip, Ruby gems, PHP pecl, and so o
 If the packages work, you don't have to consider the version discrepancies between packaged languages and modules.
 
 For example, PHP cURL is available as php-curl package.
+
+## Docker CE
+
+To use Docker images, install Docker Engine according to the [official howto for Debian](https://docs.docker.com/engine/install/debian/).
+
+- `curl` and `ca-certificates` should be already installed.
+
+```console
+sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+```
+
+Create `/etc/apt/sources.list.d/docker.sources` to add Docker repository.
+
+```text
+Types: deb
+URIs: https://download.docker.com/linux/debian
+Suites: trixie
+Components: stable
+Architectures: amd64
+Signed-By: /etc/apt/keyrings/docker.asc
+```
+
+- Change the `Architectures` line if your architecture is not amd64.
+
+Install Docker Engine.
+
+```console
+sudo apt update
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
 
 ## Locales (Languages)
 
