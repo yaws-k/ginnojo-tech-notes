@@ -258,6 +258,8 @@ server {
 }
 ```
 
+- After configuring `default` server, delete `reuseport` from listen directive. `reuseport` must be specifed only once throughout the nginx configuration.
+
 Check if the server provides HTTP/3 as expected with [HTTP/3 Check](https://http3check.net/).
 
 ### Redirect HTTP to HTTPS
@@ -324,6 +326,11 @@ server {
         listen [::]:443 ssl default_server;
         http2 on;
 
+        listen 443 quic reuseport default_server;
+        listen [::]:443 quic reuseport default_server;
+        http3 on;
+        add_header Alt-Svc 'h3=":443"; ma=86400';
+
         include snippets/snakeoil.conf;
 
         ssl_protocols TLSv1.2 TLSv1.3;
@@ -341,6 +348,9 @@ server {
 - `default_server` indicates this server block is the default for the specified port.  
   Without this, nginx will use "the first server block" as the default.
 - `server_name _;` means access anything that doesn't match other server names. (In short, catch-all.)
+
+Delete `reuseport` if there is a site already using it. `reuseport` must be specifed only once throughout the nginx configuration.
+{: .notice--warning}
 
 Disable `default` site and enable `catch-all` site.
 
