@@ -30,7 +30,7 @@ docs:
     - title: "Let's Encrypt"
       url: /web/lets_encrypt
     - title: "SSO for nginx"
-      url: /web/sso_nginx
+      url: /web/sso_for_nginx
   - title: "DNS"
     children:
     - title: "Knot Resolver"
