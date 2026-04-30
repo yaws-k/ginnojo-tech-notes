@@ -83,7 +83,7 @@ dbfilename dump-rspamd.rdb
 # Limit memory usage
 # - Max memory depends on the data and server memory size
 # - Policy depends on the application (check the official documentation)
-maxmemory 500MB
+maxmemory 256mb
 maxmemory-policy volatile-ttl
 ```
 

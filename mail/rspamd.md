@@ -138,9 +138,11 @@ location /rspamd/ {
 Statistics is enabled by default, but it needs to learn before working.  
 Without enouch learning, Rspamd skips the Bayesian filter.
 
-```text
+```console
 bayes_classify: not classified as ham. The ham class needs more training samples. Currently: 0; minimum 200 required
 ```
+
+### Autolearn
 
 According to [Rspamd statistic setting](https://docs.rspamd.com/configuration/statistic/), create `/etc/rspamd/local.d/classifier-bayes.conf` to specify what to learn.
 
@@ -161,6 +163,52 @@ sudo systemctl reload rspamd
 
 Rspamd log should show the learning process.
 
-```text
+```console
 rspamd_stat_check_autolearn: <mail id>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
+```
+
+### Bayes expiry module
+
+[Bayes expiry module](https://docs.rspamd.com/modules/bayes_expiry) will remove old ant unused tokens to keep the database slim.  
+Add prerequisites to `/etc/rspamd/local.d/classifier-bayes.conf`.
+
+```conf
+# Token expiry time (seconds, 8,640,000 = 86,400 * 100 = 100 days)
+expire = 8640000;
+
+autolearn {
+  spam_threshold = 6.0;
+  junk_threshold = 4.0;
+  ham_threshold = -0.5;
+  check_balance = true;
+}
+```
+
+Create `/etc/rspamd/local.d/bayes_expiry.conf` to configure the expiry module.
+
+```conf
+interval = 86400;
+```
+
+- Expiry check runs every 60 seconds by default. It's too ofter for the very low traffic, so extend it to 24 hours.
+
+Reload Rspamd.
+
+```console
+sudo systemctl reload rspamd
+```
+
+Set the memory limit for Redis.  
+Update `/etc/redis/redis-rspamd.conf` and add following lines.  
+(See [Redis article](../database/redis.md)).
+
+```conf
+maxmemory 256mb
+maxmemory-policy volatile-ttl
+```
+
+Restart Redis.
+
+```console
+sudo systemctl restart redis-server@rspamd
 ```
