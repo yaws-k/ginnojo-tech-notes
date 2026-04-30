@@ -47,6 +47,8 @@ docs:
       url: /mail/smtpd_restrictions
     - title: "Rspamd"
       url: /mail/rspamd
+    - title: "Rspamd GPT plugin"
+      url: /mail/rspamd_gpt_plugin
     - title: "ClamAV"
       url: /mail/clamav
     - title: "DKIM signing"

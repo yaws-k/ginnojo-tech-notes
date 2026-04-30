@@ -115,6 +115,24 @@ sudo systemctl reload rspamd
 
 Simply send a legitimate email from outside and check if that reaches the inbox. That email should have Rspamd related headers.
 
+## Web UI
+
+Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:11334 to access from the internet.
+
+According to the [FAQ: How do I run the WebUI behind a proxy](https://docs.rspamd.com/faq/#how-do-i-run-the-webui-behind-a-proxy), add following lines to nginx configuration.
+
+```nginx
+location /rspamd/ {
+        proxy_pass http://localhost:11334/;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For "";
+}
+```
+
+`https://sever-name/rspamd/` will show the Rspamd Web UI and ask for the password. If you need more secured access, set up any authentication method in Nginx.
+
 ## Statistics (Bayesian filter)
 
 Statistics is enabled by default, but it needs to learn before working.  
@@ -146,21 +164,3 @@ Rspamd log should show the learning process.
 ```text
 rspamd_stat_check_autolearn: <mail id>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
 ```
-
-## Web UI
-
-Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:11334 to access from the internet.
-
-According to the [FAQ: How do I run the WebUI behind a proxy](https://docs.rspamd.com/faq/#how-do-i-run-the-webui-behind-a-proxy), add following lines to nginx configuration.
-
-```nginx
-location /rspamd/ {
-        proxy_pass http://localhost:11334/;
-
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For "";
-}
-```
-
-`https://sever-name/rspamd/` will show the Rspamd Web UI and ask for the password. If you need more secured access, set up any authentication method in Nginx.
