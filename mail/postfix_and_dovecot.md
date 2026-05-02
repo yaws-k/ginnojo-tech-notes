@@ -89,11 +89,12 @@ mydestination = localhost
 
 # Add virtual mailbox configurations
 virtual_mailbox_domains = mail.example.jp, example.jp
+virtual_mailbox_maps = lmdb:/etc/dovecot/users
 virtual_transport = lmtp:unix:private/dovecot-lmtp
 virtual_alias_maps = lmdb:/etc/postfix/virtual
 ```
 
-- `virtual_mailbox_maps` is not needed because it specifies where the emails should be stored based on the address (all emails goes to Dovecot).
+- `virtual_mailbox_maps` will be generated based on the Dovecot user database.
 
 To catch local system mails (e.g. cron job), edit `/etc/postfix/virtual`.
 
@@ -250,6 +251,34 @@ info@example.jp:{CRYPT}$2y$0...(snip)...W5Qa::::::
 - The trailing six colons `::::::` are for uid/gid/home/mail_location. All of them are snipped to use the default values.
 
 Dovecot checks this every time it gets an email. After updating this userdb, no reload or db compile is required.
+
+### Userdb for Postfix
+
+Generate postfix lmdb file from this userdb.
+
+Create a new shell script `/etc/dovecot/postfix_lmdb.sh` to generate the lmdb file.
+
+```bash
+#!/bin/bash
+awk -F: '{print $1 " OK"}' /etc/dovecot/users > /etc/dovecot/users.tmp
+postmap lmdb:/etc/dovecot/users.tmp
+mv /etc/dovecot/users.tmp.lmdb /etc/dovecot/users.lmdb
+rm /etc/dovecot/users.tmp
+```
+
+- This lmdb has usernames and dummy `OK` values because it's only used for Postfix to check if the user exists. (It should have the mailbox location.)
+
+Add execute permission to this script.
+
+```bash
+sudo chmod +x /etc/dovecot/postfix_lmdb.sh
+```
+
+Whenever the userdb is updated, run this script to update the lmdb file for Postfix.
+
+```bash
+sudo /etc/dovecot/postfix_lmdb.sh
+```
 
 ## Test
 

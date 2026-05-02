@@ -58,6 +58,7 @@ mua_relay_restrictions =
 
 mua_recipient_restrictions =
     permit_mynetworks,
+    reject_unlisted_recipient
     reject_non_fqdn_recipient
     reject_unknown_recipient_domain
     reject_unauth_destination
@@ -73,16 +74,17 @@ smtpd_recipient_restrictions = $mua_recipient_restrictions
 smtpd_data_restrictions = $mua_data_restrictions
 ```
 
-- message_size_limit: 20MB should be enough (default 10MB)
-- disable_vrfy_command: Prevent this command to be used for user scanning.
-- *_reject_code: 450 (try later) is the default. Spam servers may repeat retrying forever.
-- smtpd_helo_required: Yes to make the most use of helo_restrictions.
+- `message_size_limit` 20MB should be enough (default 10MB)
+- `disable_vrfy_command` Prevent this command to be used for user scanning.
+- `*_reject_code` 450 (try later) is the default. Spam servers may repeat retrying forever.
+- `smtpd_helo_required` Yes to make the most use of helo_restrictions.
+- `strict_rfc821_envelopes` For the later installation of content filter
 - `mua_helo_restrictions` can have two more restrictions, but sometimes legitimate servers do this and cause false-positive.
   - `reject_non_fqdn_helo_hostname` rejects servers that don't send fully qualified domain names in the HELO command.
   - `reject_unknown_helo_hostname` rejects servers with FQDNs that cannot be resolved.
-- strict_rfc821_envelopes: For the later installation of content filter
+- `reject_unlisted_recipient` under `mua_recipient_restrictions` is a `yes` by default, but it's better to be explicit.
 
-Reload Postfix to aplly new restrictions.
+Reload Postfix to apply new restrictions.
 
 ```bash
 sudo systemctl reload postfix
