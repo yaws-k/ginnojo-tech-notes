@@ -10,7 +10,7 @@ Rspamd provides Debian/Ubuntu repository for latest releases. Follow [the offici
 
 Add repository:
 
-```console
+```bash
 sudo apt install gpg
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://rspamd.com/apt-stable/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/rspamd.gpg
@@ -19,7 +19,7 @@ echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/
 
 Install Rspamd:
 
-```console
+```bash
 sudo apt update
 sudo apt --no-install-recommends install rspamd
 ```
@@ -62,20 +62,20 @@ dns {
 
 Check if configutest returns `syntax OK`.
 
-```console
+```bash
 sudo rspamadm configtest
 ```
 
 Restart Rspamd and check the status.
 
-```console
+```bash
 sudo systemctl restart rspamd
 sudo systemctl status rspamd
 ```
 
 Scan test messages.
 
-```console
+```bash
 echo -e "Subject: Test\n\nThis is a test message" | rspamc -h [::1]:11333
 ```
 
@@ -92,7 +92,7 @@ milter_default_action = accept
 
 Reload postfix.
 
-```console
+```bash
 sudo systemctl reload postfix
 ```
 
@@ -107,7 +107,7 @@ extended_spam_headers = true;
 
 Reload Rspamd.
 
-```console
+```bash
 sudo systemctl reload rspamd
 ```
 
@@ -138,9 +138,8 @@ location /rspamd/ {
 Statistics is enabled by default, but it needs to learn before working.  
 Without enouch learning, Rspamd skips the Bayesian filter.
 
-```console
 bayes_classify: not classified as ham. The ham class needs more training samples. Currently: 0; minimum 200 required
-```
+{: .notice}
 
 According to [Rspamd statistic setting](https://docs.rspamd.com/configuration/statistic/), create `/etc/rspamd/local.d/classifier-bayes.conf` to specify what to learn, and `expire` for [Bayes expiry module](https://docs.rspamd.com/modules/bayes_expiry).
 
@@ -157,15 +156,14 @@ autolearn {
 
 Reload Rspamd.
 
-```console
+```bash
 sudo systemctl reload rspamd
 ```
 
 Rspamd log should show the learning process.
 
-```console
 rspamd_stat_check_autolearn: <mail id>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
-```
+{: .notice}
 
 ## Redis memory limit
 
@@ -180,6 +178,6 @@ maxmemory-policy volatile-ttl
 
 Restart Redis.
 
-```console
+```bash
 sudo systemctl restart redis-server@rspamd
 ```

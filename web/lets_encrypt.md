@@ -12,13 +12,13 @@ This article explains the simplest and recommended way, [Certbot snap app](https
 
 Don't forget to add `--classic` option.
 
-```console
+```bash
 sudo snap install --classic certbot
 ```
 
 Add certbot symlink to enable `sudo certbot` command.
 
-```console
+```bash
 sudo ln -s /snap/bin/certbot /usr/local/bin/certbot
 ```
 
@@ -30,7 +30,7 @@ Certbot webroot check will make a file into `${webroot-path}/.well-known/acme-ch
 
 For Let's Encrypt validator, make a dedicated directory.
 
-```console
+```bash
 sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 ```
 
@@ -85,7 +85,7 @@ Request a certificate.
 
 - Certbot will ask for your email address and agreement confirmation to generate the account information.
 
-```console
+```bash
 $ sudo certbot certonly --webroot -w /var/www/certbot/ -d example.jp
 
 Saving debug log to /var/log/letsencrypt/letsencrypt.log
@@ -210,7 +210,7 @@ systemctl reload nginx
 
 Add execute permission to the script.
 
-```console
+```bash
 sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
 ```
 
@@ -218,6 +218,6 @@ sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
 
 Certbot renews certificates automatically. If you want to stop using the certificate, [revoke it](https://eff-certbot.readthedocs.io/en/latest/using.html#revoking-certificates).
 
-```console
+```bash
 sudo certbot revoke --cert-name example.jp
 ```

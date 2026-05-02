@@ -8,7 +8,7 @@ Install PostgreSQL (an open-source relational database).
 
 Install, then the package will take care of everything.
 
-```console
+```bash
 sudo apt install postgresql
 ```
 
@@ -21,6 +21,6 @@ Now, it's ready to use.
 
 Interface modules to connect to PostgreSQL. For example, CMS (mainly by PHP) will require php-pgsql interface.
 
-```console
+```bash
 sudo apt install php-pgsql ruby-pg python3-psycopg2
 ```

@@ -133,7 +133,7 @@ Installation complete. Continue to finish the installation and remove the instal
 A new format (deb822) apt-line is recommended since Debian 13, but not installed by default.  
 Login as `root` and migrate with the following command.
 
-```console
+```bash
 sudo apt modernize-sources
 ```
 
@@ -144,7 +144,7 @@ Update `/etc/fstab`.
 - Add `noatime` to XFS mount options for performance (because this partition is dedicated to MongoDB)
 - Remove `/dev/sr0` cdrom mount point (used only for the installation)
 
-```config
+```conf
 # <file system> <mount point>   <type>  <options>       <dump>  <pass>
 # / was on /dev/vda1 during installation
 UUID=(snip)     /               ext4    errors=remount-ro 0       1
@@ -156,6 +156,6 @@ UUID=(snip)     none            swap    sw                0       0
 
 Restart the server to apply the changes.
 
-```console
+```bash
 sudo reboot
 ```

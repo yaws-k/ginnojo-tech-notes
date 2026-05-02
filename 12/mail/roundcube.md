@@ -10,7 +10,7 @@ There is the [official installation guide](https://github.com/roundcube/roundcub
 
 Download the "Complete" package from the [official site](https://roundcube.net/download/). It contains all required packages (some additional ones are still needed).
 
-```console
+```bash
 wget https://github.com/roundcube/roundcubemail/releases/download/x.x.x/roundcubemail-x.x.x-complete.tar.gz
 ```
 
@@ -18,7 +18,7 @@ wget https://github.com/roundcube/roundcubemail/releases/download/x.x.x/roundcub
 
 Extract compressed files.
 
-```console
+```bash
 tar xfz roundcubemail-x.x.x-complete.tar.gz
 ```
 
@@ -26,13 +26,13 @@ tar xfz roundcubemail-x.x.x-complete.tar.gz
 
 Move the directory to `/var/www/`. For future updates, extract the version number from the directory name.
 
-```console
+```bash
 sudo mv ./roundcubemail-x.x.x /var/www/roundcubemail
 ```
 
 Change owner to `www-data`
 
-```console
+```bash
 sudo chown -R www-data:www-data /var/www/roundcubemail
 ```
 
@@ -40,7 +40,7 @@ sudo chown -R www-data:www-data /var/www/roundcubemail
 
 As the install guide explains, set up a database and a user on MariaDB.
 
-```console
+```bash
 sudo mariadb
 ```
 
@@ -54,7 +54,7 @@ FLUSH PRIVILEGES;
 
 Move to Roundcube home directory and import initial tables.
 
-```console
+```bash
 mariadb -u username -p roundcubemail < SQL/mysql.initial.sql
 ```
 
@@ -75,14 +75,14 @@ server {
 
 Enable this site.
 
-```console
+```bash
 sudo ln -s /etc/nginx/sites-available/mail.example.jp /etc/nginx/sites-enabled/mail.example.jp
 sudo systemctl reload nginx
 ```
 
 Issue an ssl certificate.
 
-```console
+```bash
 sudo certbot certonly --webroot -w /var/www/certbot/ -d mail.example.jp
 ```
 
@@ -127,7 +127,7 @@ server {
 
 Reload nginx.
 
-```console
+```bash
 sudo systemctl reload nginx
 ```
 
@@ -156,7 +156,7 @@ Check if SMTP and IMAP login work.
 
 Delete installer directory.
 
-```console
+```bash
 sudo rm -r /var/www/roundcube/installer
 ```
 

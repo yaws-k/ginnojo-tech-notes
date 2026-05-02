@@ -49,7 +49,8 @@ The SSH should accept user and password authentication for now (SSH default). Lo
 $ mkdir ~/.ssh
 $ chmod 700 ~/.ssh
 $ nano ~/.ssh/authorized_keys
-~~ Copy & Paste your public key (ed25519 is a short key and easy to copy & paste) ~~
+  - Copy & Paste your public key
+    (ed25519 is a short key and easy to copy & paste)
 $ chmod 600 ~/.ssh/authorized_keys
 ```
 
@@ -210,14 +211,14 @@ To use the Web UI, create a CrowdSec account.
 After logging into the console, you can get your key to Enroll the server.
 
 ```console
-sudo cscli console enroll -e context [enrollment key]
+# cscli console enroll -e context [enrollment key]
 ```
 
 Then follow the [official manual](https://doc.crowdsec.net/u/getting_started/post_installation/console) to accept enrollment.  
 After restarting the CrowdSec service, it will sync with console.
 
 ```console
-sudo systemctl restart crowdsec
+# systemctl restart crowdsec
 ```
 
 Now the console will show statistics of security alerts.  

@@ -10,7 +10,7 @@ WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. 
 
 ## Install Postfix
 
-```console
+```bash
 sudo apt install postfix postfix-lmdb
 ```
 
@@ -24,7 +24,7 @@ The installer will ask two questions.
 
 Open ports for SMTP (25) and Submissions (formerly SMTPS, 465).
 
-```console
+```bash
 sudo firewall-cmd --add-service=smtp --permanent
 sudo firewall-cmd --add-service=smtps --permanent
 sudo firewall-cmd --reload
@@ -73,7 +73,7 @@ Is the information correct? [Y/n] y
 
 Disable shell login because this account is only for the mail storage.
 
-```console
+```bash
 sudo usermod -s /usr/sbin/nologin vmail
 ```
 
@@ -97,7 +97,7 @@ virtual_alias_maps = lmdb:/etc/postfix/virtual
 
 To catch local system mails (e.g. cron job), edit `/etc/postfix/virtual`.
 
-```text
+```conf
 admin@mail.example.jp info@mail.example.jp
 mailer-daemon@mail.example.jp info@mail.example.jp
 postmaster@mail.example.jp info@mail.example.jp
@@ -106,13 +106,13 @@ root@mail.example.jp info@mail.example.jp
 
 Make LMDB file of `/etc/postfix/virtual`.
 
-```console
+```bash
 sudo postmap virtual
 ```
 
 Reload Postfix to apply changes on main.cf
 
-```console
+```bash
 sudo systemctl reload postfix
 ```
 
@@ -122,7 +122,7 @@ sudo systemctl reload postfix
 
 Dovecot-LMTP will take over emails from Postfix and deliver them to the final destination directories in `/home/vmail/`.
 
-```console
+```bash
 sudo apt install dovecot-lmtpd
 ```
 
@@ -226,7 +226,7 @@ For more details, see official documents.
 
 Reload Dovecot to apply new configurations.
 
-```console
+```bash
 sudo systemctl reload dovecot
 ```
 
@@ -255,13 +255,13 @@ Dovecot checks this every time it gets an email. After updating this userdb, no 
 
 Follow the logs with `jounalctl` and send a test mail to the valid user on this server.
 
-```console
+```bash
 sudo jounalctl -f SYSLOG_FACILITY=2
 ```
 
 If you need detailed logs, turn on debug switches in `/etc/dovecot/conf.d/10-logging.conf`.
 
-```console
+```conf
 auth_verbose = yes
 auth_debug_passwords = yes
 ```

@@ -10,7 +10,7 @@ WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. 
 
 ## Install
 
-```console
+```bash
 sudo apt install dovecot-sieve dovecot-managesieved
 ```
 
@@ -19,7 +19,7 @@ sudo apt install dovecot-sieve dovecot-managesieved
 
 Open the port for managesieved
 
-```console
+```bash
 sudo firewall-cmd --add-service=managesieve --permanent
 sudo firewall-cmd --reload
 ```
@@ -28,7 +28,7 @@ sudo firewall-cmd --reload
 
 Edit `/etc/dovecot/conf.d/20-lmtp.conf` mail_plugins line to enable Sieve plugin.
 
-```config
+```conf
 protocol lmtp {
   mail_plugins {
     sieve = yes
@@ -38,7 +38,7 @@ protocol lmtp {
 
 Reload dovecot.
 
-```console
+```bash
 sudo systemctl reload dovecot
 ```
 

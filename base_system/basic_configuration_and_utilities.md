@@ -9,7 +9,7 @@
 - As migrated to the new deb822 format at the end of installation, the file looks very different from the old apt-line format.  
   <https://wiki.debian.org/SourcesList#APT_sources_format>
 
-```config
+```conf
 Types: deb
 URIs: http://ftp.jp.debian.org/debian/
 Suites: trixie
@@ -27,7 +27,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 After updating apt-line, update&upgrade.
 
-```console
+```bash
 sudo apt update
 sudo apt upgrade
 ```
@@ -36,13 +36,13 @@ sudo apt upgrade
 
 Snap is a package management system other than apt. Some applications, such as Certbot, are available through snap. Install and update snapd according to the [official howto for Debian](https://snapcraft.io/docs/tutorials/install-the-daemon/debian/).
 
-```console
+```bash
 sudo apt install snapd
 ```
 
 Log out and Log in again tp activate the new path, and install the latest snapd with core snap.
 
-```console
+```bash
 sudo snap install snapd
 sudo snap install core
 ```
@@ -51,7 +51,7 @@ sudo snap install core
 
 Install basic utilities for server management.
 
-```console
+```bash
 sudo apt install dnsutils man-db net-tools rsync tmux wget curl ca-certificates
 ```
 
@@ -73,7 +73,7 @@ Install major programming languages. (They will be required and automatically in
 
 ruby & ruby-dev: ruby-dev will be required when connecting to databases.
 
-```console
+```bash
 sudo apt install ruby ruby-dev
 ```
 
@@ -84,7 +84,7 @@ System-wide Ruby is usually old and suitable for running applications, but not f
 As prerequisites, install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
 (libreadline6-dev is changed to libreadline-dev)
 
-```console
+```bash
 sudo apt install git
 sudo apt install autoconf build-essential libffi-dev libgmp-dev libssl-dev libyaml-dev rustc zlib1g-dev
 sudo apt install autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
@@ -92,15 +92,10 @@ sudo apt install autoconf patch build-essential rustc libssl-dev libyaml-dev lib
 
 Then, use [rbenv installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
 
-Log in as a normal user that you want to install rbenv.
+Log in as a normal user that you want to install rbenv. The installer script will set up rbenv.
 
 ```console
-curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
-```
-
-The script will install rbenv and configure the shell.
-
-```console
+$ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
 Installing rbenv with git...
 (snip)
 Setting up your shell with `rbenv init bash' ...
@@ -112,7 +107,7 @@ rbenv should be good to go.
 
 All set. Re-login to enable rbenv, and, for example, install Ruby 3.4.9.
 
-```console
+```bash
 rbenv install 3.4.9
 ```
 
@@ -124,7 +119,7 @@ See [rbenv GitHub README](https://github.com/rbenv/rbenv?tab=readme-ov-file#inst
 
 python3: The package "python" was python2.x and not available anymore.
 
-```console
+```bash
 sudo apt install python3 python3-venv
 ```
 
@@ -132,14 +127,14 @@ sudo apt install python3 python3-venv
 
 For development, venv is useful to create isolated environments.
 
-```console
+```bash
 python3 -m venv directory_name
 source directory_name/bin/activate
 ```
 
 To exit from the venv, just run `deactivate`.
 
-```console
+```bash
 deactivate
 ```
 
@@ -149,7 +144,7 @@ If you need multiple versions of Python, [pyenv](https://github.com/pyenv/pyenv)
 
 Installing only `php` will install apache2 according to the dependency. To use nginx, you have to explicitly choose fpm version.
 
-```console
+```bash
 sudo apt install php php-fpm php8.4-fpm
 ```
 
@@ -164,7 +159,7 @@ date.timezone = "Asia/Tokyo"
 
 Restart fpm to reload the config.
 
-```console
+```bash
 sudo systemctl reload php8.4-fpm
 ```
 
@@ -173,13 +168,13 @@ sudo systemctl reload php8.4-fpm
 Headless JRE should be enough for running Java applications.  
 Install JDK if you plan to develop with Java.
 
-```console
+```bash
 sudo apt install default-jre-headless
 ```
 
 ### Rust 1.85
 
-```console
+```bash
 sudo apt install rustc
 ```
 
@@ -187,7 +182,7 @@ sudo apt install rustc
 
 ### Perl 5.40
 
-```console
+```bash
 sudo apt install perl
 ```
 
@@ -206,13 +201,13 @@ To use Docker images, install Docker Engine according to the [official howto for
 
 - `curl` and `ca-certificates` should be already installed.
 
-```console
+```bash
 sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
 ```
 
 Create `/etc/apt/sources.list.d/docker.sources` to add Docker repository.
 
-```text
+```conf
 Types: deb
 URIs: https://download.docker.com/linux/debian
 Suites: trixie
@@ -225,7 +220,7 @@ Signed-By: /etc/apt/keyrings/docker.asc
 
 Install Docker Engine.
 
-```console
+```bash
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
@@ -234,7 +229,7 @@ sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin dock
 
 Generate locales if you need to display characters other than English. In my case, I need ja_JP.
 
-```console
+```bash
 sudo dpkg-reconfigure locales
 ```
 
@@ -244,7 +239,7 @@ You can add any locales as you want. The default locale can also be anything, bu
 
 `vim` stands for Vi IMproved. If you decide to use Vi (installed by default), install Vim to enhance simple Vi.
 
-```console
+```bash
 sudo apt install vim
 ```
 
@@ -292,20 +287,20 @@ set ambiwidth=double
 
 systemd-timesyncd works like NTP client. Install this if `/etc/systemd/timesyncd.conf` doesn't exist.
 
-```console
+```bash
 sudo apt install systemd-timesyncd
 ```
 
 It works out of the box by using debian ntp pool servers. If you know better ntp servers (e.g. NTP servers in your network), update `/etc/systemd/timesyncd.conf` to refer them.
 
-```console
+```conf
 [Time]
 NTP=ntp.example.com
 ```
 
 Restart the service.
 
-```console
+```bash
 sudo systemctl restart systemd-timesyncd
 ```
 
@@ -313,7 +308,7 @@ sudo systemctl restart systemd-timesyncd
 
 During the install process, only IPv4 was set. Add IPv6 configurations to `/etc/network/interfaces`.
 
-```console
+```conf
 source /etc/network/interfaces.d/*
 
 # The loopback network interface
@@ -337,28 +332,24 @@ iface ens3 inet6 static
 
 To update `/etc/resolv.conf`, install `resolvconf`.
 
-```console
+```bash
 sudo apt install resolvconf
 ```
 
 Restart network and check if it works.
 
 ```console
-sudo ifdown ens3 && sudo ifup ens3
-```
-
-It will return ipv6 error, because IPv6 config is newly added.  
-(It's expected.)
-
-```console
+$ sudo ifdown ens3 && sudo ifup ens3
 RTNETLINK answers: No such process
 Error: ipv6: address not found.
 Waiting for DAD... Done
 ```
 
+- It will return ipv6 error, because IPv6 config is newly added.(It's expected.)
+
 Check the IP addresses and try pinging via IPv6.
 
-```console
+```bash
 ip address
 ping6 google.com
 ```

@@ -52,7 +52,7 @@ service auth {
 
 Restart Dovecot.
 
-```console
+```bash
 sudo systemctl restart dovecot
 ```
 
@@ -80,7 +80,7 @@ smtpd_tls_auth_only = yes
 
 Reload Postfix
 
-```console
+```bash
 sudo systemctl reload postfix
 ```
 
@@ -112,7 +112,7 @@ submissions inet n       -       y       -       -       smtpd
 
 Reload Postfix
 
-```console
+```bash
 sudo systemctl reload postfix
 ```
 

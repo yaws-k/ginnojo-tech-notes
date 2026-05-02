@@ -47,13 +47,13 @@ Steps
 The main process of data migration. `doveadm` command will copy all emails in all directories (including empty directories) and Sieve scripts.  
 Be aware that any existing data on the new server will be deleted during this process.
 
-```console
+```bash
 sudo doveadm backup -u user1@example.jp remote:new-server.example.jp
 ```
 
 As the user is specified with `-u` parameter, this migrates one user's data. If you want to migrate all user emails, you can use `-A` paramter to migrate all users listed in the userdb.
 
-```console
+```bash
 sudo doveadm backup -A remote:new-server.example.jp
 ```
 
@@ -61,7 +61,7 @@ sudo doveadm backup -A remote:new-server.example.jp
 
 To copy emails existing only on the old server, use `doveadm sync` command.
 
-```console
+```bash
 sudo doveadm sync -1 -u user1@example.jp remote:new-server.example.jp
 ```
 

@@ -8,7 +8,7 @@ Install MariaDB (an RDB forked from MySQL).
 
 Install, then the package will take care of everything.
 
-```console
+```bash
 sudo apt install mariadb-server
 ```
 
@@ -26,6 +26,6 @@ Check `/usr/share/doc/mariadb-server/README.Debian.gz` for more details.
 
 Interface modules to connect to MariaDB. For example, CMS (mainly by PHP) will require php-mysql interface.
 
-```console
+```bash
 sudo apt install php-mysql ruby-mysql2 python3-mysqldb
 ```

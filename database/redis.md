@@ -8,7 +8,7 @@ Redis is a key-value database. Some applications, such as Rspamd, require Redis 
 
 The package 'redis' will install required dependencies.
 
-```console
+```bash
 sudo apt install redis
 ```
 
@@ -18,7 +18,8 @@ Now a Redis instans is running and listening on port 6379.
 
 The Redis log `/var/log/redis/redis-server.log` will show the following warning.
 
-> \# WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see <https://github.com/jemalloc/jemalloc/issues/1328>. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+\# WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see <https://github.com/jemalloc/jemalloc/issues/1328>. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+{: .notice}
 
 If the server is mainly for Redis, change the setting accordingly.
 
@@ -35,7 +36,7 @@ vm.overcommit_memory = 1
 
 Activate the setting immediately.
 
-```console
+```bash
 sudo sysctl -p /etc/sysctl.d/redis.conf
 ```
 
@@ -48,7 +49,7 @@ To run multiple instances, stop the default `redis-server.service` and run dedic
 
 Stop the default instance and use the default configuration as a template.
 
-```console
+```bash
 sudo systemctl stop redis-server
 sudo systemctl disable redis-server
 ```
@@ -89,7 +90,7 @@ maxmemory-policy volatile-ttl
 
 Change ownership of newly created config file to `redis:redis`.
 
-```console
+```bash
 sudo chown redis:redis /etc/redis/redis-rspamd.conf
 ```
 
@@ -97,13 +98,13 @@ sudo chown redis:redis /etc/redis/redis-rspamd.conf
 
 Add a service file for new instance.
 
-```console
+```bash
 sudo systemctl enable redis-server@rspamd
 sudo systemctl start redis-server@rspamd
 ```
 
 Check the new instance status.
 
-```console
+```bash
 sudo systemctl status redis-server@rspamd
 ```

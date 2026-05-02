@@ -11,7 +11,7 @@ There is the [official install guide](https://documentation.concretecms.org/deve
 Download [the latest version](https://www.concretecms.org/download).  
 Though the recommended method is Composer, it is too much to use only for Concrete installation. This article shows a simple way to download and unzip the file.
 
-```console
+```bash
 wget https://www.concretecms.org/download_file/2dxxxx/xxxx -O concrete.zip
 ```
 
@@ -19,20 +19,20 @@ wget https://www.concretecms.org/download_file/2dxxxx/xxxx -O concrete.zip
 
 Unzip the downloaded file and move all files to `/var/www`.
 
-```console
+```bash
 unzip concrete.zip
 sudo mv concrete-cms-9.x.x /var/www/concrete
 ```
 
 Change the owner.
 
-```console
+```bash
 sudo chown -R www-data:www-data /var/www/concrete
 ```
 
 ## Prepare Database
 
-```console
+```bash
 sudo mariadb
 ```
 
@@ -59,14 +59,14 @@ server {
 
 Enable this site.
 
-```console
+```bash
 sudo ln -s /etc/nginx/sites-available/concrete.example.jp /etc/nginx/sites-enabled/concrete.example.jp
 sudo systemctl reload nginx
 ```
 
 Issue an ssl certificate.
 
-```console
+```bash
 sudo certbot certonly --webroot -w /var/www/certbot/ -d concrete.example.jp
 ```
 

@@ -14,7 +14,7 @@ Install dovecot-imapd packages and open IMAPS (993) port.
 
 - Open IMAP (143) port if you need STARTTLS
 
-```console
+```bash
 sudo apt install dovecot-imapd
 sudo firewall-cmd --add-service=imaps --permanent
 sudo firewall-cmd --reload
@@ -31,7 +31,7 @@ ssl_key = </etc/letsencrypt/live/example.jp/privkey.pem
 
 Then reload Dovecot.
 
-```console
+```bash
 sudo systemctl reload dovecot
 ```
 

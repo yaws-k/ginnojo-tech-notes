@@ -14,20 +14,20 @@ As of April 2026, Debian 13 "Trixie" is not yet officially supported by the late
 
 Import the gpg key.
 
-```console
+```bash
 curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
 sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
 ```
 
 Add MongoDB apt-line.
 
-```console
+```bash
 echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/debian bookworm/mongodb-org/8.2 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.2.list
 ```
 
 Update apt sources.
 
-```console
+```bash
 sudo apt update
 ```
 
@@ -35,7 +35,7 @@ sudo apt update
 
 Install `mongdb-org`, the community version.
 
-```console
+```bash
 sudo apt install mongodb-org
 ```
 
@@ -44,7 +44,7 @@ In my case, XFS partition is made during the Debian installation and mounted on 
 
 Make a new MongoDB data directory and change the ownership.
 
-```console
+```bash
 cd /var/xfs
 sudo mkdir mongodb
 sudo chown mongodb:mongodb mongodb
@@ -52,7 +52,7 @@ sudo chown mongodb:mongodb mongodb
 
 Change `/etc/mongod.conf` to let MongoDB use the new directory.
 
-```config
+```conf
 # Where and how to store data.
 storage:
   dbPath: /var/xfs/mongodb
@@ -62,7 +62,7 @@ storage:
 
 Reload daemons, enable Mongod and start.
 
-```console
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable mongod
 sudo systemctl start mongod
@@ -100,14 +100,14 @@ admin> exit
 
 Enable user authentication. Change security settings in `/etc/mongod.conf`.
 
-```config
+```conf
 security:
   authorization: enabled
 ```
 
 If you need to connect from servers other than localhost, add IP addresses separated by commas.
 
-```config
+```conf
 net:
   port: 27017
   bindIp: 127.0.0.1, 192.168.10.1
@@ -115,7 +115,7 @@ net:
 
 Restart MongoDB.
 
-```console
+```bash
 sudo systemctl restart mongod
 ```
 

@@ -66,7 +66,7 @@ vouch:
 oauth:
   provider: google
   # get credentials from...
-  # https://console.developers.google.com/apis/credentials
+  # https://bash.developers.google.com/apis/credentials
   client_id: xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
   client_secret: xxxxxxxxxxxxxxxxxxxxxxxx
   callback_urls:
@@ -74,7 +74,7 @@ oauth:
   preferredDomain: gmail.com
 ```
 
-- On the Google Cloud Console, set the "Authorized redirect URIs" to `https://vouch.example.jp/auth` to match the `callback_urls` in the config file.
+- On the Google Cloud bash, set the "Authorized redirect URIs" to `https://vouch.example.jp/auth` to match the `callback_urls` in the config file.
 
 ### Configure Docker composer
 
@@ -258,7 +258,7 @@ vouch:
 oauth:
   provider: google
   # get credentials from...
-  # https://console.developers.google.com/apis/credentials
+  # https://bash.developers.google.com/apis/credentials
   client_id: xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
   client_secret: xxxxxxxxxxxxxxxxxxxxxxxx
   callback_urls:

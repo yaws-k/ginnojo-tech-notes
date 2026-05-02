@@ -6,13 +6,13 @@
 
 "nginx" package has some variations according to the bundled modules. Choose either one from nginx-light, nginx-core, nginx-full, nginx-extras. In my case, the lightest nginx-light is enough.
 
-```console
+```bash
 sudo apt install nginx-light ssl-cert
 ```
 
 Open HTTP port for Nginx.
 
-```console
+```bash
 sudo firewall-cmd --add-service=http --permanent
 sudo firewall-cmd --reload
 ```
@@ -45,7 +45,7 @@ gzip_types text/plain text/css application/json application/javascript text/xml 
 
 Reload nginx to enable.
 
-```console
+```bash
 sudo systemctl reload nginx
 ```
 
@@ -115,7 +115,7 @@ server {
 
 To enable this site, make a symlink at `/etc/nginx/sites-enabled/example.jp` and reload nginx.
 
-```console
+```bash
 sudo ln -s /etc/nginx/sites-available/example.jp /etc/nginx/sites-enabled/example.jp
 sudo systemctl reload nginx
 ```
@@ -164,7 +164,7 @@ server {
 
 Open HTTPS port for Nginx.
 
-```console
+```bash
 sudo firewall-cmd --add-service=https --permanent
 sudo firewall-cmd --reload
 ```
@@ -212,7 +212,7 @@ Using the proper certificate is explained in the "Let's Encrypt part. The "snake
 
 Open HTTP/3 port for Nginx.
 
-```console
+```bash
 sudo firewall-cmd --add-service=http3 --permanent
 sudo firewall-cmd --reload
 ```
@@ -354,7 +354,7 @@ Delete `reuseport` if there is a site already using it. `reuseport` must be spec
 
 Disable `default` site and enable `catch-all` site.
 
-```console
+```bash
 sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/catch-all /etc/nginx/sites-enabled/catch-all
 sudo systemctl reload nginx

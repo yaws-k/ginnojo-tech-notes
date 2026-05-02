@@ -46,20 +46,20 @@ ed255519 is recommended as a modern way, but it may not be supported be all mail
 
 ed25519 key generation
 
-```console
+```bash
 rspamadm dkim_keygen -s 's20260401' -t ed25519 -k mail.example.jp.s20260401.key > dns-mail.example.jp.txt
 ```
 
 RSA  key generation
 
-```console
+```bash
 rspamadm dkim_keygen -s 's20260401' -b 2048 -k mail.example.jp.s20260401.key > dns-mail.example.jp.txt
 ```
 
 `rspamadmin dkim_keygen` command generates a private key `mail.example.jp.s20260401.key` and DNS record text `dns0mail.example.jp.txt`.  
 Move the private key to Rspam DKIM key path and change the owner to `_rspamd` user.
 
-```console
+```bash
 sudo mv mail.example.jp.s20260401.key /var/lib/rspamd/dkim/
 sudo chmod 600 /var/lib/rspamd/dkim/mail.example.jp.s20260401.key
 sudo chown _rspamd:_rspamd /var/lib/rspamd/dkim/mail.example.jp.s20260401.key
@@ -69,7 +69,7 @@ sudo chown _rspamd:_rspamd /var/lib/rspamd/dkim/mail.example.jp.s20260401.key
 
 Add DKIM key records to your DNS records.
 
-```text
+```conf
 s20260401._domainkey.mail  IN  TXT  v=DKIM1; k=ed25519; p=dW...SU="
 ```
 
@@ -79,6 +79,6 @@ s20260401._domainkey.mail  IN  TXT  v=DKIM1; k=ed25519; p=dW...SU="
 
 Reload Rspamd and it should start signing emails.
 
-```console
+```bash
 sudo systemctl reload rspamd
 ```

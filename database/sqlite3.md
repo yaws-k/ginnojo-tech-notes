@@ -6,7 +6,7 @@ SQLite3 is a small database for light usage.
 
 ## Install
 
-```console
+```bash
 sudo apt install sqlite3
 ```
 
@@ -20,6 +20,6 @@ SQLite3 is a file-based database. Unlike large-scale DBMS, backup/restore is ver
 
 PHP and Ruby require interfaces to use SQLite3. Python3 includes SQLite3 interface by default.
 
-```console
+```bash
 sudo apt install php-sqlite3 ruby-sqlite3
 ```

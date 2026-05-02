@@ -8,7 +8,7 @@ ClamAV is anti-virus software.
 
 The package is `clamav`.
 
-```console
+```bash
 sudo apt install clamav clamav-daemon
 ```
 
@@ -21,13 +21,13 @@ Clamav can connect to Postfix via milter, but I will use this through Rspamd.
 Turn off phishin URL detection because Rspamd will take care of this kind of content filtering.  
 Update `/etc/clamav/clamd.conf`.
 
-```config
+```conf
 PhishingScanURLs false
 ```
 
 After the virus database is ready and config files are updated, start clamav-daemon.
 
-```console
+```bash
 sudo systemctl start clamav-daemon
 ```
 
@@ -38,7 +38,7 @@ Clamav temporarily uses double the memory during the refresh process by default.
 
 Add the following line to `/etc/clamav/clamd.conf`.
 
-```config
+```conf
 ConcurrentDatabaseReload no
 ```
 
@@ -69,7 +69,7 @@ clamav {
 
 Reload Rspamd.
 
-```console
+```bash
 sudo systemctl reload rspamd
 ```
 
@@ -77,7 +77,7 @@ sudo systemctl reload rspamd
 
 [Download EICAR test virus](https://www.eicar.org/download-anti-malware-testfile/) and send it from localhost using mutt.
 
-```console
+```bash
 sudo apt install mutt
 wget "https://secure.eicar.org/eicar.com"
 echo "EICAR test virus" | mutt -a eicar.com -s "Virus scanner test mail `date`" -- info@example.jp
@@ -85,6 +85,5 @@ echo "EICAR test virus" | mutt -a eicar.com -s "Virus scanner test mail `date`" 
 
 You should find the virus detection log;
 
-```text
 milter-reject: END-OF-MESSAGE from localhost[127.0.0.1]: 5.7.1 clamav: virus found: "Eicar-Signature"; from=<xxx@example.jp> to=<info@example.jp>
-```
+{: .notice}

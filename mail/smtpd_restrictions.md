@@ -84,6 +84,6 @@ smtpd_data_restrictions = $mua_data_restrictions
 
 Reload Postfix to aplly new restrictions.
 
-```console
-# sudo systemctl reload postfix
+```bash
+sudo systemctl reload postfix
 ```

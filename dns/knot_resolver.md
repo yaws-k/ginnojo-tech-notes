@@ -8,7 +8,7 @@ Rspamd (a spam filter) [requires your own recursive resolver](https://docs.rspam
 
 According to the [Knot-Resolver official installation instruction](https://www.knot-resolver.cz/documentation/latest/gettingstarted-install.html), follow [the official repos for Debian/Ubuntu](https://pkg.labs.nic.cz/doc/?project=knot-resolver) instruction to install the package from Knot Resolver repository.
 
-```console
+```bash
 sudo apt install apt-transport-https ca-certificates wget
 sudo wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
 echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/knot-resolver trixie main" | sudo tee /etc/apt/sources.list.d/cznic-labs-knot-resolver.list
