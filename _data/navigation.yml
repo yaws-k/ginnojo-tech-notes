@@ -37,6 +37,8 @@ docs:
       url: /dns/knot_resolver
   - title: "Mail"
     children:
+    - title: "Mail overview"
+      url: /mail/mail_overview
     - title: "Postfix and Dovecot"
       url: /mail/postfix_and_dovecot
     - title: "Dovecot IMAPd"
