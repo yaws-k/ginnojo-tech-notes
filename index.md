@@ -6,6 +6,17 @@ A collection of technical notes and guides on setting up a multi-purpose server 
 
 Everything is set up on the same server for simplicity and ease of management. For heavy-duty production environments, consider using separate servers for each service.
 
-## Debian versions
+## Debian version
 
 The guides are based on Debian 13 (Trixie), released in August 2025.
+
+## Overview
+
+The overview of Filesystem, OS, and Software on the server.  
+(Click the image to enlarge it.)
+
+{% include figure popup=true image_path="/assets/images/overview.drawio.svg" alt="Overview" %}
+
+- `xfs` partition is for MongoDB data storage.
+- `certbot` works as a snap package.
+- `vouch-proxy` works as a docker image.
