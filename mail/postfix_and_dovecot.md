@@ -260,7 +260,7 @@ Create a new shell script `/etc/dovecot/postfix_lmdb.sh` to generate the lmdb fi
 
 ```bash
 #!/bin/bash
-awk -F: '{print $1 " OK"}' /etc/dovecot/users > /etc/dovecot/users.tmp
+awk -F: 'NF > 0 && $1 != "" {print $1 " OK"}' /etc/dovecot/users > /etc/dovecot/users.tmp
 postmap lmdb:/etc/dovecot/users.tmp
 mv /etc/dovecot/users.tmp.lmdb /etc/dovecot/users.lmdb
 rm /etc/dovecot/users.tmp
