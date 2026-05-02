@@ -1,6 +1,6 @@
 main:
   - title: "Home"
-    url: https://notes.ginnojo.tech/
+    url: /
 
 docs:
   - title: "Base system"
