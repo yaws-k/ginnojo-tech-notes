@@ -14,13 +14,11 @@ sudo apt install mariadb-server
 
 Now, it's ready to use.
 
-### MariaDB in Debian is secure by default
-
 You may find articles recommending `mysql_secure_installation`, but there is no need to run it.  
 Check `/usr/share/doc/mariadb-server/README.Debian.gz` for more details.
 
-> There is absolutely no need to run the script `mariadb-secure-installation` or (`mysql_secure_installation`) after installing MariaDB with `apt install mariadb-server`. The script is useless, and very misleading with reporting
-> "Success!" after every step even if it did nothing.
+There is absolutely no need to run the script `mariadb-secure-installation` or (`mysql_secure_installation`) after installing MariaDB with `apt install mariadb-server`. The script is useless, and very misleading with reporting "Success!" after every step even if it did nothing.
+{: .notice--info}
 
 ## Interface for PHP/Ruby/Python
 

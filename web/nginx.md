@@ -22,8 +22,8 @@ sudo firewall-cmd --reload
 Install CrowdSec collections for nginx to block malicious activities.
 
 ```bash
-cscli collections install crowdsecurity/nginx
-cscli collections install crowdsecurity/http-cve
+sudo cscli collections install crowdsecurity/nginx
+sudo cscli collections install crowdsecurity/http-cve
 sudo systemctl reload crowdsec
 ```
 
@@ -351,6 +351,7 @@ server {
         access_log off;
         log_not_found off;
 
+        # Disconnect
         return 444;
 }
 ```

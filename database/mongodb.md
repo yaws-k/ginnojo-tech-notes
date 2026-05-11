@@ -6,6 +6,7 @@ MongoDB is a document DB. It has both commercial and free (community edition) li
 There is no official Debian package for MongoDB. [The official document](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-debian/) explains how to install the current version of the community edition.
 
 As of April 2026, Debian 13 "Trixie" is not yet officially supported by the latest 8.2.
+{: .notice--warning}
 
 - In this article, packages for Debian 12 "Bookworm" are used (and they look working)
 - Wait for the official support if you are not in a hurry

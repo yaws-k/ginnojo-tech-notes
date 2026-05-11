@@ -24,7 +24,9 @@ sudo ln -s /snap/bin/certbot /usr/local/bin/certbot
 
 "webroot" doesn't require any plugins. Certbot itself is enough.
 
-## Configure the site for http challenge
+## HTTP challenge
+
+### Directory for webroot
 
 Certbot webroot check will make a file into `${webroot-path}/.well-known/acme-challenge/(random url)` and Let's Encrypt server checks if that file is accessible and correct.
 
@@ -33,6 +35,59 @@ For Let's Encrypt validator, make a dedicated directory.
 ```bash
 sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 ```
+
+### Default site configuration
+
+To get a new certificate for the first time, accept HTTP access by Let's Encrypt validator with the default server (catch-all server).
+
+```nginx
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        root /var/www/certbot;
+
+        # Disconnect all by default
+        location / {
+                return 444;
+        }
+
+        # Accept Let's Encrypt validation, or disconnect
+        location /.well-known/acme-challenge/ {
+                try_files $uri =444;
+        }
+
+        # Turn off useless logs
+        access_log off;
+        log_not_found off;
+}
+
+server {
+        listen 443 ssl default_server;
+        listen [::]:443 ssl default_server;
+        http2 on;
+
+        listen 443 quic reuseport default_server;
+        listen [::]:443 quic reuseport default_server;
+        http3 on;
+        add_header Alt-Svc 'h3=":443"; ma=86400';
+
+        include snippets/snakeoil.conf;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+
+        server_name _;
+
+        # Turn off useless logs
+        access_log off;
+        log_not_found off;
+
+        # Disconnect
+        return 444;
+}
+```
+
+### Per-site snippet
 
 Make a snippet for certbot configuration. This will be included in the server block for HTTP access from Let's Encrypt server.
 
@@ -47,13 +102,13 @@ location / {
         return 308 https://$host$request_uri;
 }
 
-# Add the exception
+# Exception for Let's Encrypt validation
 location /.well-known/acme-challenge/ {
         try_files $uri =404;
 }
 ```
 
-`/etc/nginx/sites-available/exmaple.jp.conf`
+`/etc/nginx/sites-available/exmaple.jp.conf` will look like the following, after the certificate is issued.
 
 ```nginx
 server {
@@ -71,6 +126,10 @@ server {
         http2 on;
 
         (snip)
+
+        # Include SSL/TLS configurations
+        ssl_certificate /etc/letsencrypt/live/example.jp/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/example.jp/privkey.pem;
 }
 ```
 
@@ -187,7 +246,19 @@ server {
 
         root /var/www/html;
 
-        (snip)
+        index index.html index.php;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        access_log /var/log/nginx/example.jp-access.log;
+        error_log /var/log/nginx/example.jp-error.log;
+
+        location ~ \.php($|/) {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
 }
 ```
 

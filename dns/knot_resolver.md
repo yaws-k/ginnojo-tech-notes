@@ -11,7 +11,21 @@ According to the [Knot-Resolver official installation instruction](https://www.k
 ```bash
 sudo apt install apt-transport-https ca-certificates wget
 sudo wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
-echo "deb [signed-by=/usr/share/keyrings/cznic-labs-pkg.gpg] https://pkg.labs.nic.cz/knot-resolver trixie main" | sudo tee /etc/apt/sources.list.d/cznic-labs-knot-resolver.list
+```
+
+Create `/etc/apt/sources.list.d/cznic-labs-knot-resolver.sources`.
+
+```conf
+Types: deb
+URIs: https://pkg.labs.nic.cz/knot-resolver/
+Suites: trixie
+Components: main
+Signed-By: /usr/share/keyrings/cznic-labs-pkg.gpg
+```
+
+Install the package.
+
+```bash
 sudo apt update
 sudo apt install knot-resolver6
 ```
@@ -32,7 +46,7 @@ $ dig a.root-servers.net
 a.root-servers.net.     72939   IN      A       198.41.0.4
 
 ;; Query time: 0 msec
-;; SERVER: (your provider)#53
+;; SERVER: (your provider's server)
 ```
 
 ```console
@@ -42,7 +56,7 @@ $ dig a.root-servers.net @localhost
 a.root-servers.net.     72939   IN      A       198.41.0.4
 
 ;; Query time: 0 msec
-;; SERVER: ::1#53
+;; SERVER: 127.0.0.1#53(localhost) (UDP)
 ```
 
 This is the minimun configuration for Knot-Resolver, but enough to use as a dedicated resolver for Rspamd.  
