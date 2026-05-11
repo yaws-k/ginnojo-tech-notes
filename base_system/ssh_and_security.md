@@ -211,7 +211,14 @@ To use the Web UI, create a CrowdSec account.
 After logging into the console, you can get your key to Enroll the server.
 
 ```console
-# cscli console enroll -e context [enrollment key]
+# cscli console enroll [enrollment key]
+INFO manual set to true
+INFO context set to true
+INFO Enabled manual : Forward manual decisions to the console
+INFO Enabled tainted : Forward alerts from tainted scenarios to the console
+INFO Enabled context : Forward context with alerts to the console
+INFO Watcher successfully enrolled. Visit https://app.crowdsec.net to accept it.
+INFO Please restart crowdsec after accepting the enrollment.
 ```
 
 Then follow the [official manual](https://doc.crowdsec.net/u/getting_started/post_installation/console) to accept enrollment.  

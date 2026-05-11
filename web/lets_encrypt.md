@@ -216,8 +216,34 @@ sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-services.sh
 
 ## Revoking certificate
 
-Certbot renews certificates automatically. If you want to stop using the certificate, [revoke it](https://eff-certbot.readthedocs.io/en/latest/using.html#revoking-certificates).
+Certbot renews certificates automatically. If you want to stop using the certificate, [revoke it](https://eff-certbot.readthedocs.io/en/latest/using.html#revoking-certificates).  
+It can also delete the certificate files.
 
-```bash
-sudo certbot revoke --cert-name example.jp
+```console
+$ sudo certbot revoke --cert-name example.jp
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you like to delete the certificate(s) you just revoked, along with all
+earlier and later versions of the certificate?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es (recommended)/(N)o: Y
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+The following certificate(s) are selected for deletion:
+
+  * example.jp
+
+WARNING: Before continuing, ensure that the listed certificates are not being
+used by any installed server software (e.g. Apache, nginx, mail servers).
+Deleting a certificate that is still being used will cause the server software
+to stop working. See https://certbot.org/deleting-certs for information on
+deleting certificates safely.
+
+Are you sure you want to delete the above certificate(s)?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+Deleted all files relating to certificate example.jp.
+Congratulations! You have successfully revoked the certificate that was located
+at /etc/letsencrypt/live/example.jp/cert.pem.
 ```

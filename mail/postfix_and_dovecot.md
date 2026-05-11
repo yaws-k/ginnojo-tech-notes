@@ -48,6 +48,15 @@ default_database_type = lmdb
 
 - `default_cache_db_type` cannot be added because it's available from Postfix 3.11 (Debian 13 Postfix is 3.10)
 
+### CrowdSec collection for Postfix
+
+Install CrowdSec collection for Postfix to block malicious activities.
+
+```bash
+sudo cscli collections install crowdsecurity/postfix
+sudo systemctl reload crowdsec
+```
+
 ## Virtual Mailbox
 
 To isolate the email accounts and Unix user accounts, set up the virtual mailbox.

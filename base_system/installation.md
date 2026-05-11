@@ -2,7 +2,7 @@
 ---
 # Debian 13 "trixie" installation
 
-Installing Debian using "a small installation image".  
+Installing Debian using "a small installation image" (netinst: Network install).  
 The image is available from the Debian website.  
 <https://www.debian.org/distrib/>
 
@@ -45,7 +45,7 @@ If the server has multiple network interfaces, choose the one that is connected 
 
 ### Network configuration method
 
-If DHCP is on, the installer will automatically configure the network. However, the server should have a static IP, and manual configuration should be required.
+If DHCP is on, the installer will automatically configure the network. However, the server should have a static IP, and manual configuration will be required.
 
 1. IP address  
    It accepts both IPv4 and IPv6. If the server has both v4 and v6 addresses, set v4 here and add v6 after the installation.
@@ -57,9 +57,9 @@ If DHCP is on, the installer will automatically configure the network. However, 
    List all name servers separated by a space, not a comma.  
    `192.168.0.10 192.168.0.11`
 5. Hostname  
-   The first part of the server's FQDN. The "hostname" part of `hostname.example.com`.
+   The first part of the server's FQDN. The `hostname` part of `hostname.example.com`.
 6. Domain name  
-   The "example.com" part of `hostname.example.com`.
+   The `example.com` part of `hostname.example.com`.
 
 ## Set up users and passwords
 
@@ -80,7 +80,7 @@ Set the root password and create a new user.
 In my case, I used Manual configuration to consider the following factors.
 
 - More swap to cover the lack of main memory  
-  Due to the small VPS, there is insufficient memory for peak usage. A larger swap file will be required.  
+  Due to the small VPS, there is insufficient memory for peak usage. Swap will be required.  
   (If you don't need to make any other partitions, `swapfile` is the modern approach instead of a swap partition.)
 - XFS for MongoDB  
   MongoDB requires an XFS filesystem for data storage.  
@@ -111,7 +111,7 @@ If you're ok, choose "Yes" to provide the package usage anonymized data to help 
 ## Software selection
 
 Choose nothing (unselect all). Even without "standard system utilities", it will still install "required" utilities.  
-You can check what is in "standard system utilities" with this command.  
+You can check what is in "standard system utilities" later with this command.  
 `tasksel --task-packages standard`
 
 {% include figure popup=true image_path="/assets/images/base_system/software_selection.png" alt="software selection" %}
@@ -128,16 +128,22 @@ The "server" should have only one OS (Debian), so GRUB boot loader should be ins
 
 Installation complete. Continue to finish the installation and remove the install media before rebooting.
 
-## Modernize apt-line
+## First login
+
+Login as `root` to configure basic settings.
+
+### Modernize apt-line (optional)
 
 A new format (deb822) apt-line is recommended since Debian 13, but not installed by default.  
 Login as `root` and migrate with the following command.
 
-```bash
-sudo apt modernize-sources
+```console
+# apt modernize-sources
 ```
 
-## Update fstab
+The old format apt-lines will be added to install some software. You can redo this command to modernize them. (The apt command works even if there are old format and modern format mixed together.)
+
+### Update fstab
 
 Update `/etc/fstab`.
 
@@ -156,6 +162,6 @@ UUID=(snip)     none            swap    sw                0       0
 
 Restart the server to apply the changes.
 
-```bash
-sudo reboot
+```console
+# reboot
 ```

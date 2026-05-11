@@ -17,6 +17,16 @@ sudo firewall-cmd --add-service=http --permanent
 sudo firewall-cmd --reload
 ```
 
+### CrowdSec collection for nginx
+
+Install CrowdSec collections for nginx to block malicious activities.
+
+```bash
+cscli collections install crowdsecurity/nginx
+cscli collections install crowdsecurity/http-cve
+sudo systemctl reload crowdsec
+```
+
 ## Gzip
 
 Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.

@@ -4,14 +4,14 @@
 
 ## Configure apt-line
 
-`apt` command will get only basic software by default. Add `contrib` and `non-free` to `/etc/apt/debian.sources` for more applications.
+`apt` command will get only basic software by default. Add `contrib` and `non-free` to `/etc/apt/sources.list.d/debian.sources` for more applications.
 
 - As migrated to the new deb822 format at the end of installation, the file looks very different from the old apt-line format.  
   <https://wiki.debian.org/SourcesList#APT_sources_format>
 
 ```conf
 Types: deb
-URIs: http://ftp.jp.debian.org/debian/
+URIs: http://deb.debian.org/debian/
 Suites: trixie
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
@@ -19,6 +19,12 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 Types: deb
 URIs: http://security.debian.org/debian-security/
 Suites: trixie-security
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: http://deb.debian.org/debian/
+Suites: trixie-updates
 Components: main contrib non-free non-free-firmware
 Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 ```
@@ -62,8 +68,9 @@ sudo apt install dnsutils man-db net-tools rsync tmux wget curl ca-certificates
 - tmux: Terminal multiplexer.
 - wget: Downloader
 - curl: Data transfer mainly with HTTP(S)  
-  (Should be already installed for CrowdSec)
-- ca-certificates: SSL certificates for HTTPS connections
+  (Should be already installed)
+- ca-certificates: SSL certificates for HTTPS connections  
+  (Should be already installed)
 
 ## Programming Languages
 
@@ -79,7 +86,7 @@ sudo apt install ruby ruby-dev
 
 #### Multiple Ruby versions with rbenv
 
-System-wide Ruby is usually old and suitable for running applications, but not for development. For development, [rbenv](https://github.com/rbenv/rbenv) will help installing multiple versions (including the latest) into the isolated environment.
+System-wide Ruby is suitable for running applications, but a bit old for development. For development, [rbenv](https://github.com/rbenv/rbenv) will help installing multiple versions (including the latest) into the isolated environment.
 
 As prerequisites, install required build environments according to [rbenv wiki](https://github.com/rbenv/ruby-build/wiki#suggested-build-environment).
 (libreadline6-dev is changed to libreadline-dev)
@@ -157,6 +164,24 @@ The timezone has to be set to php.ini. Update both cli: `/etc/php/8.4/cli/php.in
 date.timezone = "Asia/Tokyo"
 ```
 
+The default maximum upload file size is 2MB. It may be too small for some applications. Update `upload_max_filesize` and `post_max_size` in php.ini to allow larger files.
+
+```php
+; Maximum size of POST data that PHP will accept.
+; Its value may be 0 to disable the limit. It is ignored if POST data reading
+; is disabled through enable_post_data_reading.
+; https://php.net/post-max-size
+post_max_size = 16M
+
+(snip)
+
+; Maximum allowed size for uploaded files.
+; https://php.net/upload-max-filesize
+upload_max_filesize = 16M
+```
+
+- If you need much more, like 256MB, check `memory_limit` as well
+
 Restart fpm to reload the config.
 
 ```bash
@@ -165,7 +190,7 @@ sudo systemctl reload php8.4-fpm
 
 ### Java 21
 
-Headless JRE should be enough for running Java applications.  
+Headless JRE should be enough to run Java applications.  
 Install JDK if you plan to develop with Java.
 
 ```bash
@@ -178,28 +203,22 @@ sudo apt install default-jre-headless
 sudo apt install rustc
 ```
 
-- This should be already installed as a dependency of rbenv
-
 ### Perl 5.40
 
 ```bash
 sudo apt install perl
 ```
 
-- This should be already installed
-
 ### Libraries for each language
 
 Each language offers external modules. Python pip, Ruby gems, PHP pecl, and so on. There are multiple ways to install them, but if you need only a few major modules, they may be available as Debian packages.  
 If the packages work, you don't have to consider the version discrepancies between packaged languages and modules.
 
-For example, PHP cURL is available as php-curl package.
+For example, PHP cURL is available as `php-curl` package.
 
 ## Docker CE
 
 To use Docker images, install Docker Engine according to the [official howto for Debian](https://docs.docker.com/engine/install/debian/).
-
-- `curl` and `ca-certificates` should be already installed.
 
 ```bash
 sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
