@@ -4,9 +4,8 @@
 
 Postfix accepts relaying (sending out) emails only from the localhost (e.g., cron job). Authorization mechanisms are required for mailbox users to send out their emails.
 
-- Postfix can ask Dovecot to verify users.
 - For this purpose, port 465 (submissions, formerly SMTPS) is used
-  - Port 25 (SMTP) is often blocked by internet providers (OP25B) that users can't connect to the mail server.
+  - Outbound port 25 (SMTP) is often blocked by internet providers (OP25B) that users can't connect to the mail server.
   - Port 587 (submission port) was used according to the RFC 6409 released in 2011, but RFC 8314 released in 2018 recommends using port 465 for submissions.
 
 ## SMTP TLS
@@ -15,8 +14,9 @@ Let Postfix use the proper server certificate to encrypt the connection. Change 
 
 ```conf
 # SMTP server RSA key and certificate in PEM format
-smtpd_tls_key_file = /etc/letsencrypt/live/example.jp/fullchain.pem
-smtpd_tls_cert_file = /etc/letsencrypt/live/example.jp/privkey.pem
+smtpd_tls_key_file = /etc/letsencrypt/live/example.jp/privkey.pem
+smtpd_tls_cert_file = /etc/letsencrypt/live/example.jp/fullchain.pem
+# SMTP Server security level: none|may|encrypt
 smtpd_tls_security_level=may
 ```
 
@@ -46,14 +46,14 @@ service auth {
   }
 
   # Auth process is run as this user.
-  #user = $default_internal_user
+  #user = $SET:default_internal_user
 }
 ```
 
-Restart Dovecot.
+Reload Dovecot.
 
 ```bash
-sudo systemctl restart dovecot
+sudo systemctl reload dovecot
 ```
 
 ## Postfix SASL
@@ -106,9 +106,9 @@ submissions inet n       -       y       -       -       smtpd
 ```
 
 - As the submissions port is not for the normal mail transfer from other servers;
-  - The connection requires tls encryption
+  - The connection requires TLS encryption
   - No relaying permitted unless authenticated
-- $mua_..._restrictions will be defined later
+- `$mua_..._restrictions` will be defined later
 
 Reload Postfix
 

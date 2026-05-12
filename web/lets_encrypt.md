@@ -38,7 +38,10 @@ sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 
 ### Default site configuration
 
-To get a new certificate for the first time, accept HTTP access by Let's Encrypt validator with the default server (catch-all server).
+Accept HTTP access by Let's Encrypt validator with the default server (catch-all server).
+
+- Catch-all server is convenient for the first certificate issue before setting up the per-site configuration. (Renewal can be done with the per-site configuration.)
+- You may want certificates not for websites, for example, for mail servers.
 
 ```nginx
 server {

@@ -10,23 +10,30 @@ WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. 
 
 ## Install
 
-Install dovecot-imapd packages and open IMAPS (993) port.
-
-- Open IMAP (143) port if you need STARTTLS
+Install dovecot-imapd package.
 
 ```bash
 sudo apt install dovecot-imapd
+```
+
+Open IMAPS (993) port.
+
+```bash
 sudo firewall-cmd --add-service=imaps --permanent
 sudo firewall-cmd --reload
 ```
+
+- Open IMAP (143) port if you need STARTTLS
 
 ## SSL/TLS certificate
 
 Set proper certificate in `/etc/dovecot/conf.d/10-ssl.conf`.
 
 ```conf
-ssl_cert = </etc/letsencrypt/live/example.jp/fullchain.pem
-ssl_key = </etc/letsencrypt/live/example.jp/privkey.pem
+# Preferred permissions: root:root 0444
+ssl_server_cert_file = /etc/letsencrypt/live/example.jp/fullchain.pem
+# Preferred permissions: root:root 0400
+ssl_server_key_file = /etc/letsencrypt/live/example.jp/privkey.pem
 ```
 
 Then reload Dovecot.
@@ -52,6 +59,7 @@ Special folders other than INBOX (Sent, Drafts, Junk, Trash) should be created b
 Modify `/etc/dovecot/conf.d/15-mailboxes.conf` to create the folders.
 
 - Add `auto = subscribe` to automatically create and subscribe the folder.
+- Choose `Sent` or `Sent Messages` for the \Sent mailbox according to your policy.
 
 ```conf
 namespace inbox {
@@ -99,4 +107,10 @@ namespace inbox {
 
   (snip)
 }
+```
+
+Reload Dovecot.
+
+```bash
+sudo systemctl reload dovecot
 ```

@@ -2,9 +2,6 @@
 ---
 # Postfix and Dovecot LMTP
 
-- Postfix is an MTA (Mail Transfer Agent) that sends and receives emails.
-- Dovecot is an IMAP server, and it handles local emails handed over from Postfix.
-
 WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
 {: .notice--warning}
 
@@ -48,6 +45,13 @@ default_database_type = lmdb
 
 - `default_cache_db_type` cannot be added because it's available from Postfix 3.11 (Debian 13 Postfix is 3.10)
 
+Migrate alias database to LMDB.
+
+```bash
+sudo newaliases
+sudo rm /etc/aliases.db
+```
+
 ### CrowdSec collection for Postfix
 
 Install CrowdSec collection for Postfix to block malicious activities.
@@ -59,7 +63,7 @@ sudo systemctl reload crowdsec
 
 ## Virtual Mailbox
 
-To isolate the email accounts and Unix user accounts, set up the virtual mailbox.
+To isolate the email accounts from Unix user accounts, set up the virtual mailbox.
 
 ### Create Mail Storage User
 
@@ -103,7 +107,7 @@ virtual_transport = lmtp:unix:private/dovecot-lmtp
 virtual_alias_maps = lmdb:/etc/postfix/virtual
 ```
 
-- `virtual_mailbox_maps` will be generated based on the Dovecot user database.
+- `virtual_mailbox_maps` will be generated later from the Dovecot user database.
 
 To catch local system mails (e.g. cron job), edit `/etc/postfix/virtual`.
 
@@ -145,11 +149,11 @@ Configure the lmtp section in `/etc/dovecot/conf.d/10-master.conf` to open the s
 
 ```conf
 service lmtp {
- unix_listener /var/spool/postfix/private/dovecot-lmtp {
-   mode = 0600
-   user = postfix
-   group = postfix
-  }
+  unix_listener /var/spool/postfix/private/dovecot-lmtp {
+    mode = 0600
+    user = postfix
+    group = postfix
+   }
 }
 ```
 
@@ -245,7 +249,7 @@ sudo systemctl reload dovecot
 The userdb `/etc/dovecot/users` will keep the list of usernames (email addresses) and their encrypted passwords. The command `doveadm` will generate the encrypted password.
 
 ```console
-# doveadm pw
+$ sudo doveadm pw
 Enter new password: 
 Retype new password: 
 {CRYPT}$2y$0...(snip)...Iiy0.
@@ -257,7 +261,7 @@ Copy and paste the above encrypted password to Userdb as a part of the `info@exa
 info@example.jp:{CRYPT}$2y$0...(snip)...W5Qa::::::
 ```
 
-- The trailing six colons `::::::` are for uid/gid/home/mail_location. All of them are snipped to use the default values.
+- The trailing six colons `::::::` are for uid/gid/home/mail_location. All of them are left blank to use the default values.
 
 Dovecot checks this every time it gets an email. After updating this userdb, no reload or db compile is required.
 
@@ -275,7 +279,7 @@ mv /etc/dovecot/users.tmp.lmdb /etc/dovecot/users.lmdb
 rm /etc/dovecot/users.tmp
 ```
 
-- This lmdb has usernames and dummy `OK` values because it's only used for Postfix to check if the user exists. (It should have the mailbox location.)
+- This lmdb has usernames and dummy `OK` values because it's only for the user existence check by Postfix. (The value should be the mailbox location, but never used in this case.)
 
 Add execute permission to this script.
 
@@ -291,7 +295,7 @@ sudo /etc/dovecot/postfix_lmdb.sh
 
 ## Test
 
-Follow the logs with `jounalctl` and send a test mail to the valid user on this server.
+Follow the logs with `journalctl` and send a test mail to the valid user on this server.
 
 ```bash
 sudo jounalctl -f SYSLOG_FACILITY=2
