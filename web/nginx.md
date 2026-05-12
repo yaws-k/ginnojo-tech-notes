@@ -347,10 +347,6 @@ server {
 
         server_name _;
 
-        # Turn off useless logs
-        access_log off;
-        log_not_found off;
-
         # Disconnect
         return 444;
 }

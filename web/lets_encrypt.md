@@ -59,10 +59,6 @@ server {
         location /.well-known/acme-challenge/ {
                 try_files $uri =444;
         }
-
-        # Turn off useless logs
-        access_log off;
-        log_not_found off;
 }
 
 server {
@@ -80,10 +76,6 @@ server {
         ssl_protocols TLSv1.2 TLSv1.3;
 
         server_name _;
-
-        # Turn off useless logs
-        access_log off;
-        log_not_found off;
 
         # Disconnect
         return 444;
