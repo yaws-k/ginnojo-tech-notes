@@ -13,7 +13,7 @@ Create `/etc/rspamd/local.d/gpt.conf` and add the following lines.
 
 ```conf
 enabled = true;
-api_key = "apikley";
+api_key = "<apikey>";
 model = "gpt-5-mini";
 autolearn = true
 reason_header = "X-GPT-Reason";
@@ -29,6 +29,12 @@ Add the following line to `/etc/rspamd/local.d/options.inc` to extend the timeou
 ```conf
 # 20 seconds should be enough though...
 task_timeout = 30s;
+```
+
+Reload Rspamd.
+
+```bash
+sudo systemctl reload rspamd
 ```
 
 ## Test GPT plugin

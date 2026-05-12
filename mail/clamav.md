@@ -18,7 +18,7 @@ Clamav can connect to Postfix via milter, but I will use this through Rspamd.
 
 ## Configuration
 
-Turn off phishin URL detection because Rspamd will take care of this kind of content filtering.  
+Turn off phishing URL detection because Rspamd will take care of this kind of content filtering.  
 Update `/etc/clamav/clamd.conf`.
 
 ```conf

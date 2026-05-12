@@ -2,26 +2,41 @@
 ---
 # Rspamd
 
-Rspamd is a spam filter that adds 'spam score' to each email. In addition, it can integrate ClamAV (antivirus) and DKIM signing.
+Rspamd is a spam filter that adds "spam score" to each email. In addition, it can integrate ClamAV (antivirus) and DKIM signing.
 
 ## Install
 
 Rspamd provides Debian/Ubuntu repository for latest releases. Follow [the official installation Guide for Ubuntu/Debian](https://docs.rspamd.com/getting-started/installation#ubuntudebian).
 
-Add repository:
+Prerequisites (should be already done for other software).
 
 ```bash
 sudo apt install gpg
 sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://rspamd.com/apt-stable/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/rspamd.gpg
-echo "deb [signed-by=/etc/apt/keyrings/rspamd.gpg] http://rspamd.com/apt-stable/ trixie main" | sudo tee /etc/apt/sources.list.d/rspamd.list
+```
+
+Add key.  
+(The following instruction stores the GPG key in `/etc/apt/keyrings` as recommended by Debian.)
+
+```bash
+curl -fsSL https://rspamd.com/apt-stable/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/rspamd.gpg
+```
+
+Create `/etc/apt/sources.list.d/rspamd.sources`.
+
+```conf
+Types: deb
+URIs: http://rspamd.com/apt-stable/
+Suites: trixie
+Components: main
+Signed-By: /etc/apt/keyrings/rspamd.gpg
 ```
 
 Install Rspamd:
 
 ```bash
 sudo apt update
-sudo apt --no-install-recommends install rspamd
+sudo apt install rspamd
 ```
 
 ## First Setup
@@ -75,8 +90,29 @@ sudo systemctl status rspamd
 
 Scan test messages.
 
-```bash
-echo -e "Subject: Test\n\nThis is a test message" | rspamc -h [::1]:11333
+```console
+$ echo -e "Subject: Test\n\nThis is a test message" | rspamc -h [::1]:11333
+Results for file: stdin (0.076 seconds)
+[Metric: default]
+Action: add header
+Spam: true
+Score: 10.40 / 15.00
+Symbol: ARC_NA (0.00)
+Symbol: DMARC_NA (0.00)[No From header]
+Symbol: HFILTER_HOSTNAME_UNKNOWN (2.50)
+Symbol: MIME_GOOD (-0.10)[text/plain]
+Symbol: MIME_TRACE (0.00)[0:+]
+Symbol: MISSING_DATE (1.00)
+Symbol: MISSING_FROM (2.00)
+Symbol: MISSING_MID (2.50)
+Symbol: MISSING_TO (2.00)
+Symbol: MISSING_XM_UA (0.00)
+Symbol: ONCE_RECEIVED (0.00)
+Symbol: RCVD_COUNT_ZERO (0.00)[0]
+Symbol: R_DKIM_NA (0.00)
+Symbol: R_MISSING_CHARSET (0.50)
+Symbol: SINGLE_SHORT_PART (0.00)
+Message-ID: undef
 ```
 
 ## Postfix integration
@@ -122,7 +158,9 @@ Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:
 According to the [FAQ: How do I run the WebUI behind a proxy](https://docs.rspamd.com/faq/#how-do-i-run-the-webui-behind-a-proxy), add following lines to nginx configuration.
 
 ```nginx
-location /rspamd/ {
+server_name rspamd.example.jp;
+
+location / {
         proxy_pass http://localhost:11334/;
 
         proxy_set_header Host $host;
@@ -131,7 +169,9 @@ location /rspamd/ {
 }
 ```
 
-`https://sever-name/rspamd/` will show the Rspamd Web UI and ask for the password. If you need more secured access, set up any authentication method in Nginx.
+`https://rspamd.example.jp/` will show the Rspamd Web UI and ask for the password.
+
+- If multiple users need to access the Web UI but you don't want to shere the password, consider using [SSO for nginx](../web/sso_for_nginx).
 
 ## Statistics (Bayesian filter)
 

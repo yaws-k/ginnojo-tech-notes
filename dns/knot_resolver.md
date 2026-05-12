@@ -6,11 +6,12 @@ Rspamd (a spam filter) [requires your own recursive resolver](https://docs.rspam
 
 ## Install
 
-According to the [Knot-Resolver official installation instruction](https://www.knot-resolver.cz/documentation/latest/gettingstarted-install.html), follow [the official repos for Debian/Ubuntu](https://pkg.labs.nic.cz/doc/?project=knot-resolver) instruction to install the package from Knot Resolver repository.
+According to the [Knot-Resolver official installation instruction](https://www.knot-resolver.cz/documentation/latest/gettingstarted-install.html), follow [the official repos for Debian/Ubuntu](https://pkg.labs.nic.cz/doc/?project=knot-resolver) instruction to install the package from Knot Resolver repository.  
+(The following instruction stores the GPG key in `/etc/apt/keyrings` as recommended by Debian.)
 
 ```bash
 sudo apt install apt-transport-https ca-certificates wget
-sudo wget -O /usr/share/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
+sudo wget -O /etc/apt/keyrings/cznic-labs-pkg.gpg https://pkg.labs.nic.cz/gpg
 ```
 
 Create `/etc/apt/sources.list.d/cznic-labs-knot-resolver.sources`.
@@ -20,7 +21,7 @@ Types: deb
 URIs: https://pkg.labs.nic.cz/knot-resolver/
 Suites: trixie
 Components: main
-Signed-By: /usr/share/keyrings/cznic-labs-pkg.gpg
+Signed-By: /etc/apt/keyrings/cznic-labs-pkg.gpg
 ```
 
 Install the package.
