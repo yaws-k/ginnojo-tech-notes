@@ -81,7 +81,7 @@ If your terminal sends `^H` (8) and you want that way, add the following line to
 [[ $- == *i* ]] && stty erase ^H
 ```
 
-- Input `^H` by pressing Ctrl+V and then Backspace key. NOT typing `^H` directly.
+- Input `^H` by pressing Ctrl+V and then Backspace key, NOT typing `^H` directly.
 
 ## Programming Languages
 
@@ -105,7 +105,6 @@ As prerequisites, install required build environments according to [rbenv wiki](
 ```bash
 sudo apt install git
 sudo apt install autoconf build-essential libffi-dev libgmp-dev libssl-dev libyaml-dev rustc zlib1g-dev
-sudo apt install autoconf patch build-essential rustc libssl-dev libyaml-dev libreadline-dev zlib1g-dev libgmp-dev libncurses5-dev libffi-dev libgdbm6 libgdbm-dev libdb-dev uuid-dev
 ```
 
 Then, use [rbenv installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
