@@ -71,6 +71,7 @@ Maildir style:
 
 ```conf
 require "fileinto";
+
 if header :contains "from" "folder01@example.com" {
   fileinto "INBOX.folder01";
 }
@@ -80,7 +81,8 @@ dbox style:
 
 ```conf
 require "fileinto";
-if header :contains "from" "folder@example.com" {
+
+if header :contains "from" "folder01@example.com" {
   fileinto "INBOX/folder01";
 }
 ```

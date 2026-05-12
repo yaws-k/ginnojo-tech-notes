@@ -73,7 +73,7 @@ Reload Rspamd.
 sudo systemctl reload rspamd
 ```
 
-### Test scanning
+### Scan test virus
 
 [Download EICAR test virus](https://www.eicar.org/download-anti-malware-testfile/) and send it from localhost using mutt.
 

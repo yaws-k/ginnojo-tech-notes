@@ -3,11 +3,11 @@
 # DKIM signing
 
 Rspamd checks DKIM for incoming emails by default. In addition, it can also sign outgoing emails.  
-See [DKIM signing module](https://rspamd.com/doc/modules/dkim_signing.html) for details.
+See [DKIM signing module](https://docs.rspamd.com/modules/dkim_signing/) for details.
 
 ## Configuration
 
-Create `/etc/rspamd/local.d/dkim_signing.conf` to enable DKIM signing with the following conditions.
+Create `/etc/rspamd/local.d/dkim_signing.conf` to override defaults for the following conditions.
 
 - Different keys for `mail.example.jp` and `mail2.example.jp`  
   (Not using `example.jp` key for multiple subdomains)
@@ -42,7 +42,7 @@ domain {
 ## DKIM keys
 
 Generate DKIM keys.  
-ed255519 is recommended as a modern way, but it may not be supported be all mail servers. If you consider compatibility, RSA is a safer choice.
+ed255519 is recommended as a modern way, but it may not be supported by all mail servers. If you consider compatibility, RSA is a safer choice.
 
 ed25519 key generation
 
@@ -56,8 +56,18 @@ RSA  key generation
 rspamadm dkim_keygen -s 's20260401' -b 2048 -k mail.example.jp.s20260401.key > dns-mail.example.jp.txt
 ```
 
-`rspamadmin dkim_keygen` command generates a private key `mail.example.jp.s20260401.key` and DNS record text `dns0mail.example.jp.txt`.  
+`rspamadm dkim_keygen` command generates a private key `mail.example.jp.s20260401.key` and DNS record text `dns0mail.example.jp.txt`.  
 Move the private key to Rspam DKIM key path and change the owner to `_rspamd` user.
+
+Create the DKIM key directory.
+
+```bash
+sudo mkdir -p /var/lib/rspamd/dkim
+sudo chown _rspamd:_rspamd /var/lib/rspamd/dkim
+sudo chmod 640 /var/lib/rspamd/dkim
+```
+
+Move the private key.
 
 ```bash
 sudo mv mail.example.jp.s20260401.key /var/lib/rspamd/dkim/
@@ -70,7 +80,7 @@ sudo chown _rspamd:_rspamd /var/lib/rspamd/dkim/mail.example.jp.s20260401.key
 Add DKIM key records to your DNS records.
 
 ```conf
-s20260401._domainkey.mail  IN  TXT  v=DKIM1; k=ed25519; p=dW...SU="
+s20260401._domainkey.mail  86400  IN  TXT  v=DKIM1; k=ed25519; p=dW...SU="
 ```
 
 - ed25519 key is very short and everything can be written in one DNS record.

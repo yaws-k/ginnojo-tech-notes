@@ -202,7 +202,7 @@ sudo systemctl reload rspamd
 
 Rspamd log should show the learning process.
 
-rspamd_stat_check_autolearn: <mail id>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
+rspamd_stat_check_autolearn: \<mail id\>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
 {: .notice}
 
 ## Redis memory limit
