@@ -64,7 +64,7 @@ Create the DKIM key directory.
 ```bash
 sudo mkdir -p /var/lib/rspamd/dkim
 sudo chown _rspamd:_rspamd /var/lib/rspamd/dkim
-sudo chmod 640 /var/lib/rspamd/dkim
+sudo chmod 750 /var/lib/rspamd/dkim
 ```
 
 Move the private key.

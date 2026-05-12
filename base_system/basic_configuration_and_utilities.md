@@ -198,6 +198,12 @@ Restart fpm to reload the config.
 sudo systemctl reload php8.4-fpm
 ```
 
+Probably you also need to install some extensions.
+
+```bash
+sudo apt install php-curl php-gd php-imagick php-intl php-mbstring php-xml php-zip
+```
+
 ### Java 21
 
 Headless JRE should be enough to run Java applications.  
