@@ -11,6 +11,10 @@ Prerequisites (in this article's case)
 3. Email users are defined as virtual users on /etc/dovecot/users
 
 This article explains only about doveadm commands. Many steps to consider for the mail server migration are too much to document here, so please find some other sites...
+{: .notice--info}
+
+It looks like `doveadm` command also had some breaking changes and doesn't work as expected when migrating from Dvecot 2.3 to 2.4. Here are some workarounds that I used, but not sure if it properly works on your environment.
+{: .notice--warning}
 
 ## Preparation
 
@@ -47,22 +51,41 @@ Steps
 The main process of data migration. `doveadm` command will copy all emails in all directories (including empty directories) and Sieve scripts.  
 Be aware that any existing data on the new server will be deleted during this process.
 
-```bash
-sudo doveadm backup -u user1@example.jp remote:new-server.example.jp
+Between compatible versions:
+
+```console
+# doveadm backup -u user1@example.jp remote:new-server.example.jp
 ```
 
-As the user is specified with `-u` parameter, this migrates one user's data. If you want to migrate all user emails, you can use `-A` paramter to migrate all users listed in the userdb.
+From 2.3 to 2.4:
 
-```bash
-sudo doveadm backup -A remote:new-server.example.jp
+```console
+# doveadm -o "dsync_remote_cmd=ssh -l root new-server.example.jp doveadm dsync-server -u user1@example.jp" backup -u user1@example.jp remote:new-server.example.jp
+```
+
+- It seems `doveadm backup` command sends `-U` option that is not available in Dovecot 2.4. So specify `dsync_remote_cmd` option to avoid this issue.
+
+If you simply want to copy all emails for all users, you can use `-A` option.  
+(It's only available between compatible versions because it loops commands with `-u` internally.)
+
+```console
+# doveadm backup -A remote:new-server.example.jp
 ```
 
 ### Delta update
 
-To copy emails existing only on the old server, use `doveadm sync` command.
+To copy emails existing only on the old server, use `doveadm sync` command. With `-1` option, it only copies emails that are not on the new server.
 
-```bash
-sudo doveadm sync -1 -u user1@example.jp remote:new-server.example.jp
+Between compatible versions:
+
+```console
+# doveadm sync -1 -u user1@example.jp remote:new-server.example.jp
+```
+
+From 2.3 to 2.4:
+
+```console
+# doveadm -o "dsync_remote_cmd=ssh -l root new-server.example.jp doveadm dsync-server -u user1@example.jp" sync -1 -u user1@example.jp remote:new-server.example.jp
 ```
 
 Technically this should work the same as `backup` command above, but [the official document](https://doc.dovecot.org/2.4.1/core/man/doveadm-backup.1.html) discourages such usage.
