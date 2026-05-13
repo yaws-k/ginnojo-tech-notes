@@ -176,7 +176,7 @@ server {
         include snippets/vouch.conf;
 
         # In this case, assume the app is based on php.
-        location ~ \.php($|/) {
+        location ~ \.php {
                 include snippets/fastcgi-php.conf;
                 fastcgi_pass unix:/var/run/php/php-fpm.sock;
 

@@ -4,7 +4,7 @@
 
 [Roundcube](https://roundcube.net/) is an open-source webmail client. It works as a fully functional MUA (mail user agent) with plugins.
 
-There is the [official guide wiki](https://github.com/roundcube/roundcubemail/wiki). This article follows this guide and adds some customization based on how this server is set according to this site instructions.
+There is the [official guide wiki](https://github.com/roundcube/roundcubemail/wiki). This article follows the guide and adds some customization based on how this server is configured.
 
 ## Install
 
@@ -30,11 +30,11 @@ Change owner to `www-data` (nginx should have write access to the directory).
 sudo chown -R www-data:www-data /var/www/roundcube
 ```
 
-## Database Configuration
+## Database configuration
 
 In my case, the number of users is so small that I use Sqlite. Sqlite doesn't require any preparation. The database file will be automatically created during the setup process.
 
-## Nginx Configuration
+## nginx configuration
 
 Prepare the SSL/TLS certificate for this site and create `/etc/nginx/sites-available/mail.example.jp` for Roundcube and enable it.
 
@@ -55,7 +55,7 @@ server {
 
         server_name mail.example.jp;
 
-        # Since 1.7, root point to public_html for security reason
+        # Since 1.7, point to public_html for security reason
         root /var/www/mail.example.jp/public_html;
 
         index index.php;
@@ -74,7 +74,7 @@ server {
 }
 ```
 
-## Initialize Roundcube
+## Setup Roundcube
 
 ### Additional php packages
 

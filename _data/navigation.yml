@@ -61,7 +61,7 @@ docs:
       url: /mail/dovecot_sieve
     - title: "Mail server migration"
       url: /mail/mail_server_migration
-  - title: "Web application"
+  - title: "Other application"
     children:
     - title: "Roundcube"
       url: /web_application/roundcube

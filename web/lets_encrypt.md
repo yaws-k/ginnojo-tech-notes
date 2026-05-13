@@ -237,7 +237,7 @@ server {
         access_log /var/log/nginx/example.jp-access.log;
         error_log /var/log/nginx/example.jp-error.log;
 
-        location ~ \.php($|/) {
+        location ~ \.php {
                 include snippets/fastcgi-php.conf;
                 fastcgi_pass unix:/run/php/php-fpm.sock;
         }
