@@ -54,3 +54,11 @@ Strict servers may check FQDN -> IP and IP -> FQDN match (e.g., Postfix: reject_
 
 In short, configure the PTR record to the mail server doamin. Unlike the other DNS records, you can't access PTR record because it's under the control of your server or internet service provider.  
 Check if you can change PTR record or use the given FQDN as your mail server name.
+
+## Checking your emails
+
+There are some online tools to check if your configuration is correct and emails are recognized as legitimate.
+
+- [mail tester: SPF and DKIM check](https://www.mail-tester.com/spf-dkim-check)
+- [MX Toolbox: DKIM and DMARC check](https://mxtoolbox.com/dkim.aspx)
+- [DKIM Validator: Email Validator](https://dkimvalidator.com/)
