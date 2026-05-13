@@ -272,6 +272,59 @@ server {
 
 Check if the server provides HTTP/3 as expected with [HTTP/3 Check](https://http3check.net/).
 
+### snippet for HTTPS
+
+HTTP/2 and HTTP/3 configurations have some lines and they are the same for all sites. Integrating these lines into a snippet will make the configuration simpler.
+
+Create `/etc/nginx/snippets/https-common.conf` with the following content.
+
+```nginx
+# HTTP/2
+listen 443 ssl;
+listen [::]:443 ssl;
+http2 on;
+
+# HTTP/3 (QUIC)
+listen 443 quic;
+listen [::]:443 quic;
+http3 on;
+
+# Tell browsers to use HTTP/3 (QUIC) if supported
+add_header Alt-Svc 'h3=":443"; ma=86400';
+
+# HSTS (HTTP Strict Transport Security) for 2 years
+add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+```
+
+With this snippet, the server configuration will be like this.
+
+```nginx
+server {
+        include snippets/https-common.conf;
+
+        server_name example.jp;
+
+        # Include snakeoil certificate snippet
+        include snippets/snakeoil.conf;
+
+        root /var/www/html;
+
+        index index.html index.php;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        access_log /var/log/nginx/example.jp-access.log;
+        error_log /var/log/nginx/example.jp-error.log;
+
+        location ~ \.php($|/) {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php-fpm.sock;
+        }
+}
+```
+
 ### Redirect HTTP to HTTPS
 
 - Redirect all access to `http://example.jp/` to `https://example.jp/`
@@ -288,15 +341,7 @@ server {
 }
 
 server {
-        listen 443 ssl;
-        listen [::]:443 ssl;
-        http2 on;
-
-        listen 443 quic reuseport;
-        listen [::]:443 quic reuseport;
-        http3 on;
-
-        add_header Alt-Svc 'h3=":443"; ma=86400';
+        include snippets/https-common.conf;
 
         server_name example.jp;
 

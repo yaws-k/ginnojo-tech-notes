@@ -116,9 +116,7 @@ server {
 }
 
 server {
-        listen 443 ssl;
-        listen [::]:443 ssl;
-        http2 on;
+        include snippets/https-common.conf;
 
         (snip)
 
@@ -184,7 +182,7 @@ Configure nginx based on Mozilla's [SSL Configuration Generator](https://ssl-con
 
 - [The official guide to configure HTTPS servers](https://nginx.org/en/docs/http/configuring_https_servers.html) explains the basic configurations.
 
-### Default configuration
+### nginx default
 
 According to the Mozilla's [SSL Configuration Generator (nginx 1.26.3, OpenSSL 3.5.5)](https://ssl-config.mozilla.org/#server=nginx&version=1.26.3&config=intermediate&openssl=3.5.5&hsts).
 
@@ -220,24 +218,13 @@ server {
 }
 
 server {
-        listen 443 ssl;
-        listen [::]:443 ssl;
-        http2 on;
-
-        listen 443 quic;
-        listen [::]:443 quic;
-        http3 on;
-
-        add_header Alt-Svc 'h3=":443"; ma=86400';
+        include snippets/https-common.conf;
 
         server_name example.jp;
 
         # Include SSL/TLS configurations
         ssl_certificate /etc/letsencrypt/live/example.jp/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/example.jp/privkey.pem;
-
-        # HSTS (HTTP Strict Transport Security) for 2 years
-        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
 
         root /var/www/html;
 
