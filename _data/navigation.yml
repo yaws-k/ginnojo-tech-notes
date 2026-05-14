@@ -64,6 +64,6 @@ docs:
   - title: "Other application"
     children:
     - title: "Roundcube"
-      url: /web_application/roundcube
+      url: /other_application/roundcube
     - title: "Matomo"
-      url: /web_application/matomo
+      url: /other_application/matomo

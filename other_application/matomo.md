@@ -155,6 +155,8 @@ Set the website to track.
 
 As described in the page, copy & paste the script just before the end of HTML headers, `</head>` tag.
 
+If you want to add options like non-javascript tracking or disabling cookies, regenerate the script later on the admin board.
+
 ## Update config.ini.php
 
 If you get this error when logging in to Matomo, add the FQDN to `trusted_hosts[]` in `config/config.ini.php`.
@@ -164,7 +166,19 @@ If you get this error when logging in to Matomo, add the FQDN to `trusted_hosts[
 
 It seems that the proxy configuration is not required. Just add the Matomo instance's FQDN to `trusted_hosts[]`.
 
+- Additionally, add SSL configuration (it will be recommended on the System Check page.)
+
 ```ini
 [General]
 trusted_hosts[] = "matomo.example.jp"
+force_ssl = 1
 ```
+
+Now the site should be ready.
+
+## Tweak tracker behavior
+
+You can customize how tracking works.
+
+- `Track users with JavaScript disabled` will add the image tracking code.
+- `Disable all tracking cookies` will stop using cookies to track visitors. It is good to track the visitors rejecting cookies and avoiding GDPR regulations.
