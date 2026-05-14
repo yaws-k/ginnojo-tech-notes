@@ -72,17 +72,6 @@ sudo apt install dnsutils man-db net-tools rsync tmux wget curl ca-certificates
 - ca-certificates: SSL certificates for HTTPS connections  
   (Should be already installed)
 
-### tmux and Backspace key
-
-`tmux` seems to expect `^?` for Backspace key. If you have problems with Backspace key when using `tmux`, check if your terminal is set to send `^?` (127 or 7F) and terminal mode is also set correctly.  
-If your terminal sends `^H` (8) and you want that way, add the following line to `~/.bashrc`.
-
-```bash
-[[ $- == *i* ]] && stty erase ^H
-```
-
-- Input `^H` by pressing Ctrl+V and then Backspace key, NOT typing `^H` directly.
-
 ## Programming Languages
 
 Install major programming languages. (They will be required and automatically installed as dependencies.)
