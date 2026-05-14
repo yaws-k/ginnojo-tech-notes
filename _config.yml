@@ -83,3 +83,6 @@ defaults:
       toc_sticky: true
       sidebar:
         nav: docs
+
+analytics:
+  provider: "custom"
