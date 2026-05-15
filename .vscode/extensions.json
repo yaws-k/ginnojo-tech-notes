@@ -6,6 +6,7 @@
         "redhat.vscode-yaml",
         "hediet.vscode-drawio",
         "shardulm94.trailing-spaces",
-        "oderwat.indent-rainbow"
+        "oderwat.indent-rainbow",
+        "github.vscode-github-actions"
     ]
 }
