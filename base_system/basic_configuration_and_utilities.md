@@ -31,11 +31,20 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 - `deb-src` is required only if you want to get sources
 
+Add `debian-backports` if you need.
+
+```conf
+Types: deb
+URIs: http://deb.debian.org/debian/
+Suites: trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+```
+
 After updating apt-line, update&upgrade.
 
 ```bash
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade
 ```
 
 ## Snap

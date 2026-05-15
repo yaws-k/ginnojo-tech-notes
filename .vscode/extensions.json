@@ -4,6 +4,8 @@
         "yzhang.markdown-all-in-one",
         "bierner.github-markdown-preview",
         "redhat.vscode-yaml",
-        "hediet.vscode-drawio"
+        "hediet.vscode-drawio",
+        "shardulm94.trailing-spaces",
+        "oderwat.indent-rainbow"
     ]
 }
