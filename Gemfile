@@ -16,8 +16,6 @@ gem "minimal-mistakes-jekyll"
 # gem "github-pages", group: :jekyll_plugins
 # If you have any plugins, put them here!
 group :jekyll_plugins do
-  gem "jekyll-feed"
-  gem "jekyll-include-cache"
   gem "jekyll-titles-from-headings"
 end
 
@@ -34,6 +32,3 @@ gem "wdm", "~> 0.1", :platforms => [:windows]
 # Lock `http_parser.rb` gem to `v0.6.x` on JRuby builds since newer versions of the gem
 # do not have a Java counterpart.
 gem "http_parser.rb", "~> 0.6.0", :platforms => [:jruby]
-
-# logger is a gem from Ruby 4.0.0
-gem "logger"
