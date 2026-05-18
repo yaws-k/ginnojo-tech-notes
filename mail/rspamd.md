@@ -173,38 +173,6 @@ location / {
 
 - If multiple users need to access the Web UI but you don't want to shere the password, consider using [SSO for nginx](../web/sso_for_nginx).
 
-## Statistics (Bayesian filter)
-
-Statistics is enabled by default, but it needs to learn before working.  
-Without enouch learning, Rspamd skips the Bayesian filter.
-
-bayes_classify: not classified as ham. The ham class needs more training samples. Currently: 0; minimum 200 required
-{: .notice}
-
-According to [Rspamd statistic setting](https://docs.rspamd.com/configuration/statistic/), create `/etc/rspamd/local.d/classifier-bayes.conf` to specify what to learn, and `expire` for [Bayes expiry module](https://docs.rspamd.com/modules/bayes_expiry).
-
-```conf
-expire = 8640000;
-
-autolearn {
-  spam_threshold = 6.0;
-  junk_threshold = 4.0;
-  ham_threshold = -0.5;
-  check_balance = true;
-}
-```
-
-Reload Rspamd.
-
-```bash
-sudo systemctl reload rspamd
-```
-
-Rspamd log should show the learning process.
-
-rspamd_stat_check_autolearn: \<mail id\>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
-{: .notice}
-
 ## Redis memory limit
 
 Set the memory limit for Redis.  

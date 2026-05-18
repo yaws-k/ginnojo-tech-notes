@@ -49,6 +49,8 @@ docs:
       url: /mail/smtpd_restrictions
     - title: "Rspamd"
       url: /mail/rspamd
+    - title: "Rspamd Statistics"
+      url: /mail/rspamd_statistics
     - title: "Rspamd GPT plugin"
       url: /mail/rspamd_gpt_plugin
     - title: "ClamAV"
