@@ -14,7 +14,7 @@ Create `/etc/rspamd/local.d/gpt.conf` and add the following lines.
 ```conf
 enabled = true;
 api_key = "<apikey>";
-model = "gpt-5-mini";
+model = "gpt-5.4-mini";
 autolearn = true
 reason_header = "X-GPT-Reason";
 

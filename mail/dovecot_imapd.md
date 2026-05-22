@@ -59,6 +59,7 @@ Special folders other than INBOX (Sent, Drafts, Junk, Trash) should be created b
 Modify `/etc/dovecot/conf.d/15-mailboxes.conf` to create the folders.
 
 - Add `auto = subscribe` to automatically create and subscribe the folder.
+- Set `autoexpunge` to delete spam emails (Add this to Trash or any other folders you want).
 - Choose `Sent` or `Sent Messages` for the \Sent mailbox according to your policy.
 
 ```conf
@@ -71,10 +72,14 @@ namespace inbox {
   mailbox Junk {
     special_use = \Junk
     auto = subscribe
+    # Automatically expunge spam after 90 days
+    autoexpunge = 90days
   }
   mailbox Trash {
     special_use = \Trash
     auto = subscribe
+    # Automatically expunge emails after 2 years
+    autoexpunge = 104weeks
   }
 
   # For \Sent mailboxes there are two widely used names. We'll mark both of
