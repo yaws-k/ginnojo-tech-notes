@@ -2,9 +2,9 @@
 ---
 # Let's Encrypt
 
-[Let's Encrypt](https://letsencrypt.org/) privides free TLS certificates. It also provides the official client [Certbot](https://certbot.eff.org/) to create, renew, and revoke certificates.
+[Let's Encrypt](https://letsencrypt.org/) provides free TLS certificates. It also provides the official client [Certbot](https://certbot.eff.org/) to create, renew, and revoke certificates.
 
-This article explains the simplest and recommended way, [Certbot snap app](https://eff-certbot.readthedocs.io/en/stable/install.html#snap-recommended) and [webroot](https://eff-certbot.readthedocs.io/en/stable/using.html#webroot) to mange certificates.
+This article explains the simplest and recommended way to manage certificates using the [Certbot snap app](https://eff-certbot.readthedocs.io/en/stable/install.html#snap-recommended) and [webroot](https://eff-certbot.readthedocs.io/en/stable/using.html#webroot).
 
 - There are options like [DNS plugins](https://eff-certbot.readthedocs.io/en/stable/using.html#dns-plugins) or [Certbot through Python pip](https://eff-certbot.readthedocs.io/en/stable/install.html#alternative-2-pip) for third-party plugins, but they are not recommended.
 
@@ -28,7 +28,7 @@ sudo ln -s /snap/bin/certbot /usr/local/bin/certbot
 
 ### Directory for webroot
 
-Certbot webroot check will make a file into `${webroot-path}/.well-known/acme-challenge/(random url)` and Let's Encrypt server checks if that file is accessible and correct.
+The Certbot webroot challenge creates a file under `${webroot-path}/.well-known/acme-challenge/(random url)` and Let's Encrypt server checks if that file is accessible and correct.
 
 For Let's Encrypt validator, make a dedicated directory.
 
@@ -41,7 +41,7 @@ sudo mkdir -p /var/www/certbot/.well-known/acme-challenge
 Accept HTTP access by Let's Encrypt validator with the default server (catch-all server).
 
 - Catch-all server is convenient for the first certificate issue before setting up the per-site configuration. (Renewal can be done with the per-site configuration.)
-- You may want certificates not for websites, for example, for mail servers.
+- You might also need certificates for non-website services, such as mail servers.
 
 ```nginx
 server {
@@ -103,7 +103,7 @@ location /.well-known/acme-challenge/ {
 }
 ```
 
-`/etc/nginx/sites-available/exmaple.jp.conf` will look like the following, after the certificate is issued.
+`/etc/nginx/sites-available/example.jp.conf` will look like the following, after the certificate is issued.
 
 ```nginx
 server {
@@ -184,7 +184,7 @@ Configure nginx based on Mozilla's [SSL Configuration Generator](https://ssl-con
 
 ### nginx default
 
-According to the Mozilla's [SSL Configuration Generator (nginx 1.26.3, OpenSSL 3.5.5)](https://ssl-config.mozilla.org/#server=nginx&version=1.26.3&config=intermediate&openssl=3.5.5&hsts).
+According to Mozilla's [SSL Configuration Generator (nginx 1.26.3, OpenSSL 3.5.5)](https://ssl-config.mozilla.org/#server=nginx&version=1.26.3&config=intermediate&openssl=3.5.5&hsts).
 
 Update `/etc/nginx/nginx.conf` to set the default SSL/TLS configurations.
 
@@ -202,7 +202,7 @@ Update `/etc/nginx/nginx.conf` to set the default SSL/TLS configurations.
         ssl_session_cache shared:MozSSL:10m;
 ```
 
-- `ssl-dhparams.pem` file used to be generated with `openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048` command for DHE-\* ciphers. However, DHE-* cyphers are not listed that dhparam file is not required.
+- `ssl-dhparams.pem` file used to be generated with `openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048` command for DHE-\* ciphers. However, since DHE ciphers are not listed, the dhparam file is not required.
 
 ### Per-server configurations
 
@@ -244,7 +244,7 @@ server {
 }
 ```
 
-Check the server security configuration with [Qualis SSL Labs](https://www.ssllabs.com/ssltest/index.html).
+Check the server security configuration with [Qualys SSL Labs](https://www.ssllabs.com/ssltest/index.html).
 
 - If you want more strict access than HSTS, check [HSTS Preload List](https://hstspreload.org/).
 

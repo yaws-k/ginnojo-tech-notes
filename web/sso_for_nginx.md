@@ -5,7 +5,7 @@
 [Vouch Proxy](https://github.com/vouch/vouch-proxy) works as an authentication gateway for Nginx.  
 This provides an easy and reliable way to add the authentication mechanism to any web application.
 
-## System requirement
+## System requirements
 
 - Nginx with "auth_request" module  
   Any Nginx flavor of Debian package should have this module.
@@ -16,7 +16,7 @@ This provides an easy and reliable way to add the authentication mechanism to an
 
 - The application is running on `app.example.jp`
 - Vouch Proxy server is on `vouch.example.jp` (the same server as `app.example.jp`)
-  - Vouch Proxy runs as a docker image listening port 9090
+  - Vouch Proxy runs as a Docker container listening on port 9090
 - The application accepts HTTPS
 - Use Google Account as the IdP
 - Allow only `user1@gmail.com`
@@ -74,11 +74,11 @@ oauth:
   preferredDomain: gmail.com
 ```
 
-- On the Google Cloud bash, set the "Authorized redirect URIs" to `https://vouch.example.jp/auth` to match the `callback_urls` in the config file.
+- In the Google Cloud Console, set the "Authorized redirect URIs" to `https://vouch.example.jp/auth` to match the `callback_urls` in the config file.
 
-### Configure Docker composer
+### Configure Docker Compose
 
-Create `/etc/vouch/docker-compose.yml` to configure the docker image.
+Create `/etc/vouch/docker-compose.yml` to configure the Docker container.
 
 ```yaml
 services:
@@ -100,9 +100,9 @@ networks:
     driver: bridge
 ```
 
-- `ports` connects the server port 9090 (127.0.0.1) to the container port 9090
+- The `ports` property connects the server port 9090 (127.0.0.1) to the container port 9090
 - `volumes` mounts the host directory `/etc/vouch/config` to the container directory `/config` as read-only (ro)
-- `environment` and `networks` are optional, but specifying them to be sure
+- `environment` and `networks` are optional, but specifying them ensures correct behavior
 
 ## Start Vouch Proxy
 
@@ -130,7 +130,7 @@ sudo docker compose -f /etc/vouch/docker-compose.yml prune -f
 
 Let Nginx use auth_request to redirect the connection to Vouch Proxy.
 
-### Prepare the snippe for authentication
+### Prepare the snippet for authentication
 
 Make a snippet `/etc/nginx/snippets/vouch.conf`
 

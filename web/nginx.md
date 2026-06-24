@@ -29,14 +29,14 @@ sudo systemctl reload crowdsec
 
 ## Gzip
 
-Gzip compression is turned on by default, but only for the text/html. Enabling compression for all other text contents will increase performance.
+Gzip compression is turned on by default, but only for text/html. Enabling compression for all other text contents will increase performance.
 
 - If your server provides HTML files with user input data and sensitive information, enabling gzip compression may expose your server to BREACH attacks. For more details, see the [gzip module explanation](https://nginx.org/en/docs/http/ngx_http_gzip_module.html).  
   (In most cases, this shouldn't happen with the modern web applications.)
 
 ### Global configuration
 
-If you don't have to consider BREACH attacks, turn on gzip globally. Uncomment all the gzip configurations in `/etc/nginx/nginx.conf`.
+If BREACH attacks are not a concern for your environment, turn on gzip globally. Uncomment all the gzip configurations in `/etc/nginx/nginx.conf`.
 
 ```nginx
 ##
@@ -97,11 +97,11 @@ For more details about each configuration line, please refer to the [official ma
 
 The simplest example:
 
-- Domain name is `example.jp`
+- The domain name is `example.jp`
 - An HTTP site (non-SSL/TLS)
-- Providing static files in `/var/www/html`
-- Listening both IPv4 and IPv6
-- Logs in `/var/log/nginx/example-jp-*`
+- Serves static files from `/var/www/html`
+- Listen on both IPv4 and IPv6
+- Saves logs to `/var/log/nginx/example-jp-*`
 
 ```nginx
 server {
@@ -133,12 +133,12 @@ sudo systemctl reload nginx
 ### Enable PHP
 
 - Add `index.php` as an index file
-- PHP fpm is listening unix socket at `/run/php/php-fpm.sock`  
+- PHP-FPM listens on a Unix socket at `/run/php/php-fpm.sock`  
   (It should be set up when installing php-fpm package.)
 
 Prerequisites
 
-- PHP and fpm have to be installed
+- PHP and PHP-FPM have to be installed
 
 ```nginx
 server {
@@ -179,7 +179,7 @@ sudo firewall-cmd --add-service=https --permanent
 sudo firewall-cmd --reload
 ```
 
-Mozilla provides a ["SSL Configuration Generator"](https://ssl-config.mozilla.org/) to generate recommended server configurations for SSL/TLS.  
+Mozilla provides an ["SSL Configuration Generator"](https://ssl-config.mozilla.org/) to generate recommended server configurations for SSL/TLS.  
 This site provides the complete configuration, but let's start from the simplest. (You need a proper certificate to complete.)
 
 Use "snakeoil" testing certificate for SSL/TLS
@@ -268,7 +268,7 @@ server {
 }
 ```
 
-- After configuring `default` server, delete `reuseport` from listen directive. `reuseport` must be specifed only once throughout the nginx configuration.
+- After configuring `default` server, delete `reuseport` from listen directive. `reuseport` must be specified only once throughout the nginx configuration.
 
 Check if the server provides HTTP/3 as expected with [HTTP/3 Check](https://http3check.net/).
 
@@ -367,7 +367,7 @@ server {
 
 ## Default site
 
-The `default` sever configuration is used when no other server configuration matches the request. (Mainly the direct IP access from malicious bots.)  
+The `default` server configuration is used when no other server configuration matches the request. (Mainly the direct IP access from malicious bots.)  
 Reject this kind of access by returning 444 (No Response). 444 is a non-standard status code used by nginx, and nginx immediately closes the connection without sending any response to the client.
 
 Create `/etc/nginx/sites-available/catch-all` with the following content.
@@ -401,7 +401,7 @@ server {
   Without this, nginx will use "the first server block" as the default.
 - `server_name _;` means access anything that doesn't match other server names. (In short, catch-all.)
 
-Delete `reuseport` if there is a site already using it. `reuseport` must be specifed only once throughout the nginx configuration.
+Delete `reuseport` if there is a site already using it. `reuseport` must be specified only once throughout the nginx configuration.
 {: .notice--warning}
 
 Disable `default` site and enable `catch-all` site.
