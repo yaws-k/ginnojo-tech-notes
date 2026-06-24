@@ -6,7 +6,7 @@ Rspamd (a spam filter) [requires your own recursive resolver](https://docs.rspam
 
 ## Install
 
-According to the [Knot-Resolver official installation instruction](https://www.knot-resolver.cz/documentation/latest/gettingstarted-install.html), follow [the official repos for Debian/Ubuntu](https://pkg.labs.nic.cz/doc/?project=knot-resolver) instruction to install the package from Knot Resolver repository.  
+According to the [Knot Resolver official installation instructions](https://www.knot-resolver.cz/documentation/latest/gettingstarted-install.html), follow [the guide for official Debian/Ubuntu repositories](https://pkg.labs.nic.cz/doc/?project=knot-resolver) to install the package.  
 (The following instruction stores the GPG key in `/etc/apt/keyrings` as recommended by Debian.)
 
 ```bash
@@ -33,12 +33,12 @@ sudo apt install knot-resolver6
 
 ## Configuration
 
-Knot-Resolver default config `/etc/knot-resolver/config.yaml` doesn't need any changes. It listens to 53(DNS) and accepts access only from localhost.  
+Knot Resolver default config `/etc/knot-resolver/config.yaml` doesn't need any changes. It listens on port 53 (DNS) and accepts access only from localhost.  
 (Firewall also rejects access to DNS.)
 
 ## Check if it works as expected
 
-Check if Knot-Resolver returns the same answer as the default (your service provider's) DNS.
+Check if Knot Resolver returns the same answer as the default (your service provider's) DNS.
 
 ```console
 $ dig a.root-servers.net
@@ -60,5 +60,5 @@ a.root-servers.net.     72939   IN      A       198.41.0.4
 ;; SERVER: 127.0.0.1#53(localhost) (UDP)
 ```
 
-This is the minimun configuration for Knot-Resolver, but enough to use as a dedicated resolver for Rspamd.  
-Please refer to the official documents for more details.
+This is the minimum configuration for Knot Resolver, but enough to use as a dedicated resolver for Rspamd.  
+Please refer to the official documentation for more details.
