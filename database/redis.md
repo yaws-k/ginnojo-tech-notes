@@ -12,7 +12,7 @@ The package 'redis' will install required dependencies.
 sudo apt install redis
 ```
 
-Now a Redis instans is running and listening on port 6379.
+Now a Redis instance is running and listening on port 6379.
 
 ### Memory overcommit
 
@@ -42,7 +42,7 @@ sudo sysctl -p /etc/sysctl.d/redis.conf
 
 ## Multiple instances
 
-Instead of creating the database with RDB, run a dedicated Redis instance for each service or application.  
+Instead of using multiple logical databases within a single instance, run a dedicated Redis instance for each service or application.  
 To run multiple instances, stop the default `redis-server.service` and run dedicated ones based on the default configuration.
 
 ### Stop and disable the default instance
@@ -54,9 +54,9 @@ sudo systemctl stop redis-server
 sudo systemctl disable redis-server
 ```
 
-### Update configuration to use is as a template
+### Update configuration to use it as a template
 
-Update `/etc/redis/redis.conf` to stop listening on TCP socket as default.
+Update `/etc/redis/redis.conf` to stop listening on the TCP socket by default.
 
 ```conf
 # Accept connections on the specified port, default is 6379 (IANA #815344).
@@ -66,7 +66,7 @@ port 0
 
 ### Create a new configuration for each instance
 
-Create a new config, e.g. for RSpamd, `/etc/redis/redis-rspamd.conf` for the new instance.
+Create a new configuration file for the new instance, such as `/etc/redis/redis-rspamd.conf` for Rspamd.
 
 ```conf
 # Include template file as default
@@ -88,7 +88,7 @@ maxmemory 256mb
 maxmemory-policy volatile-ttl
 ```
 
-Change ownership of newly created config file to `redis:redis`.
+Change ownership of the newly created config file to `redis:redis`.
 
 ```bash
 sudo chown redis:redis /etc/redis/redis-rspamd.conf
@@ -97,7 +97,7 @@ sudo chmod 640 /etc/redis/redis-rspamd.conf
 
 ### systemd config
 
-Add a service file for new instance.
+Add a service file for the new instance.
 
 ```bash
 sudo systemctl enable redis-server@rspamd

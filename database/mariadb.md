@@ -2,11 +2,11 @@
 ---
 # MariaDB
 
-Install MariaDB (an RDB forked from MySQL).
+Install MariaDB (a relational database forked from MySQL).
 
 ## Install
 
-Install, then the package will take care of everything.
+Once installed, the package will take care of everything.
 
 ```bash
 sudo apt install mariadb-server
@@ -22,7 +22,7 @@ There is absolutely no need to run the script `mariadb-secure-installation` or (
 
 ## Interface for PHP/Ruby/Python
 
-Interface modules to connect to MariaDB. For example, CMS (mainly by PHP) will require php-mysql interface.
+Interface modules to connect to MariaDB. For example, a CMS (primarily built with PHP) will require the php-mysql interface.
 
 ```bash
 sudo apt install php-mysql ruby-mysql2 python3-mysqldb
