@@ -31,7 +31,7 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 
 - `deb-src` is required only if you want to get sources
 
-Add `debian-backports` if you need.
+Add `debian-backports` if needed.
 
 ```conf
 Types: deb
@@ -55,7 +55,7 @@ Snap is a package management system other than apt. Some applications, such as C
 sudo apt install snapd
 ```
 
-Log out and Log in again tp activate the new path, and install the latest snapd with core snap.
+Log out and log in again to activate the new path, and install the latest snapd with core snap.
 
 ```bash
 sudo snap install snapd
@@ -107,7 +107,7 @@ sudo apt install autoconf build-essential libffi-dev libgmp-dev libssl-dev libya
 
 Then, use [rbenv installer](https://github.com/rbenv/rbenv-installer) to install rbenv.
 
-Log in as a normal user that you want to install rbenv. The installer script will set up rbenv.
+Log in as the user you want to install rbenv for. The installer script will set up rbenv.
 
 ```console
 $ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
@@ -163,7 +163,7 @@ Installing only `php` will install apache2 according to the dependency. To use n
 sudo apt install php php-fpm php8.4-fpm
 ```
 
-The timezone has to be set to php.ini. Update both cli: `/etc/php/8.4/cli/php.ini` and fpm: `/etc/php/8.4/fpm/php.ini`.
+The timezone must be set in php.ini. Update both cli: `/etc/php/8.4/cli/php.ini` and fpm: `/etc/php/8.4/fpm/php.ini`.
 
 ```php
 [Date]
@@ -266,11 +266,11 @@ Generate locales if you need to display characters other than English. In my cas
 sudo dpkg-reconfigure locales
 ```
 
-You can add any locales as you want. The default locale can also be anything, but English is the most safe choice, as explained at the installation.
+You can add any locales as you want. The default locale can also be anything, but English is the safest choice, as explained at the installation.
 
 ## Vim
 
-`vim` stands for Vi IMproved. If you decide to use Vi (installed by default), install Vim to enhance simple Vi.
+`vim` stands for Vi IMproved. If you decide to use Vi (installed by default), install Vim to enhance the basic Vi editor.
 
 ```bash
 sudo apt install vim
@@ -318,7 +318,7 @@ set ambiwidth=double
 
 ## systemd-timesyncd
 
-systemd-timesyncd works like NTP client. Install this if `/etc/systemd/timesyncd.conf` doesn't exist.
+systemd-timesyncd works as an NTP client. Install this if `/etc/systemd/timesyncd.conf` doesn't exist.
 
 ```bash
 sudo apt install systemd-timesyncd
@@ -378,7 +378,7 @@ Error: ipv6: address not found.
 Waiting for DAD... Done
 ```
 
-- It will return ipv6 error, because IPv6 config is newly added.(It's expected.)
+- It will return ipv6 error, because IPv6 config is newly added. (It's expected.)
 
 Check the IP addresses and try pinging via IPv6.
 

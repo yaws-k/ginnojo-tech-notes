@@ -1,12 +1,12 @@
 ---
 ---
-# ssh and security
+# SSH and Security
 
 At first, login as `root` to install and configure the basic packages.
 
 ## sudo
 
-Using root account is not recommended. "sudo" should be used to delegate the privileges to the normal user.
+Using the root account is not recommended. "sudo" should be used to delegate the privileges to the normal user.
 
 ```console
 # apt install sudo
@@ -16,7 +16,7 @@ Using root account is not recommended. "sudo" should be used to delegate the pri
 Add specific users to the sudo group to enable sudo command.
 
 - If you want to be more restrictive, you can limit the commands available to those users.
-- After adding a user to the sudo group, that user has to re-login to enable it.
+- After adding a user to the sudo group, that user must log out and log back in for the changes to take effect.
 
 ## Install ssh server
 
@@ -26,7 +26,7 @@ In most cases, the server is located in a secure and isolated location. The most
 # apt install ssh
 ```
 
-The system will install SSH and depending packages.
+The system will install SSH and its dependencies.
 
 ## Set up connection
 
@@ -74,7 +74,7 @@ Configure `/etc/ssh/sshd_config` to prohibit password login.
 
 - NOT `ssh_config` but `sshd_config`. Don't forget the "d" after `ssh`.
 
-See sshd_config(5) or [the official document](https://man.openbsd.org/sshd_config) (the official document is the latest version, which is newer than the Debian version.)
+See sshd_config(5) or [the official documentation](https://man.openbsd.org/sshd_config) (the official documentation is the latest version, which is newer than the Debian version.)
 
 The default configuration is restrictive. In short, `PasswordAuthentication yes` should be changed to `no` to reject password authentication.  
 Some other configurations should be taken into consideration.
@@ -107,7 +107,7 @@ UFW looks easier, but it has issues with docker images. (See details for [docker
 # apt install firewalld
 ```
 
-SSH services are registered by default, so the ssh won't be disconnected after installing this.
+SSH services are registered by default, so your SSH connection won't be dropped after installation.
 
 ### Presets
 
@@ -132,7 +132,7 @@ There is a command to list all presets, but the list is too large and difficult 
 
 ### Opening ports using presets
 
-Pick up the service you want to use and enable it. For example, HTTPS.
+Choose the service you want to use and enable it. For example, HTTPS.
 
 ```console
 # firewall-cmd --add-service=https --zone=public --permanent
@@ -141,7 +141,7 @@ Pick up the service you want to use and enable it. For example, HTTPS.
 
 - The application name is "firewalld" (firewall + d), but the command is `firewall-cmd` without "d" after the firewall.
 - `--permanent` is required to set the rules preserved after the firewall reload. Without this parameter, you can test the temporary rules.
-- `--zone-public` can be omitted because "public" is the default zone.
+- `--zone=public` can be omitted because "public" is the default zone.
 - Reload required to enable the new configurations.
 
 ### Disabling services
@@ -155,13 +155,13 @@ Close the port by disabling the service.
 
 ### Complicated patterns
 
-You can manually configure the allowed port and TCP/UDP if you need more complicated patterns or there is no suitable preset. For more details, please refer to [the official documents](https://firewalld.org/documentation/man-pages/firewall-cmd.html) and other materials.
+You can manually configure the allowed port and TCP/UDP if you need more complicated patterns or there is no suitable preset. For more details, please refer to [the official documentation](https://firewalld.org/documentation/man-pages/firewall-cmd.html) and other materials.
 
 Policies or rich rules will be the option for those cases.
 
 ## CrowdSec
 
-CrowdSec is a security service. It offers a community (free of charge) version.
+CrowdSec is a security service. It offers a free community version.
 
 ### Install Security Engine
 
@@ -171,7 +171,7 @@ To install, curl is required.
 # apt install curl
 ```
 
-Follow the instructions on their [official documents](https://doc.crowdsec.net/docs/getting_started/install_crowdsec/).
+Follow the instructions on their [official documentation](https://doc.crowdsec.net/docs/getting_started/install_crowdsec/).
 
 Update apt-lines.
 
@@ -222,7 +222,7 @@ INFO Please restart crowdsec after accepting the enrollment.
 ```
 
 Then follow the [official manual](https://doc.crowdsec.net/u/getting_started/post_installation/console) to accept enrollment.  
-After restarting the CrowdSec service, it will sync with console.
+After restarting the CrowdSec service, it will sync with the console.
 
 ```console
 # systemctl restart crowdsec

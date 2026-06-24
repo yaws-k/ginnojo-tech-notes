@@ -72,7 +72,7 @@ Set the root password and create a new user.
 3. User name for your account  
    This will be the actual account name, which will be your primary mail address. (You can add aliases for email, though.)
 4. Choose a password for the new user  
-   This password should be different from the root user. This will be required when you `sudo`.
+   This password should be different from the root password. This will be required when you `sudo`.
 
 ## Partition disks
 
@@ -80,15 +80,15 @@ Set the root password and create a new user.
 In my case, I used Manual configuration to consider the following factors.
 
 - More swap to cover the lack of main memory  
-  Due to the small VPS, there is insufficient memory for peak usage. Swap will be required.  
-  (If you don't need to make any other partitions, `swapfile` is the modern approach instead of a swap partition.)
+  Due to the limited memory of a small VPS, there is insufficient memory for peak usage. Swap will be required.  
+  (If you don't need to make any other partitions, a `swapfile` is the modern approach instead of a swap partition.)
 - XFS for MongoDB  
   MongoDB requires an XFS filesystem for data storage.  
-  (The loopback mount file on an ext4 filesystem works, but it is not recommended due to the perfomance concerns.)
+  (The loopback mount file on an ext4 filesystem works, but it is not recommended due to the performance concerns.)
 
 {% include figure popup=true image_path="/assets/images/base_system/partition.png" alt="partition" %}
 
-(Never mind about 1.0 MB free spaces. They are automatically generated for some reasons.)
+(Never mind about 1.0 MB free spaces. They are automatically generated for some reason.)
 
 ## Configure the package manager
 
@@ -106,7 +106,7 @@ Choose the country nearest to the server location.
 
 ## Configuring popularity-contest
 
-If you're ok, choose "Yes" to provide the package usage anonymized data to help Debian developers.
+If you wish to contribute, choose "Yes" to provide the anonymized package usage data to help Debian developers.
 
 ## Software selection
 
@@ -118,7 +118,7 @@ You can check what is in "standard system utilities" later with this command.
 
 ## Configuring grub-pc
 
-The "server" should have only one OS (Debian), so GRUB boot loader should be installed into the primary drive.
+The "server" should have only one OS (Debian), so the GRUB boot loader should be installed into the primary drive.
 
 {% include figure popup=true image_path="/assets/images/base_system/grub_install1.png" alt="GRUB install" %}
 
