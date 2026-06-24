@@ -3,7 +3,7 @@
 # Matomo
 
 [Matomo](https://matomo.org/) is a free and open-source web analytics application with high accuracy and a strong focus on data privacy.  
-If you want to control every data, or need to consider GDPR compliance, it can be a good choice.
+If you want to control all of your data, or need to consider GDPR compliance, it can be a good choice.
 
 There is the [official installation guide](https://matomo.org/faq/on-premise/installing-matomo/). This article follows the guide and adds some customization based on how this server is configured.
 
@@ -126,7 +126,7 @@ server {
 
 Access `https://matomo.example.jp/` to start the initial setup.
 
-When accessing the site, turn of uBlock Origin (Lite) or other ad blockers. Matomo related resources are blocked as tracking scripts, and the page may not work as expected.
+When accessing the site, turn off uBlock Origin (Lite) or other ad blockers. Matomo related resources are blocked as tracking scripts, and the page may not work as expected.
 {: .notice--warning}
 
 ### System Check
@@ -159,7 +159,7 @@ If you want to add options like non-javascript tracking or disabling cookies, re
 
 ## Update config.ini.php
 
-If you get this error when logging in to Matomo, add the FQDN to `trusted_hosts[]` in `config/config.ini.php`.
+If you get this error when trying to log in to Matomo, add the FQDN to `trusted_hosts[]` in `config/config.ini.php`.
 
 **Error**: The form security failed because of an invalid "Referer" header. If you are using a proxy server, you must [configure Matomo to accept the proxy header that forwards the host header](https://matomo.org/faq/how-to-install/faq_98). Also, check that your "Referer" header is sent correctly. If you previously connected using HTTPS, please ensure you are connecting over a secure (SSL/TLS) connection and try again.
 {: .notice--danger}
@@ -181,4 +181,4 @@ Now the site should be ready.
 You can customize how tracking works.
 
 - `Track users with JavaScript disabled` will add the image tracking code.
-- `Disable all tracking cookies` will stop using cookies to track visitors. It is good to track the visitors rejecting cookies and avoiding GDPR regulations.
+- `Disable all tracking cookies` will stop using cookies to track visitors. It is good to track the visitors rejecting cookies and avoiding the need for cookie consent banners under GDPR.

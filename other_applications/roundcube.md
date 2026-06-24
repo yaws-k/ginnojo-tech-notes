@@ -4,7 +4,7 @@
 
 [Roundcube](https://roundcube.net/) is an open-source webmail client. It works as a fully functional MUA (mail user agent) with plugins.
 
-There is the [official guide wiki](https://github.com/roundcube/roundcubemail/wiki). This article follows the guide and adds some customization based on how this server is configured.
+The [official guide wiki](https://github.com/roundcube/roundcubemail/wiki) is available. This article follows the guide and adds some customization based on how this server is configured.
 
 ## Install
 
@@ -16,7 +16,7 @@ Extract compressed files.
 tar xfz roundcubemail-x.x.x-complete.tar.gz
 ```
 
-- It contains empty `temp` and `logs` directories. You don't have to make them later manually.
+- It contains empty `temp` and `logs` directories. You don’t need to create them manually later.
 
 Move the directory to `/var/www/`. For future updates, delete the version number from the directory name.
 
@@ -32,7 +32,7 @@ sudo chown -R www-data:www-data /var/www/roundcube
 
 ## Database configuration
 
-In my case, the number of users is so small that I use Sqlite. Sqlite doesn't require any preparation. The database file will be automatically created during the setup process.
+In my case, the number of users is so small that I use SQLite. SQLite doesn't require any preparation. The database file will be automatically created during the setup process.
 
 ## nginx configuration
 
@@ -55,7 +55,7 @@ server {
 
         server_name mail.example.jp;
 
-        # Since 1.7, point to public_html for security reason
+        # Since 1.7, point to public_html for security reasons
         root /var/www/mail.example.jp/public_html;
 
         index index.php;
@@ -81,13 +81,13 @@ server {
 Access `https://mail.example.jp/installer.php` to start the initial setup.  
 This will check if all required packages are available and show missing items.
 
-- The basic extensions [installed with PHP iteself](../base_system/basic_configuration_and_utilities#php-84) should cover all requirements.
+- The basic extensions [installed with PHP itself](../base_system/basic_configuration_and_utilities#php-84) should cover all requirements.
 
 ### Roundcube configuration
 
 - Choose `SQLite` as the database and set the path, for example, `/var/www/roundcube/sqlite.db`
 - IMAP should work with default configuration.
-- SMTP needs `ssl://` prefix to use Submissions. To avoid the certificate error, set smtp_host with FQDN; `ssl://mail.example.jp:465`
+- SMTP needs `ssl://` prefix to use Submissions. To avoid certificate errors, set smtp_host to the FQDN: `ssl://mail.example.jp:465`
 
 "Create config" will save the config file. The "Continue" button will check the directory and DB permissions.  
 Check if SMTP and IMAP login work.
