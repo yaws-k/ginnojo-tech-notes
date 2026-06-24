@@ -27,7 +27,7 @@ nomail.example.jp. IN TXT "v=spf1 -all"
 
 ## DKIM
 
-See [DKIM signing](./dkim_signing.md) for signing and Rspamd integration.
+See [DKIM signing](./dkim_signing) for signing and Rspamd integration.
 
 ## DMARC
 
