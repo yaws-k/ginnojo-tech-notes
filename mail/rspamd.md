@@ -2,11 +2,11 @@
 ---
 # Rspamd
 
-Rspamd is a spam filter that adds "spam score" to each email. In addition, it can integrate ClamAV (antivirus) and DKIM signing.
+Rspamd is a spam filter that adds a "spam score" to each email. In addition, it can integrate ClamAV (antivirus) and DKIM signing.
 
 ## Install
 
-Rspamd provides Debian/Ubuntu repository for latest releases. Follow [the official installation Guide for Ubuntu/Debian](https://docs.rspamd.com/getting-started/installation#ubuntudebian).
+Rspamd provides a Debian/Ubuntu repository for the latest releases. Follow [the official installation guide for Ubuntu/Debian](https://docs.rspamd.com/getting-started/installation#ubuntudebian).
 
 Prerequisites (should be already done for other software).
 
@@ -41,7 +41,7 @@ sudo apt install rspamd
 
 ## First Setup
 
-Start configuration by following [the official first setup guide](https://docs.rspamd.com/getting-started/first-setup). (Some steps can be skipped because defaults are set out of the box.)
+Start configuration by following [the official first setup guide](https://docs.rspamd.com/getting-started/first-setup). (Some steps can be skipped because sensible defaults work out of the box.)
 
 Create `/etc/rspamd/local.d/redis.conf` to connect to Redis for Rspamd prepared in the [Redis article](../database/redis.md).
 
@@ -75,7 +75,7 @@ dns {
 
 ### Check if Rspamd is working
 
-Check if configutest returns `syntax OK`.
+Check if configtest returns `syntax OK`.
 
 ```bash
 sudo rspamadm configtest
@@ -117,7 +117,7 @@ Message-ID: undef
 
 ## Postfix integration
 
-Rspamd can communicate Postfix as a milter. Let Postfix send emails to Rspamd by adding milter lines to `/etc/postfix/main.cf`.
+Rspamd can communicate with Postfix as a milter. Let Postfix send emails to Rspamd by adding milter lines to `/etc/postfix/main.cf`.
 
 ```conf
 # Rspamd milter
@@ -126,7 +126,7 @@ non_smtpd_milters = inet:localhost:11332
 milter_default_action = accept
 ```
 
-Reload postfix.
+Reload Postfix.
 
 ```bash
 sudo systemctl reload postfix
@@ -153,7 +153,7 @@ Simply send a legitimate email from outside and check if that reaches the inbox.
 
 ## Web UI
 
-Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to connect localhost:11334 to access from the internet.
+Rspamd has a built-in Web UI. Set Nginx as a reverse-proxy to forward traffic to localhost:11334 for internet access.
 
 According to the [FAQ: How do I run the WebUI behind a proxy](https://docs.rspamd.com/faq/#how-do-i-run-the-webui-behind-a-proxy), add following lines to nginx configuration.
 
@@ -171,7 +171,7 @@ location / {
 
 `https://rspamd.example.jp/` will show the Rspamd Web UI and ask for the password.
 
-- If multiple users need to access the Web UI but you don't want to shere the password, consider using [SSO for nginx](../web/sso_for_nginx).
+- If multiple users need to access the Web UI but you don't want to share the password, consider using [SSO for nginx](../web/sso_for_nginx).
 
 ## Redis memory limit
 

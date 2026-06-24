@@ -2,7 +2,7 @@
 ---
 # ClamAV
 
-ClamAV is anti-virus software.
+ClamAV is an open-source antivirus software engine.
 
 ## Install
 
@@ -12,9 +12,9 @@ The package is `clamav`.
 sudo apt install clamav clamav-daemon
 ```
 
-After installation, `clamav-daemon` automatically starts and may fail. It has to wait till clamav-freshclam downloads the initial database.
+After installation, `clamav-daemon` automatically starts and may fail. The service must wait until clamav-freshclam downloads the initial database.
 
-Clamav can connect to Postfix via milter, but I will use this through Rspamd.
+ClamAV can connect to Postfix via milter, but I will use this through Rspamd.
 
 ## Configuration
 
@@ -34,7 +34,7 @@ sudo systemctl start clamav-daemon
 ### Concurrent Database Reload
 
 If OOM killer aborts the database refresh process due to the memory usage, disable "Concurrent Database Reload".  
-Clamav temporarily uses double the memory during the refresh process by default. This config will stop that process, but there will be a little downtime for scanning to replace the virus database.
+ClamAV temporarily uses double the memory during the refresh process by default. This configuration disables this behavior, but there will be a little downtime for scanning to replace the virus database.
 
 Add the following line to `/etc/clamav/clamd.conf`.
 
@@ -44,7 +44,7 @@ ConcurrentDatabaseReload no
 
 ## Integrate with Rspamd
 
-Integrate ClamAV(clamdscan) with Rspamd to reject virus.  
+Integrate ClamAV (clamdscan) with Rspamd to reject viruses.  
 Create `/etc/rspamd/local.d/antivirus.conf`
 
 - cf. [Antivirus module](https://docs.rspamd.com/modules/antivirus)
@@ -63,8 +63,8 @@ clamav {
 }
 ```
 
-- It automatically rejects virus detected emails
-- Rspamd log shows the message if any virus are found
+- It automatically rejects virus-detected emails
+- Rspamd log shows the message if any viruses are found
 - No headers will be added if the mail is clean
 
 Reload Rspamd.

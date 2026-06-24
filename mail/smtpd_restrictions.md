@@ -13,8 +13,8 @@ In short,
 
 1. Permit: My networks
 2. Permit: Authenticated users
-3. Reject: Invalid domain names with helo command
-4. Reject: Invalid sender address
+3. Reject: Invalid domain names with the HELO command
+4. Reject: Invalid sender addresses
 5. Reject: Invalid destination domains or mail addresses
 6. Permit anything else
 
@@ -22,7 +22,7 @@ Update `/etc/postfix/main.cf`
 
 ```conf
 # Comment out existing smtpd_relay_restrictions
-# (And redifine with other restrictions)
+# (And redefine with other restrictions)
 #smtpd_relay_restrictions = permit_mynetworks permit_sasl_authenticated defer_unauth_destination
 
 (snip)
@@ -75,11 +75,11 @@ smtpd_data_restrictions = $mua_data_restrictions
 ```
 
 - `message_size_limit` 20MB should be enough (default 10MB)
-- `disable_vrfy_command` Prevent this command to be used for user scanning.
-- `*_reject_code` 450 (try later) is the default. Spam servers may repeat retrying forever.
+- `disable_vrfy_command` Prevent this command from being used for user scanning.
+- `*_reject_code` 450 (try later) is the default. Spam servers may keep retrying indefinitely.
 - `smtpd_helo_required` Yes to make the most use of helo_restrictions.
 - `strict_rfc821_envelopes` For the later installation of content filter
-- `mua_helo_restrictions` can have two more restrictions, but sometimes legitimate servers do this and cause false-positive.
+- `mua_helo_restrictions` can include two additional restrictions, but some legitimate servers may trigger false positives.
   - `reject_non_fqdn_helo_hostname` rejects servers that don't send fully qualified domain names in the HELO command.
   - `reject_unknown_helo_hostname` rejects servers with FQDNs that cannot be resolved.
 - `reject_unlisted_recipient` under `mua_recipient_restrictions` is a `yes` by default, but it's better to be explicit.

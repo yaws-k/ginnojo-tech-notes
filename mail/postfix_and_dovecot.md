@@ -1,6 +1,6 @@
 ---
 ---
-# Postfix and Dovecot LMTP
+# Postfix and Dovecot
 
 WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
 {: .notice--warning}
@@ -17,7 +17,7 @@ The installer will ask two questions.
 
 - General mail configuration type: `Internet Site`
 - System mail name: `mail.example.jp`
-  (The installer will pick up the server FQDN as default)
+  (The installer will pick up the server FQDN by default)
 
 Open ports for SMTP (25) and Submissions (formerly SMTPS, 465).
 
@@ -92,7 +92,7 @@ sudo usermod -s /usr/sbin/nologin vmail
 
 ### Configure Virtual Users
 
-The Postfix document has an example of the [Non-Postfix mailbox store: separate domains, non-UNIX accounts](https://www.postfix.org/VIRTUAL_README.html#in_virtual_other).
+The Postfix documentation has an example of the [Non-Postfix mailbox store: separate domains, non-UNIX accounts](https://www.postfix.org/VIRTUAL_README.html#in_virtual_other).
 
 Modify `/etc/postfix/main.cf` to send all emails to the virtual mailbox.
 
@@ -124,7 +124,7 @@ Make LMDB file of `/etc/postfix/virtual`.
 sudo postmap virtual
 ```
 
-Reload Postfix to apply changes on main.cf
+Reload Postfix to apply changes to main.cf
 
 ```bash
 sudo systemctl reload postfix
@@ -229,10 +229,10 @@ userdb passwd-file {
 ```
 
 - passdb and userdb can be the same file
-- Dovecot will look up the user list with the full email address, with lower case
+- Dovecot will look up the user list with the full email address in lowercase
 - Other configurations are left as default or set in the other conf files
 
-For more details, see official documents.
+For more details, see official documentation.
 
 - [Quick Configuration](https://doc.dovecot.org/2.4.1/core/config/quick.html)
 - [Password Databases](https://doc.dovecot.org/2.4.1/core/config/auth/passdb.html)
@@ -298,7 +298,7 @@ sudo /etc/dovecot/postfix_lmdb.sh
 Follow the logs with `journalctl` and send a test mail to the valid user on this server.
 
 ```bash
-sudo jounalctl -f SYSLOG_FACILITY=2
+sudo journalctl -f SYSLOG_FACILITY=2
 ```
 
 If you need detailed logs, turn on debug switches in `/etc/dovecot/conf.d/10-logging.conf`.

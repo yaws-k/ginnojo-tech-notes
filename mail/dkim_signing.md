@@ -5,7 +5,7 @@
 Rspamd checks DKIM for incoming emails by default. In addition, it can also sign outgoing emails.  
 See [DKIM signing module](https://docs.rspamd.com/modules/dkim_signing/) for details.
 
-ed25519 key is the modern and strong algorithm, but unfortunately, it is not supported by major mail services. For the compatibility, set both ed25519 and RSA 2048bit keys.  
+An Ed25519 key uses a modern and strong algorithm, but unfortunately, it is not supported by major mail services. For compatibility, set both ed25519 and RSA 2048bit keys.  
 According to [the test by Red Shift](https://redsift.com/blog/ed25519-dkim-support-weak-keys), as of April 2026, Gmail, Microsoft 365, Yahoo, and iCloud do not support ed25519 keys.
 {: .notice--info }
 
@@ -15,7 +15,7 @@ Create `/etc/rspamd/local.d/dkim_signing.conf` to override defaults for the foll
 
 - Different keys for `mail.example.jp` and `mail2.example.jp`  
   (Not using `example.jp` key for multiple subdomains)
-- Choose the domain to sign from MIME header "from" address
+- Choose the domain to sign from the MIME header "From" address.
 
 ```conf
 # If true, envelope/header domain mismatch is ignored
@@ -81,9 +81,9 @@ s20260401rsa._domainkey.mail  86400  IN  TXT  "v=DKIM1; k=rsa; p=MI...AQAB="
 ```
 
 - ed25519 key is very short and everything can be written in one DNS record.
-- If you want to test DKIM signatures, add the "t=y" parameter to the DNS record. It means the key is still testing.  
+- If you want to test DKIM signatures, add the "t=y" parameter to the DNS record. This indicates that the key is still in testing mode.  
   Remember to delete this parameter after you confirm that DKIM is working as expected.
-- How to input DNS records slightly differs depending on your DNS provider. Please check what you have to do according to your DNS provider's documentation.
+- How to add DNS records differs slightly depending on your DNS provider. Please check what you have to do according to your DNS provider's documentation.
 
 RSA key is too long for one DNS record. To avoid this issue, probably the safest way is to delete spaces and newlines like below before pasting to DNS record.
 

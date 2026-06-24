@@ -2,7 +2,7 @@
 ---
 # Dovecot IMAPd
 
-- Dovecot IMAPd manages the mails on the server and responds to MUA.
+- Dovecot IMAPd manages emails on the server and responds to MUAs.
 - Dovecot IMAPd shares the userdb with Dovecot-LMTP.
 
 WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
@@ -13,7 +13,7 @@ WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. 
 Install dovecot-imapd package.
 
 ```bash
-sudo apt install dovecot-imapd
+sudo apt install the dovecot-imapd
 ```
 
 Open IMAPS (993) port.
@@ -42,7 +42,7 @@ Then reload Dovecot.
 sudo systemctl reload dovecot
 ```
 
-Now you should be able to connect to the mailbox from your local mailer (MUA), but probably it's better to set up SMTP before testing. (The mailer may require the valid SMTP server to send emails.)
+Now you should be able to connect to the mailbox from your local mailer (MUA), but it is probably better to set up SMTP before testing. (The MUA may require a valid SMTP server to send emails.)
 
 ### Certificate rotation
 
@@ -95,8 +95,8 @@ namespace inbox {
 }
 ```
 
-Define filder separator as `/` in `/etc/dovecot/conf.d/10-mail.conf`.  
-(If you plan to use multi-byte character for folder name, set `mailbox_list_utf8 = yes`.)
+Define folder separator as `/` in `/etc/dovecot/conf.d/10-mail.conf`.  
+(If you plan to use multi-byte characters for folder names, set `mailbox_list_utf8 = yes`.)
 
 ```conf
 namespace inbox {

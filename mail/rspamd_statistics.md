@@ -1,6 +1,6 @@
 ---
 ---
-# Statistics (Bayesian filter)
+# Rspamd Statistics (Bayesian filter)
 
 Statistics is enabled by default, but it needs to learn before working.  
 Without enough learning, Rspamd skips the Bayesian filter with the following logs.
@@ -10,7 +10,7 @@ bayes_classify: not classified as ham. The ham class needs more training samples
 
 ## Bayes expiry module
 
-According to [Rspamd statistic setting](https://docs.rspamd.com/configuration/statistic/), create `/etc/rspamd/local.d/classifier-bayes.conf` to specify what to learn, and `expire` for [Bayes expiry module](https://docs.rspamd.com/modules/bayes_expiry).
+According to the [Rspamd statistic settings](https://docs.rspamd.com/configuration/statistic/), create `/etc/rspamd/local.d/classifier-bayes.conf` to specify what to learn, and `expire` for the [Bayes expiry module](https://docs.rspamd.com/modules/bayes_expiry).
 
 ```conf
 expire = 8640000;
@@ -37,7 +37,7 @@ Rspamd automatically learns the obvious ham/spam.
 rspamd_stat_check_autolearn: \<mail id\>: autolearn ham for classifier 'bayes' as message's score is negative: -4.80
 {: .notice}
 
-If you have enough number of incoming emails, Rspamd start using bayesian filter after it learns more than 200 emails for both ham and spam.
+If you receive a sufficient number of incoming emails, Rspamd starts using the Bayesian filter after it learns more than 200 emails for both ham and spam.
 
 ## Manual learn
 
@@ -50,7 +50,7 @@ Steps:
 2. Save emails as `.eml` file
 3. Learn extracted ham/spam emails
 
-Create the following shellscript.
+Create the following shell script.
 
 ```bash
 mailbox="INBOX"
@@ -79,13 +79,13 @@ Execute Rspamd learn command.
 rspamc learn_ham /tmp/eml
 ```
 
-Extract spam emails and learn them with the following command (if you have spam mails).
+Extract spam emails and learn them with the following command (if you have spam).
 
 ```bash
 rspamc learn_spam /tmp/eml
 ```
 
-Don't forget to cleanup the emails you extracted.
+Don’t forget to clean up the emails you extracted.
 
 ```bash
 sudo rm -r /tmp/eml

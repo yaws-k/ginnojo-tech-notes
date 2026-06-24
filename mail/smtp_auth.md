@@ -5,8 +5,8 @@
 Postfix accepts relaying (sending out) emails only from the localhost (e.g., cron job). Authorization mechanisms are required for mailbox users to send out their emails.
 
 - For this purpose, port 465 (submissions, formerly SMTPS) is used
-  - Outbound port 25 (SMTP) is often blocked by internet providers (OP25B) that users can't connect to the mail server.
-  - Port 587 (submission port) was used according to the RFC 6409 released in 2011, but RFC 8314 released in 2018 recommends using port 465 for submissions.
+  - Outbound port 25 (SMTP) is often blocked by Internet Service Providers (ISPs) via OP25B, preventing users from connecting to the mail server.
+  - Port 587 (submission port) was used according to RFC 6409 released in 2011, but RFC 8314 released in 2018 recommends using port 465 for submissions.
 
 ## SMTP TLS
 
@@ -58,7 +58,7 @@ sudo systemctl reload dovecot
 
 ## Postfix SASL
 
-- [Postfix SASL Howto](https://www.postfix.org/SASL_README.html) explains basic and configuration examples.
+- [Postfix SASL Howto](https://www.postfix.org/SASL_README.html) explains the basics and provides configuration examples.
 
 Update `/etc/postfix/main.cf`.
 
@@ -107,7 +107,7 @@ submissions inet n       -       y       -       -       smtpd
 
 - As the submissions port is not for the normal mail transfer from other servers;
   - The connection requires TLS encryption
-  - No relaying permitted unless authenticated
+  - No relaying is permitted unless authenticated
 - `$mua_..._restrictions` will be defined later
 
 Reload Postfix

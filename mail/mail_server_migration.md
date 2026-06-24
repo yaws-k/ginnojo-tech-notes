@@ -13,14 +13,14 @@ Prerequisites (in this article's case)
 This article explains only about doveadm commands. Many steps to consider for the mail server migration are too much to document here, so please find some other sites...
 {: .notice--info}
 
-It looks like `doveadm` command also had some breaking changes and doesn't work as expected when migrating from Dvecot 2.3 to 2.4. Here are some workarounds that I used, but not sure if it properly works on your environment.
+It looks like the `doveadm` command also had some breaking changes and doesn't work as expected when migrating from Dovecot 2.3 to 2.4. Here are some workarounds that I used, but not sure if it properly works on your environment.
 {: .notice--warning}
 
 ## Preparation
 
 ### SSH as root
 
-SSH root login should be prohibited, but enable it temporarily for this migration. Enable key-pair only, but don't allow ID/Password login.
+SSH root login should generally be prohibited, but it can be enabled temporarily for this migration. Enable key-pair authentication only, and disable password authentication.
 
 Edit `/etc/ssh/sshd_config` to allow key-pair root login.
 
@@ -41,14 +41,14 @@ Steps
 2. Initial email copy from old to new server
 3. Delete the old server from the MX and set the new server as the primary MX
    - Emails start going to the new server
-4. Stop the old server mail service
+4. Stop the mail service on the old server
    - Stop receiving emails even if other servers still try to send
 5. Delta update from the old server to the new
    - Fetch emails received after the initial copy
 
 ### Initial migrate (copy)
 
-The main process of data migration. `doveadm` command will copy all emails in all directories (including empty directories) and Sieve scripts.  
+The main process of data migration. The `doveadm` command will copy all emails in all directories (including empty directories) and Sieve scripts.  
 Be aware that any existing data on the new server will be deleted during this process.
 
 Between compatible versions:
@@ -63,10 +63,10 @@ From 2.3 to 2.4:
 # doveadm -o "dsync_remote_cmd=ssh -l root new-server.example.jp doveadm dsync-server -u user1@example.jp" backup -u user1@example.jp remote:new-server.example.jp
 ```
 
-- It seems `doveadm backup` command sends `-U` option that is not available in Dovecot 2.4. So specify `dsync_remote_cmd` option to avoid this issue.
+- It seems `doveadm backup` command sends `-U` option that is not available in Dovecot 2.4. So specify the `dsync_remote_cmd` option to avoid this issue.
 
 If you simply want to copy all emails for all users, you can use `-A` option.  
-(It's only available between compatible versions because it loops commands with `-u` internally.)
+(It is only available between compatible versions because it loops commands with `-u` internally.)
 
 ```console
 # doveadm backup -A remote:new-server.example.jp
@@ -74,7 +74,7 @@ If you simply want to copy all emails for all users, you can use `-A` option.
 
 ### Delta update
 
-To copy emails existing only on the old server, use `doveadm sync` command. With `-1` option, it only copies emails that are not on the new server.
+To copy emails existing only on the old server, use the `doveadm sync` command. With `-1` option, it only copies emails that are not on the new server.
 
 Between compatible versions:
 
@@ -88,4 +88,4 @@ From 2.3 to 2.4:
 # doveadm -o "dsync_remote_cmd=ssh -l root new-server.example.jp doveadm dsync-server -u user1@example.jp" sync -1 -u user1@example.jp remote:new-server.example.jp
 ```
 
-Technically this should work the same as `backup` command above, but [the official document](https://doc.dovecot.org/2.4.1/core/man/doveadm-backup.1.html) discourages such usage.
+Technically this should work the same as `backup` command above, but [the official documentation](https://doc.dovecot.org/2.4.1/core/man/doveadm-backup.1.html) discourages such usage.

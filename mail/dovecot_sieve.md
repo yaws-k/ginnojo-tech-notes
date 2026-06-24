@@ -2,8 +2,8 @@
 ---
 # Dovecot Sieve
 
-Sieve is a script to manages email delivery within the mailbox.  
-e.g. An email with `X-Spam: Yes` header will be delivered to `Junk` folder.
+Sieve is a script to manage email delivery within the mailbox.  
+e.g. An email with `X-Spam: Yes` header will be delivered to the `Junk` folder.
 
 WARNING: Dovecot has breaking changes in the configuration between 2.3 and 2.4. Be sure to update the configuration files according to the version you are using.
 {: .notice--warning}
@@ -15,7 +15,7 @@ sudo apt install dovecot-sieve dovecot-managesieved
 ```
 
 - dovecot-sieve: Sieve plugin for Dovecot LMTP
-- dovecot-managesieved: It enables per-user Sieve script management
+- dovecot-managesieved: Enables per-user Sieve script management
 
 Open the port for managesieved
 
@@ -26,7 +26,7 @@ sudo firewall-cmd --reload
 
 ## Configure
 
-Edit `/etc/dovecot/conf.d/20-lmtp.conf` mail_plugins line to enable Sieve plugin.
+Edit the mail plugin line in `/etc/dovecot/conf.d/20-lmtp.conf` to enable the Sieve plugin.
 
 ```conf
 protocol lmtp {
@@ -47,7 +47,7 @@ sudo systemctl reload dovecot
 As described above, each user can manage their scripts.
 
 - [Sieve Editor](https://github.com/thsmi/sieve/releases): A standalone Sieve Editor
-- [Roundcube](https://roundcube.net/): An webmail system with the built-in plugin to manage Sieve scripts
+- [Roundcube](https://roundcube.net/): A webmail system with the built-in plugin to manage Sieve scripts
 
 Sieve script examples
 
@@ -56,7 +56,7 @@ Sieve script examples
 
 ### Sieve Editor notice
 
-- Make a script and "activate" it to apply the rule
+- Create a script and “activate” it to apply the rules
 
 ### Dovecot dbox notice
 

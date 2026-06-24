@@ -4,8 +4,8 @@
 
 Rspamd can send emails to OpenAI's GPT API and get the response.
 
-- Obvious spam and ham will not be sent to avoid wasting the API quota
-- You need GPT API key to use this plugin (or own ollama server)
+- Obvious spam and ham will not be sent to prevent wasting the API quota
+- You need a GPT API key to use this plugin (or your own Ollama server)
 
 ## Configuration
 
@@ -22,7 +22,7 @@ reason_header = "X-GPT-Reason";
 allow_ham = true;
 ```
 
-- Delete `autolearn = true` if you feel GPT result is not so reliable.
+- Delete `autolearn = true` if you feel the GPT results are not very reliable.
 
 Add the following line to `/etc/rspamd/local.d/options.inc` to extend the timeout to wait for the GPT API response.
 
@@ -39,7 +39,7 @@ sudo systemctl reload rspamd
 
 ## Test GPT plugin
 
-Send a legitimate test mail and check the headers. It should have `X-GPT-Reason` header with the response from GPT API and `GPT_HAM` symbol under `X-Spamd-Result` header.
+Send a legitimate test mail and check the headers. It should have the `X-GPT-Reason` header with the response from GPT API and `GPT_HAM` symbol under the `X-Spamd-Result` header.
 
-Remember deleting the `allow_ham = true;` line after testing to avoid wasting the API quota.
+Remember to delete the `allow_ham = true;` line after testing to avoid wasting the API quota.
 {: .notice--warning}
