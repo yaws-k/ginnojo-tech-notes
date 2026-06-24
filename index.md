@@ -12,11 +12,11 @@ The guides are based on Debian 13 (Trixie), released in August 2025.
 
 ## Overview
 
-The overview of Filesystem, OS, and Software on the server.  
+An overview of the filesystem, OS, and software on the server.  
 (Click the image to enlarge it.)
 
 {% include figure popup=true image_path="/assets/images/overview.drawio.svg" alt="Overview" %}
 
-- `xfs` partition is for MongoDB data storage.
-- `certbot` works as a snap package.
-- `vouch-proxy` works as a docker image.
+- The `XFS` partition is used for MongoDB data storage.
+- `certbot` runs as a snap package.
+- `vouch-proxy` runs as a Docker container.

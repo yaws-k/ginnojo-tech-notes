@@ -7,7 +7,7 @@ docs:
     children:
     - title: "Installation"
       url: /base_system/installation
-    - title: "ssh and Security"
+    - title: "SSH and Security"
       url: /base_system/ssh_and_security
     - title: "Basic configuration and utilities"
       url: /base_system/basic_configuration_and_utilities
@@ -45,7 +45,7 @@ docs:
       url: /mail/dovecot_imapd
     - title: "SMTP Auth"
       url: /mail/smtp_auth
-    - title: "SMTPd Restrictioins"
+    - title: "SMTPd Restrictions"
       url: /mail/smtpd_restrictions
     - title: "Rspamd"
       url: /mail/rspamd
@@ -63,9 +63,9 @@ docs:
       url: /mail/dovecot_sieve
     - title: "Mail server migration"
       url: /mail/mail_server_migration
-  - title: "Other application"
+  - title: "Other applications"
     children:
     - title: "Roundcube"
-      url: /other_application/roundcube
+      url: /other_applications/roundcube
     - title: "Matomo"
-      url: /other_application/matomo
+      url: /other_applications/matomo
