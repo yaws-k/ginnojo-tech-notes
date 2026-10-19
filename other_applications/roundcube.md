@@ -18,16 +18,16 @@ tar xfz roundcubemail-x.x.x-complete.tar.gz
 
 - It contains empty `temp` and `logs` directories. You don’t need to create them manually later.
 
-Move the directory to `/var/www/`. For future updates, delete the version number from the directory name.
+Move the directory to `/var/www/`. For example, use the directory name `mail.example.jp`, the same name as the server's domain.
 
 ```bash
-sudo mv ./roundcubemail-x.x.x /var/www/roundcube
+sudo mv ./roundcubemail-x.x.x /var/www/mail.example.jp
 ```
 
 Change owner to `www-data` (nginx should have write access to the directory).
 
 ```bash
-sudo chown -R www-data:www-data /var/www/roundcube
+sudo chown -R www-data:www-data /var/www/mail.example.jp
 ```
 
 ## Database configuration
@@ -85,7 +85,7 @@ This will check if all required packages are available and show missing items.
 
 ### Roundcube configuration
 
-- Choose `SQLite` as the database and set the path, for example, `/var/www/roundcube/sqlite.db`
+- Choose `SQLite` as the database and set the path, for example, `/var/www/mail.example.jp/sqlite.db`
 - IMAP should work with default configuration.
 - SMTP needs `ssl://` prefix to use Submissions. To avoid certificate errors, set smtp_host to the FQDN: `ssl://mail.example.jp:465`
 
@@ -101,3 +101,35 @@ sudo rm -r /var/www/roundcube/installer
 ## Access Roundcube
 
 Now `https://mail.example.jp/` should work, and you can log in with your mail addresses and their passwords.
+
+## Upgrade
+
+Follow the instructions in the official Roundcube upgrade guide: [https://github.com/roundcube/roundcubemail/wiki/Upgrade](https://github.com/roundcube/roundcubemail/wiki/Upgrade)
+
+Backup the current Roundcube installation. (It includes the SQLite database.)
+
+```bash
+sudo tar czvf /var/www/roundcube-backup.tar.gz /var/www/mail.example.jp
+```
+
+Download the latest Complete package from the [official download page](https://roundcube.net/download/) and extract it to a temporary location.
+
+```bash
+wget https://github.com/roundcube/roundcubemail/releases/download/1.7.5/roundcubemail-1.x.x-complete.tar.gz
+tar xf roundcubemail-1.x.x-complete.tar.gz
+```
+
+Use the installer script with the target directory as an argument.
+
+```bash
+cd roundcubemail-1.x.x
+sudo bin/installto.sh /var/www/mail.example.jp
+```
+
+Set the owner back to `www-data`.
+
+```bash
+sudo chown -R www-data:www-data /var/www/mail.example.jp
+```
+
+Check if the Roundcube installation works by accessing `https://mail.example.jp/` in your web browser.
