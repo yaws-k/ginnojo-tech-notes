@@ -31,6 +31,8 @@ docs:
       url: /web/lets_encrypt
     - title: "SSO for nginx"
       url: /web/sso_for_nginx
+    - title: "WAF"
+      url: /web/waf
   - title: "DNS"
     children:
     - title: "Knot Resolver"
